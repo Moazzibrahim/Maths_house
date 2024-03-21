@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/Home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -7,63 +8,77 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Login',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: const Color(0xFF1877f2), // Facebook blue color
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Welcome to Maths House',
+            Text(
+              'Login',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1877f2), // Facebook blue color
+                color: faceBookColor, // Facebook blue color
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text('Welcome to Maths house!'),
             const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(13)),
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.visibility_outlined,
+                        color: Colors.black.withOpacity(0.6),
+                      )),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
                 ),
               ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(onPressed: (){}, child:  Text('Forgot password?',style: TextStyle(fontWeight: FontWeight.bold,color: faceBookColor),),),
+              ],
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  MaterialPageRoute(builder: (context) => const TabsScreen()),
                 );
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color(0xFF1877f2)), // Facebook blue color
-                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: faceBookColor,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 160,
+                )
               ),
               child: const Text(
                 'Login',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.bold),
               ),
             ),
           ],

@@ -10,13 +10,10 @@ class MathHouse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Facebook Login Page',
-      theme: ThemeData(
-        primaryColor: const Color(0xFF1877f2), // Facebook blue color
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const LoginPage(),
+      home: LoginPage(),
     );
   }
 }
