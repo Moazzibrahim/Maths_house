@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/register_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -12,12 +13,12 @@ class LoginPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'Login',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: faceBookColor, // Facebook blue color
+                color: Colors.black, // Facebook blue color
               ),
             ),
             const SizedBox(
@@ -35,7 +36,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -58,7 +59,14 @@ class LoginPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(onPressed: (){}, child:  Text('Forgot password?',style: TextStyle(fontWeight: FontWeight.bold,color: faceBookColor),),),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Forgot password?',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: faceBookColor),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -70,17 +78,40 @@ class LoginPage extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: faceBookColor,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 160,
-                )
-              ),
+                  backgroundColor: faceBookColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 160,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18))),
               child: const Text(
                 'Login',
-                style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Don\'t have an account?'),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx)=> const RegisterScreen())
+                      );
+                    },
+                    child: const Text(
+                      'Sign up',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ))
+              ],
+            )
           ],
         ),
       ),

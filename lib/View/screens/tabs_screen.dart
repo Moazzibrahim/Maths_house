@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/home_screen.dart';
+import 'package:flutter_application_1/View/screens/profile_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -97,20 +98,4 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Colors.white,
-        leading: const Icon(Icons.arrow_back_ios),
-      ),
-      body: const Center(
-        child: Text('Profile Screen Content'),
-      ),
-    );
-  }
-}
