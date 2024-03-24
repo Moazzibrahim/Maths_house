@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MathHouse extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Facebook Login Page',
-        home: HomeScreen(),
+        home: TabsScreen(isLoggedIn: true,),
       ),
     );
   }

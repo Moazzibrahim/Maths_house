@@ -4,19 +4,20 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/login_screen.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_application_1/widgets/courses_container.dart';
 import 'package:flutter_application_1/widgets/custom_carousel_containers.dart';
 import 'package:flutter_application_1/widgets/custom_small_container.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class UnregisteredHomescreen extends StatefulWidget {
+  const UnregisteredHomescreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<UnregisteredHomescreen> createState() => _UnregisteredHomescreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
   int containerIndex = 0;
   List<Widget> carouselContainer = [
     const CarouselContainer(
@@ -110,10 +111,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text(
+                    child: Text(
                       'See All',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: faceBookColor,
+                          ),
                     ),
                   )
                 ],
@@ -150,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 8,
+              SizedBox(
+                height: 8.h,
               ),
               Row(
                 children: [
@@ -173,10 +177,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             MaterialPageRoute(
                                 builder: (context) => const LoginPage()));
                       },
-                      child: const Text(
+                      child: Text(
                         "Login",
                         style: TextStyle(
-                            color: Colors.indigo,
+                            color: faceBookColor,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ))

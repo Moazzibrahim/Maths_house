@@ -2,24 +2,30 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/profile_screen.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class TabsScreen extends StatefulWidget {
-  const TabsScreen({super.key});
-
+  const TabsScreen({super.key, required this.isLoggedIn});
+  final bool isLoggedIn;
   @override
   State<TabsScreen> createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
   int selectedIndex = 0;
-  List<Widget> pages = [
-    const HomeScreen(),
+  List<Widget> pages = [];
+  @override
+  void initState() {
+    pages = [
+    widget.isLoggedIn? const UnregisteredHomescreen() : const RegisteredHomeScreen(),
     const BooksScreen(),
     const ChatScreen(),
     const ProfileScreen(),
   ];
+    super.initState();
+  }
   void onItemTapped(int index) {
     setState(() {
       selectedIndex = index;

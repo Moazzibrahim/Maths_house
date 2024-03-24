@@ -34,7 +34,7 @@ class RegisterScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const TabsScreen()),
+                    MaterialPageRoute(builder: (context) => const TabsScreen(isLoggedIn: false,)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
