@@ -149,6 +149,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                children: [
+                  const Text(
+                    "Do you have an account ?",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                            color: Colors.indigo,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ))
+                ],
+              )
             ],
           ),
         ),
