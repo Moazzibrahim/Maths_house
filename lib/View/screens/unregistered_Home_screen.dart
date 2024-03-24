@@ -3,6 +3,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/login_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_application_1/widgets/courses_container.dart';
 import 'package:flutter_application_1/widgets/custom_carousel_containers.dart';
@@ -166,7 +167,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 6,
                   ),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
+                      },
                       child: const Text(
                         "Login",
                         style: TextStyle(
