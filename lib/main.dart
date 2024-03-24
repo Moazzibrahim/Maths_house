@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/login_screen.dart';
+import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   runApp(const MathHouse());
@@ -10,12 +11,14 @@ class MathHouse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Facebook Login Page',
-      home: LoginPage(),
+    return const ScreenUtilInit(
+      minTextAdapt: true,
+      splitScreenMode: true,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Facebook Login Page',
+        home: HomeScreen(),
+      ),
     );
   }
 }
-
-

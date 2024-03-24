@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomSmallCard extends StatelessWidget {
   const CustomSmallCard({super.key, required this.icon, required this.color, required this.text, required this.iconColor});
@@ -9,8 +10,8 @@ class CustomSmallCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
-      width: 100,
+      height: 100.h,
+      width: 100.w,
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(

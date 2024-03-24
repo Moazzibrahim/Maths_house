@@ -1,6 +1,9 @@
+// ignore_for_file: file_names
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_application_1/widgets/courses_container.dart';
 import 'package:flutter_application_1/widgets/custom_carousel_containers.dart';
 import 'package:flutter_application_1/widgets/custom_small_container.dart';
@@ -15,40 +18,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int containerIndex = 0;
   List<Widget> carouselContainer = [
-    const CarouselContainer(color: Color.fromRGBO(172, 191, 253, 1), text: 'Get best Grades',image: 'assets/images/woman.jpg',),
-    const CarouselContainer(color: Color.fromRGBO(198, 221, 239, 1), text: '',image: 'assets/images/maths.jpg',),
-    const CarouselContainer(color: Color.fromRGBO(2, 153, 234, 1), text: 'Get the best Maths experience!',image: 'assets/images/7605117.jpg',),
+    const CarouselContainer(
+      color: Color.fromRGBO(172, 191, 253, 1),
+      text: 'Get best Grades',
+      image: 'assets/images/woman.jpg',
+    ),
+    const CarouselContainer(
+      color: Color.fromRGBO(198, 221, 239, 1),
+      text: '',
+      image: 'assets/images/maths.jpg',
+    ),
+    const CarouselContainer(
+      color: Color.fromRGBO(2, 153, 234, 1),
+      text: 'Get the best Maths experience!',
+      image: 'assets/images/7605117.jpg',
+    ),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage(
-                          'assets/images/moaz.jpeg'), // Your image path here
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'Welcome Moaz', // Change 'John' to the desired name
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10,),
+              SizedBox(height: 30.h),
               CarouselSlider(
                 items: carouselContainer,
                 options: CarouselOptions(
@@ -60,19 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              const SizedBox(height: 10,),
+              SizedBox(height: 10.h),
               DotsIndicator(
                 dotsCount: carouselContainer.length,
                 position: containerIndex,
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              SizedBox(height: 15.h),
               SizedBox(
-                height: 135,
+                height: 135.h,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  children:  [
+                  children: [
                     CustomSmallCard(
                       icon: Icons.book_rounded,
                       color: Colors.red[200],
@@ -109,21 +103,49 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Trending courses',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                  TextButton(onPressed: (){}, child:const Text('See All',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),))
+                  const Text(
+                    'Trending courses',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'See All',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  )
                 ],
               ),
-              const SizedBox(height: 10,),
               SizedBox(
-                height: 200, // Adjust the height as needed
+                height: 200.h, // Adjust the height as needed
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: const [
-                    CoursesCard(image: 'assets/images/maths.jpg', text: 'The course name'),
-                    CoursesCard(image: 'assets/images/maths.jpg', text: 'The course name'),
-                    CoursesCard(image: 'assets/images/maths.jpg', text: 'The course name'),
-                    CoursesCard(image: 'assets/images/maths.jpg', text: 'The course name'),
-                    CoursesCard(image: 'assets/images/maths.jpg', text: 'The course name'),
+                    CoursesCard(
+                      image: 'assets/images/maths.jpg',
+                      text: 'The course name',
+                    ),
+                    SizedBox(width: 20), // Add spacing between cards
+                    CoursesCard(
+                      image: 'assets/images/maths.jpg',
+                      text: 'The course name',
+                    ),
+                    SizedBox(width: 20), // Add spacing between cards
+                    CoursesCard(
+                      image: 'assets/images/maths.jpg',
+                      text: 'The course name',
+                    ),
+                    SizedBox(width: 20), // Add spacing between cards
+                    CoursesCard(
+                      image: 'assets/images/maths.jpg',
+                      text: 'The course name',
+                    ),
+                    SizedBox(width: 20), // Add spacing between cards
+                    CoursesCard(
+                      image: 'assets/images/maths.jpg',
+                      text: 'The course name',
+                    ),
                   ],
                 ),
               ),
@@ -134,4 +156,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

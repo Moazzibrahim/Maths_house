@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/register_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -21,11 +22,11 @@ class LoginPage extends StatelessWidget {
                 color: Colors.black, // Facebook blue color
               ),
             ),
-            const SizedBox(
-              height: 10,
+            SizedBox(
+              height: 10.h,
             ),
             const Text('Welcome to Maths house!'),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -36,7 +37,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
@@ -55,7 +56,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -69,7 +70,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -99,9 +100,8 @@ class LoginPage extends StatelessWidget {
                 const Text('Don\'t have an account?'),
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx)=> const RegisterScreen())
-                      );
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const RegisterScreen()));
                     },
                     child: const Text(
                       'Sign up',
