@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/grid_container.dart';
+import 'package:flutter_application_1/View/widgets/grid_container.dart';
+
 
 class RegisteredHomeScreen extends StatelessWidget {
   const RegisteredHomeScreen({super.key});

@@ -1,11 +1,38 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/register_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late String errorMessage = '';
+  bool obscurePassword = true; // Track password visibility
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +57,7 @@ class LoginPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(
@@ -41,15 +69,25 @@ class LoginPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
-                obscureText: true,
+                controller: passwordController,
+                obscureText:
+                    obscurePassword, // Use obscurePassword to toggle visibility
                 decoration: InputDecoration(
                   labelText: 'Password',
                   suffixIcon: IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.visibility_outlined,
-                        color: Colors.black.withOpacity(0.6),
-                      )),
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword =
+                            !obscurePassword; // Toggle password visibility
+                      });
+                    },
+                    icon: Icon(
+                      obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.black.withOpacity(0.6),
+                    ),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(13),
                   ),
@@ -72,11 +110,17 @@ class LoginPage extends StatelessWidget {
             ),
             SizedBox(height: 20.h),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisteredHomeScreen()),
-                );
+              onPressed: () async {
+                String email = emailController.text.trim();
+                String password = passwordController.text.trim();
+                // ignore: unused_local_variable
+                String result =
+                    await LoginModel().loginUser(context, email, password);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisteredHomeScreen()),
+                  );
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
