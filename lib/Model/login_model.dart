@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -62,7 +63,7 @@ class LoginModel with ChangeNotifier {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const RegisteredHomeScreen()),
+          MaterialPageRoute(builder: (context) => const TabsScreen(isLoggedIn: false,)),
         );
 
         // Return success message
