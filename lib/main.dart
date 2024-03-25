@@ -15,9 +15,10 @@ class MathHouse extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => TokenModel()),
         ChangeNotifierProvider(
-            create: (_) => TokenModel()), // Provide TokenModel here
-        // Other providers can be added here if needed
+          create: (_) => LoginModel(),
+        ),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

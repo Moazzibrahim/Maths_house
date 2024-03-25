@@ -1,11 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/register_screen.dart';
-import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -113,14 +111,8 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 String email = emailController.text.trim();
                 String password = passwordController.text.trim();
-                // ignore: unused_local_variable
-                String result =
-                    await LoginModel().loginUser(context, email, password);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const TabsScreen(isLoggedIn: false,)),
-                  );
+                Provider.of<LoginModel>(context, listen: false)
+                    .loginUser(context, email, password);
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,

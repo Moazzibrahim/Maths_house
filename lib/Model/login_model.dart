@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -27,7 +28,6 @@ class TokenModel with ChangeNotifier {
 //     notifyListeners();
 //   }
 // }
-
 class LoginModel with ChangeNotifier {
   Future<String> loginUser(
       BuildContext context, String email, String password) async {
@@ -53,14 +53,17 @@ class LoginModel with ChangeNotifier {
         // If authentication is successful, extract token from response
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         String token = responseData['token'];
-        // int id = responseData['user']['id'] as int;
 
         // Use provider to set the token
         Provider.of<TokenModel>(context, listen: false).setToken(token);
         log("status code: ${response.statusCode}");
         log("Token: $token");
-        // print("id: $id");
         log("$responseData");
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RegisteredHomeScreen()),
+        );
 
         // Return success message
         return "${responseData["success"]}";
@@ -71,8 +74,15 @@ class LoginModel with ChangeNotifier {
     } catch (error) {
       // Handle any errors that occur during the API call
       log('Error occurred: $error');
-      log('Response status code: ${response?.statusCode ?? 'Unknown'}'); // Access response variable safely
-      log('Response body: ${response?.body ?? 'No response'}'); // Access response variable safely
+
+      // Check if response is null (indicating error before HTTP response)
+      if (response == null) {
+        log('Error: No HTTP response');
+      } else {
+        log('Response status code: ${response.statusCode}'); // Access response variable safely
+        log('Response body: ${response.body}'); // Access response variable safely
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error occurred while authenticating'),
