@@ -9,7 +9,7 @@ void main() {
 }
 
 class MathHouse extends StatelessWidget {
-  const MathHouse({Key? key});
+  const MathHouse({super.key});
 
   @override
   Widget build(BuildContext context) {
