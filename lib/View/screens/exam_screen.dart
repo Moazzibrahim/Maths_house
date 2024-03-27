@@ -42,7 +42,7 @@ class _ExamBodyState extends State<ExamBody> {
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = Provider.of<TimerProvider>(context);
+    //final timerProvider = Provider.of<TimerProvider>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -95,37 +95,44 @@ class _ExamBodyState extends State<ExamBody> {
             ),
           ),
         ),
-        _isSubmitting
-            ? ElevatedButton(
-                onPressed: () {
-                  // Handle submit action here
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Answers submitted.'),
-                    ),
-                  );
-                },
-                child: Text('Submit'),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: _questionIndex > 0 ? goToPreviousQuestion : null,
-                    child: const Text("Previous"),
-                  ),
-                  ElevatedButton(
-                    onPressed: _questionIndex < questions.length - 1
-                        ? goToNextQuestion
-                        : () {
-                            setState(() {
-                              _isSubmitting = true;
-                            });
-                          },
-                    child: const Text("Next"),
-                  ),
-                ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton(
+              onPressed: _questionIndex > 0 ? goToPreviousQuestion : null,
+              child: const Text("Previous"),
+            ),
+            GestureDetector(
+              onTap: () {
+                _navigateToQuestion(context);
+              },
+              child: Text(
+                "Question ${_questionIndex + 1}",
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+            ),
+            if (_questionIndex < questions.length - 1)
+              ElevatedButton(
+                onPressed: goToNextQuestion,
+                child: const Text("Next"),
+              ),
+          ],
+        ),
+        if (_isSubmitting)
+          ElevatedButton(
+            onPressed: () {
+              // Handle submit action here
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Answers submitted.'),
+                ),
+              );
+            },
+            child: const Text('Submit'),
+          ),
       ],
     );
   }
@@ -140,5 +147,28 @@ class _ExamBodyState extends State<ExamBody> {
     setState(() {
       _questionIndex--;
     });
+  }
+
+  void _navigateToQuestion(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Go to Question'),
+          children: List.generate(
+            questions.length,
+            (index) => SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  _questionIndex = index;
+                });
+                Navigator.pop(context);
+              },
+              child: Text("Question ${index + 1}"),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
