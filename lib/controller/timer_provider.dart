@@ -24,6 +24,10 @@ class TimerProvider with ChangeNotifier {
     );
   }
 
+  void stopTimer() {
+    _timer?.cancel();
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
