@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, library_private_types_in_public_api, unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:provider/provider.dart';
@@ -7,11 +9,19 @@ class ExamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Exam"),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("Exam"),
+          leading: InkWell(
+            child: const Icon(Icons.arrow_back_ios),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: const ExamBody(),
       ),
-      body: const ExamBody(),
     );
   }
 }
@@ -40,7 +50,7 @@ class _ExamBodyState extends State<ExamBody> {
 
   @override
   Widget build(BuildContext context) {
-    //final timerProvider = Provider.of<TimerProvider>(context);
+    final timerProvider = Provider.of<TimerProvider>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,20 +127,22 @@ class _ExamBodyState extends State<ExamBody> {
                 onPressed: goToNextQuestion,
                 child: const Text("Next"),
               ),
+            if (_questionIndex == questions.length - 1)
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _isSubmitting = true;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Answers submitted.'),
+                    ),
+                  );
+                },
+                child: const Text('Submit'),
+              ),
           ],
         ),
-        if (_isSubmitting)
-          ElevatedButton(
-            onPressed: () {
-              // Handle submit action here
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Answers submitted.'),
-                ),
-              );
-            },
-            child: const Text('Submit'),
-          ),
       ],
     );
   }
