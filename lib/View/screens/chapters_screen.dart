@@ -39,6 +39,7 @@ class _ChaptersScreenState extends State<ChaptersScreen> {
               itemCount: chapterProvider.allChapters.length,
               itemBuilder:(context, index) {
               final chapter = chapterProvider.allChapters[index];
+              
               return ChaptersTiles(chapter: chapter);
             },
             );

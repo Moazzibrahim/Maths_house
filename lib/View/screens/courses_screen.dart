@@ -68,7 +68,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                         child: SizedBox(
                           height: 150,
                           width: 150, // Adjust width as needed
-                          child: Image.network(course.image),
+                          child: Image.network(''),
                         ),
                       ),
                     ),

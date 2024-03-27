@@ -4,6 +4,7 @@ import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/services/chapters_provider.dart';
 import 'package:flutter_application_1/services/courses_provider.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,7 +27,8 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => TimerProvider(),
         ),
-        ChangeNotifierProvider(create: (_)=> ChapterProvider())
+        ChangeNotifierProvider(create: (_)=> ChapterProvider()),
+        
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

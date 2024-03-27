@@ -5,6 +5,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 class ChaptersTiles extends StatelessWidget {
   const ChaptersTiles({super.key, required this.chapter});
   final Chapter chapter;
+  
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -26,7 +27,6 @@ class ChaptersTiles extends StatelessWidget {
           ],
         ),
         shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        children: const [],
       ),
     );
   }
