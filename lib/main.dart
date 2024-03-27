@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/services/courses_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -19,6 +20,7 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => LoginModel(),
         ),
+        ChangeNotifierProvider(create: (_) => CoursesProvider()),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

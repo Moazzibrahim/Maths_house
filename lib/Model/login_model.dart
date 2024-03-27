@@ -1,9 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
-
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
-import 'package:flutter_application_1/View/screens/login_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, required this.isLoggedIn});
+  final bool isLoggedIn;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         leading: const Icon(Icons.arrow_back_ios),
       ),
-      body: Padding(
+      body:!isLoggedIn ? Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -94,7 +96,7 @@ class ProfileScreen extends StatelessWidget {
                 onPressed: () async{
                   await LogoutModel().logout(context);
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (ctx)=> const LoginPage())
+                    MaterialPageRoute(builder: (ctx)=> const TabsScreen(isLoggedIn: true,))
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -121,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ) : const UnregisteredProfile(),
     );
   }
 }

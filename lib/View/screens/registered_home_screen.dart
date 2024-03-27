@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/courses_screen.dart';
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
 
 
@@ -45,10 +46,17 @@ class RegisteredHomeScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
-                  GridContainer(
-                    text: 'Courses',
-                    color: Colors.red[200],
-                    styleColor: Colors.redAccent[700],
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx)=> const CoursesScreen())
+                      );
+                    },
+                    child: GridContainer(
+                      text: 'Courses',
+                      color: Colors.red[200],
+                      styleColor: Colors.redAccent[700],
+                    ),
                   ),
                   GridContainer(
                     text: 'Exams',
@@ -61,9 +69,19 @@ class RegisteredHomeScreen extends StatelessWidget {
                     styleColor: Colors.purpleAccent[700],
                   ),
                   GridContainer(
-                    text: 'Diagnostic Exams',
+                    text: 'Questions',
                     color: Colors.green[200],
                     styleColor: Colors.greenAccent[700],
+                  ),
+                  GridContainer(
+                    text: 'Diagnostic Exams',
+                    color: Colors.yellow[200],
+                    styleColor: Colors.yellow[800],
+                  ),
+                  GridContainer(
+                    text: 'Live',
+                    color: Colors.indigo[200],
+                    styleColor: Colors.indigoAccent[700],
                   ),
                 ],
               ),

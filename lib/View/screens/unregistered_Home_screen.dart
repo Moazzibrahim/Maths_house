@@ -172,7 +172,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                   ),
                   TextButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const LoginPage()));
