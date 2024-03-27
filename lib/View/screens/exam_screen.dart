@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, library_private_types_in_public_api, unused_local_variable
+// ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
@@ -9,19 +9,17 @@ class ExamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Exam"),
-          leading: InkWell(
-            child: const Icon(Icons.arrow_back_ios),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Exam"),
+        leading: InkWell(
+          child: const Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.pop(context);
+          },
         ),
-        body: const ExamBody(),
       ),
+      body: const ExamBody(),
     );
   }
 }
@@ -50,7 +48,7 @@ class _ExamBodyState extends State<ExamBody> {
 
   @override
   Widget build(BuildContext context) {
-    final timerProvider = Provider.of<TimerProvider>(context);
+    final timerProvider = Provider.of<TimerProvider>(context, listen: false);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -106,10 +104,12 @@ class _ExamBodyState extends State<ExamBody> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ElevatedButton(
-              onPressed: _questionIndex > 0 ? goToPreviousQuestion : null,
-              child: const Text("Previous"),
-            ),
+            if (!_isSubmitting &&
+                _questionIndex > 0) // Conditionally render the previous button
+              ElevatedButton(
+                onPressed: goToPreviousQuestion,
+                child: const Text("Previous"),
+              ),
             GestureDetector(
               onTap: () {
                 _navigateToQuestion(context);
@@ -122,7 +122,10 @@ class _ExamBodyState extends State<ExamBody> {
                 ),
               ),
             ),
-            if (_questionIndex < questions.length - 1)
+            if (!_isSubmitting &&
+                _questionIndex <
+                    questions.length -
+                        1) // Conditionally render the next button
               ElevatedButton(
                 onPressed: goToNextQuestion,
                 child: const Text("Next"),
@@ -133,6 +136,7 @@ class _ExamBodyState extends State<ExamBody> {
                   setState(() {
                     _isSubmitting = true;
                   });
+                  timerProvider.stopTimer(); // Stop timer
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Answers submitted.'),
