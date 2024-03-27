@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/chapters_screen.dart';
 import 'package:flutter_application_1/services/courses_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -54,16 +53,23 @@ class _CoursesScreenState extends State<CoursesScreen> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Card(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 7.w,
-                        vertical: 5.h,
-                      ),
-                      elevation: 3,
-                      child: SizedBox(
-                        height: 150,
-                        width: 150, // Adjust width as needed
-                        child: Image.network(course.image),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (ctx)=> ChaptersScreen(title: course.name,))
+                        );
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 7.w,
+                          vertical: 5.h,
+                        ),
+                        elevation: 3,
+                        child: SizedBox(
+                          height: 150,
+                          width: 150, // Adjust width as needed
+                          child: Image.network(course.image),
+                        ),
                       ),
                     ),
                     Text(course.name),
