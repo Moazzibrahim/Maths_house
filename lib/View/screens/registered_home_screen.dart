@@ -61,7 +61,7 @@ class RegisteredHomeScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx) => ExamScreen()));
+                          MaterialPageRoute(builder: (ctx) => const ExamScreen()));
                     },
                     child: GridContainer(
                       text: 'Exams',

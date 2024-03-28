@@ -29,6 +29,7 @@ class ChapterProvider with ChangeNotifier {
         List<Chapter> c =
             chaptersList.chaptersList.map((e) => Chapter.fromJson(e)).toList();
             allChapters=c;
+            
             notifyListeners();
       }
     } catch (e) {

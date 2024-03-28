@@ -1,13 +1,13 @@
 class Course {
   final String name;
-  final int coursId;
+  final int courseId;
 
-  Course({required this.name,  required this.coursId});
+  Course({required this.name,  required this.courseId});
 
   factory Course.fromjson(Map<String, dynamic> json) => Course(
         name: json['course_name'],
         
-        coursId: json['id'],
+        courseId: json['id'],
       );
 }
 

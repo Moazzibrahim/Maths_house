@@ -56,7 +56,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx)=> ChaptersScreen(title: course.name,))
+                          MaterialPageRoute(builder: (ctx)=> ChaptersScreen(title: course.name, course: course,))
                         );
                       },
                       child: Card(

@@ -6,8 +6,20 @@ class LessonCards extends StatelessWidget {
   final Lesson lesson;
   @override
   Widget build(BuildContext context) {
-    return const Card(
-      
+    return Card(
+      margin: const EdgeInsets.all(8),
+      color: Colors.blue[200],
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Icon(Icons.play_circle_outline_rounded),
+            const SizedBox(width: 10,),
+            Text(lesson.name),
+          ],
+        ),
+      ),
     );
   }
 }

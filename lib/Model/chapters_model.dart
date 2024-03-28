@@ -1,12 +1,14 @@
 class Chapter {
   final String name;
   final int courseId;
+  final int id;
 
-  Chapter({required this.name, required this.courseId});
+  Chapter({required this.name, required this.courseId,required this.id});
 
   factory Chapter.fromJson(Map<String, dynamic> json) => Chapter(
         name: json['chapter_name'],
-        courseId: json['course_id'],
+        courseId: json['course_id'], 
+        id: json['id'],
       );
 }
 
