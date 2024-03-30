@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/chapters_model.dart';
 import 'package:flutter_application_1/View/widgets/lessons_cards.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/services/chapters_provider.dart';
+import 'package:flutter_application_1/controller/chapters_provider.dart';
 import 'package:provider/provider.dart';
 
 class ChaptersTiles extends StatefulWidget {

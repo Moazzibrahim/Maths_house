@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/courses_model.dart';
 import 'package:flutter_application_1/View/widgets/chapters_tiles.dart';
-import 'package:flutter_application_1/services/chapters_provider.dart';
+import 'package:flutter_application_1/controller/chapters_provider.dart';
 import 'package:provider/provider.dart';
 
 class ChaptersScreen extends StatefulWidget {
