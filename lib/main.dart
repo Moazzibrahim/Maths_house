@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
+import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:flutter_application_1/services/chapters_provider.dart';
 import 'package:flutter_application_1/services/courses_provider.dart';
 
@@ -27,8 +28,8 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => TimerProvider(),
         ),
-        ChangeNotifierProvider(create: (_)=> ChapterProvider()),
-        
+        ChangeNotifierProvider(create: (_) => ChapterProvider()),
+        ChangeNotifierProvider(create: (_) => LiveProvider()),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

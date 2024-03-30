@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam_screen.dart';
+import 'package:flutter_application_1/View/screens/live_screen.dart';
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
 
 class RegisteredHomeScreen extends StatelessWidget {
@@ -60,8 +60,8 @@ class RegisteredHomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx) => const ExamScreen()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const ExamScreen()));
                     },
                     child: GridContainer(
                       text: 'Exams',
@@ -84,10 +84,16 @@ class RegisteredHomeScreen extends StatelessWidget {
                     color: Colors.yellow[200],
                     styleColor: Colors.yellow[800],
                   ),
-                  GridContainer(
-                    text: 'Live',
-                    color: Colors.indigo[200],
-                    styleColor: Colors.indigoAccent[700],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const LiveScreen()));
+                    },
+                    child: GridContainer(
+                      text: 'Live',
+                      color: Colors.indigo[200],
+                      styleColor: Colors.indigoAccent[700],
+                    ),
                   ),
                 ],
               ),
