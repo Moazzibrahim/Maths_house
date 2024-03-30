@@ -11,6 +11,7 @@ class LiveScreen extends StatefulWidget {
   const LiveScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LiveScreenState createState() => _LiveScreenState();
 }
 

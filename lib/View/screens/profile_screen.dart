@@ -95,6 +95,7 @@ class ProfileScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async{
                   await LogoutModel().logout(context);
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (ctx)=> const TabsScreen(isLoggedIn: true,))
                   );
