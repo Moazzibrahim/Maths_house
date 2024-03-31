@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/courses_screen.dart';
-import 'package:flutter_application_1/View/screens/exam_screen.dart';
+import 'package:flutter_application_1/View/screens/exam_filteration_screen.dart';
 import 'package:flutter_application_1/View/screens/live_screen.dart';
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
 
@@ -61,7 +61,7 @@ class RegisteredHomeScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const ExamScreen()));
+                          builder: (ctx) => const ExamFilterScreen()));
                     },
                     child: GridContainer(
                       text: 'Exams',
