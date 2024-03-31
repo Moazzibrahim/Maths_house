@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/start_exam_screen.dart';
 
 class ExamFilterScreen extends StatefulWidget {
   const ExamFilterScreen({Key? key}) : super(key: key);
@@ -117,7 +118,10 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                 print('Year: $_selectedYear');
                 print('Month: $_selectedMonth');
                 print('Exam Code: $_selectedExamCode');
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ExamScreenstart()),
+                );
                 // Here you can implement your logic to fetch exams based on the selected filters
               },
               child: const Text('Search'),
