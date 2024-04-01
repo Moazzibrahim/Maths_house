@@ -1,18 +1,32 @@
-
 import 'package:flutter/material.dart';
 
-class Exam  with ChangeNotifier{
-  String category;
-  String course;
-  String year;
-  String month;
-  String examCode;
+class ExamData with ChangeNotifier{
+  final String courseName;
+  
+  final String examCode;
 
-  Exam({
-    required this.category,
-    required this.course,
-    required this.year,
-    required this.month,
+  ExamData({
+    required this.courseName,
+    
     required this.examCode,
   });
+
+  factory ExamData.fromJson(Map<String, dynamic> json) {
+    return ExamData(
+      courseName: json['course_name'] ?? '',
+      examCode: json['exam_code'] ?? '',
+    );
+  }
 }
+class Category with ChangeNotifier{
+  final String categoryName;
+
+  Category({required this.categoryName});
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      categoryName: json['cate_name'] ?? '',
+    );
+  }
+}
+
