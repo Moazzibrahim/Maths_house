@@ -1,9 +1,13 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print
+// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/start_exam_screen.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/screens/exam-view/start_exam_screen.dart';
 import 'package:flutter_application_1/controller/exam_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ExamFilterScreen extends StatefulWidget {
   const ExamFilterScreen({Key? key}) : super(key: key);
@@ -48,6 +52,55 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
       years.add(year.toString());
     }
     return years;
+  }
+
+  Future<void> _sendFiltersToServer() async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    // Construct the request body with selected filter values
+    final Map<String, dynamic> requestBody = {
+      'category': _selectedCategory,
+      'course': _selectedCourse,
+      'year': _selectedYear,
+      'month': _selectedMonth,
+      'examCode': _selectedExamCode,
+    };
+
+    final url = Uri.parse(
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process');
+
+    try {
+      // Send a POST request to the server
+      final response = await http.post(
+        url,
+        body: jsonEncode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+          // Add any additional headers if required
+        },
+      );
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Request was successful, handle the response here
+        print('Filters sent successfully!');
+        print('Response body: ${response.body}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ExamScreenstart(),
+          ),
+        );
+      } else {
+        // Request failed, handle error here
+        print('Failed to send filters. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle any errors that occur during the HTTP request
+      print('Error sending filters: $error');
+    }
   }
 
   @override
@@ -178,12 +231,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ExamScreenstart(),
-                            ),
-                          );
+                          _sendFiltersToServer();
                           // For demonstration purposes, let's just print the selected filter values
                           print('Category: $_selectedCategory');
                           print('Course: $_selectedCourse');

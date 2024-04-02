@@ -22,6 +22,7 @@ class ExamScreenstart extends StatelessWidget {
         itemBuilder: (context, index) {
           return ExamGridItem(
             examName: exams[index],
+            index: index,
           );
         },
       ),
