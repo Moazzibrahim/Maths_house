@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/start_exam_screen.dart';
 import 'package:flutter_application_1/controller/exam_provider.dart';
