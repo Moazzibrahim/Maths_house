@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/start_exam_screen.dart';
@@ -15,8 +15,8 @@ class ExamFilterScreen extends StatefulWidget {
 class _ExamFilterScreenState extends State<ExamFilterScreen> {
   String? _selectedCategory;
   String? _selectedCourse;
-  String _selectedYear = '2024';
-  String _selectedMonth = 'January';
+  String? _selectedYear;
+  String? _selectedMonth;
   String? _selectedExamCode;
   final List<String> _months = [
     'January',
@@ -76,79 +76,104 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      DropdownButtonFormField<String>(
-                        value: _selectedCategory,
-                        items: uniqueCategories
-                            .map((category) => DropdownMenuItem<String>(
-                                  value: category,
-                                  child: Text(category),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCategory = value;
-                          });
-                        },
+                      _buildDropdownContainer(
+                        hint: "Select Category",
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedCategory,
+                          items: [
+                            ...uniqueCategories.map(
+                              (category) => DropdownMenuItem<String>(
+                                value: category,
+                                child: Text(category),
+                              ),
+                            )
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCategory = value;
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        value: _selectedCourse,
-                        items: uniqueCourses
-                            .map((course) => DropdownMenuItem<String>(
-                                  value: course,
-                                  child: Text(course),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedCourse = value;
-                          });
-                        },
+                      _buildDropdownContainer(
+                        hint: "Select Course",
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedCourse,
+                          items: [
+                            ...uniqueCourses.map(
+                              (course) => DropdownMenuItem<String>(
+                                value: course,
+                                child: Text(course),
+                              ),
+                            )
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedCourse = value;
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        value: _selectedYear,
-                        items: _years
-                            .map((year) => DropdownMenuItem<String>(
-                                  value: year,
-                                  child: Text(year),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedYear = value!;
-                          });
-                        },
+                      _buildDropdownContainer(
+                        hint: "Select Year",
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedYear,
+                          items: [
+                            ..._years.map(
+                              (year) => DropdownMenuItem<String>(
+                                value: year,
+                                child: Text(year),
+                              ),
+                            )
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedYear = value!;
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        value: _selectedMonth,
-                        items: _months
-                            .map((month) => DropdownMenuItem<String>(
-                                  value: month,
-                                  child: Text(month),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedMonth = value!;
-                          });
-                        },
+                      _buildDropdownContainer(
+                        hint: "Select Month",
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedMonth,
+                          items: [
+                            ..._months.map(
+                              (month) => DropdownMenuItem<String>(
+                                value: month,
+                                child: Text(month),
+                              ),
+                            )
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedMonth = value!;
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        value: _selectedExamCode,
-                        items: uniqueExamCodes
-                            .map((code) => DropdownMenuItem<String>(
-                                  value: code,
-                                  child: Text(code),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedExamCode = value;
-                          });
-                        },
+                      _buildDropdownContainer(
+                        hint: "Select Exam Code",
+                        child: DropdownButtonFormField<String>(
+                          value: _selectedExamCode,
+                          items: [
+                            ...uniqueExamCodes.map(
+                              (code) => DropdownMenuItem<String>(
+                                value: code,
+                                child: Text(code),
+                              ),
+                            )
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedExamCode = value;
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
@@ -173,6 +198,30 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                   ),
                 );
         },
+      ),
+    );
+  }
+
+  Widget _buildDropdownContainer(
+      {required String hint, required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey), // Rectangular border styling
+        borderRadius: BorderRadius.circular(5), // Rounded corners
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            hint,
+            style: TextStyle(
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 5),
+          child,
+        ],
       ),
     );
   }
