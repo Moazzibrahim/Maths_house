@@ -111,12 +111,12 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(13),
-                    side: BorderSide(
-                      color: faceBookColor!,
+                    side: const BorderSide(
+                      color: faceBookColor,
                     ),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Logout',
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold,color: faceBookColor),
                 ),

@@ -1,3 +1,3 @@
 import 'package:flutter/material.dart';
 
-final faceBookColor = Colors.blue[800];
+const faceBookColor = Color(0xFFCF202F);

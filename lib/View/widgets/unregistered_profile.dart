@@ -36,12 +36,12 @@ class UnregisteredProfile extends StatelessWidget {
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(13),
-                    side: BorderSide(
-                      color: faceBookColor!,
+                    side: const BorderSide(
+                      color: faceBookColor,
                     ),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Login',
                   style: TextStyle(
                       fontSize: 19,

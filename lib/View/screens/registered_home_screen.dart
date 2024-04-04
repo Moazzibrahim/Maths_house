@@ -22,11 +22,11 @@ class RegisteredHomeScreen extends StatelessWidget {
                     CircleAvatar(
                       radius: 25,
                       backgroundImage: AssetImage(
-                          'assets/images/moaz.jpeg'), // Your image path here
+                          'assets/images/logo.jpg'), // Your image path here
                     ),
                     SizedBox(width: 10),
                     Text(
-                      'Welcome Moaz', // Change 'John' to the desired name
+                      'Welcome student', // Change 'John' to the desired name
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class RegisteredHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 10,
+                height: 7,
               ),
               GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

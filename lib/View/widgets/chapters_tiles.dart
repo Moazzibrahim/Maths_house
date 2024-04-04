@@ -31,7 +31,7 @@ class _ChaptersTilesState extends State<ChaptersTiles> {
       child: ExpansionTile(
         title: Row(
           children: [
-            Icon(
+            const Icon(
               Icons.video_collection_rounded,
               color: faceBookColor,
             ),

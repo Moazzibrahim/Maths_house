@@ -7,8 +7,7 @@ class ExamData with ChangeNotifier{
 
   ExamData({
     required this.courseName,
-    
-    required this.examCode,
+    required this.examCode
   });
 
   factory ExamData.fromJson(Map<String, dynamic> json) {

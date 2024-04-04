@@ -1,74 +1,85 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/exam_models/exam_item.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class StartExamProvider with ChangeNotifier {
-  List<Map<String, dynamic>> examData = [];
+  List<ExamItem> examData = [];
 
-  List<String> years = [];
-  List<int> months = [];
-  List<int> scores = [];
-  List<int> questionCounts = [];
-  List<List<String>> sections = [];
-
-  Future<void> getExamData(BuildContext context) async {
+  Future<List<ExamItem>> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
+    const maxRetries = 3;
+    var attempt = 0;
 
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process'),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-        body: {
-          'key': 'value',
-        },
-      );
+    while (attempt < maxRetries) {
+      try {
+        final response = await http.get(
+          Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process',
+          ),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        Map<String, dynamic> responseData = jsonDecode(response.body);
-        List<dynamic> examItems = responseData['exam_items'];
+        if (response.statusCode == 200) {
+          final jsonData = json.decode(response.body);
+          final List<dynamic> examItems = jsonData['exam_items'];
 
-        for (var examItem in examItems) {
-          String year = examItem['year'];
-          int? month = examItem['month'];
-          int actualMonth = month ?? 0;
-          int score = examItem['score'];
-          List<dynamic> questions = examItem['question'];
-          int questionCount = questions.length;
-          List<String> sectionList = questions
-              .map((question) => question['section'].toString())
-              .toList();
+          // Process exam items
+          List<ExamItem> examItemList = [];
+          for (var examItem in examItems) {
+            final List<dynamic> questions = examItem['question'];
+            final int countOfQuestions = questions.length;
 
-          years.add(year);
-          months.add(actualMonth);
-          scores.add(score);
-          questionCounts.add(questionCount);
-          sections.add(sectionList);
+            // Extract sections from questions
+            List<String> sections = [];
+            for (var question in questions) {
+              sections.add(question['section'] ?? '');
+            }
 
-          examData.add({
-            'year': year,
-            'month': actualMonth,
-            'score': score,
-            'questionCount': questionCount,
-            'sections': sectionList,
-          });
+            // Other properties of the exam item
+            final int month = examItem['month'] ?? 0;
+            final String year = examItem['year'] ?? '';
+            final int marks = examItem['score'] ?? 0;
+
+            // Create ExamItem object and add to list
+            examItemList.add(
+              ExamItem(
+                month: month,
+                year: year,
+                countOfQuestions: countOfQuestions,
+                section: sections.join(','), // Concatenate sections into a single string
+                marks: marks,
+              ),
+            );
+          }
+          examData = examItemList;
+          notifyListeners();
+          return examItemList;
+        } else if (response.statusCode == 429) {
+          // Exponential backoff with random delay between attempts
+          final delay = (2 ^ attempt) * 1000 + Random().nextInt(1001);
+          print('Retrying after $delay milliseconds');
+          await Future.delayed(Duration(milliseconds: delay));
+        } else {
+          throw Exception('Failed to load data from API: ${response.statusCode}');
         }
-
-        notifyListeners();
-      } else {
-        print('Failed to load exam data: ${response.statusCode}');
-        // Handle error (e.g., show snackbar or dialog)
+      } catch (e) {
+        print('Error fetching data (attempt $attempt): $e');
+        rethrow; // Rethrow the caught error
       }
-    } catch (e) {
-      print('Error: $e');
-      // Handle error (e.g., show snackbar or dialog)
+      attempt++;
     }
+
+    throw Exception('Failed to load data after $maxRetries attempts');
   }
 }

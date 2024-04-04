@@ -111,7 +111,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Text(
+                    child: const Text(
                       'See All',
                       style: TextStyle(
                           fontSize: 18,
@@ -177,7 +177,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                             MaterialPageRoute(
                                 builder: (context) => const LoginPage()));
                       },
-                      child: Text(
+                      child: const Text(
                         "Login",
                         style: TextStyle(
                             color: faceBookColor,

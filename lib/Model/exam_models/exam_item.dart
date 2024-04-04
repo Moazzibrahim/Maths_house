@@ -1,42 +1,27 @@
 import 'package:flutter/material.dart';
 
 class ExamItem with ChangeNotifier {
-  int id;
-  String title;
-  String description;
-  String time;
-  int score;
-  int passScore;
-  String year;
-  int? month;
-  List<Question> questions;
-  
+  final int month;
+  final String year;
+  final int countOfQuestions;
+  final String section;
+  final int marks;
 
   ExamItem({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.time,
-    required this.score,
-    required this.passScore,
     required this.year,
     required this.month,
-    required this.questions,
+    required this.countOfQuestions,
+    required this.section,
+    required this.marks,
   });
 
   factory ExamItem.fromJson(Map<String, dynamic> json) {
     return ExamItem(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      time: json['time'],
-      score: json['score'],
-      passScore: json['pass_score'],
       year: json['year'],
       month: json['month'],
-      questions: (json['question'] as List)
-          .map((question) => Question.fromJson(question))
-          .toList(),
+      countOfQuestions: json['question'].length,
+      section: json['section'],
+      marks: json['score'], // Assuming marks are obtained from 'score' field
     );
   }
 }
