@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: faceBookColor,
                     padding: const EdgeInsets.symmetric(
                       vertical: 12,
-                      horizontal: 160,
+                      horizontal: 140,
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18))),

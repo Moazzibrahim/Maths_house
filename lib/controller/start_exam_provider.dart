@@ -50,6 +50,7 @@ class StartExamProvider with ChangeNotifier {
             final int month = examItem['month'] ?? 0;
             final String year = examItem['year'] ?? '';
             final int marks = examItem['score'] ?? 0;
+            final int examid = examItem['id'] ?? 0;
 
             // Create ExamItem object and add to list
             examItemList.add(
@@ -57,8 +58,10 @@ class StartExamProvider with ChangeNotifier {
                 month: month,
                 year: year,
                 countOfQuestions: countOfQuestions,
-                section: sections.join(','), // Concatenate sections into a single string
+                section: sections
+                    .join(','), // Concatenate sections into a single string
                 marks: marks,
+                examid: examid,
               ),
             );
           }
@@ -71,7 +74,8 @@ class StartExamProvider with ChangeNotifier {
           print('Retrying after $delay milliseconds');
           await Future.delayed(Duration(milliseconds: delay));
         } else {
-          throw Exception('Failed to load data from API: ${response.statusCode}');
+          throw Exception(
+              'Failed to load data from API: ${response.statusCode}');
         }
       } catch (e) {
         print('Error fetching data (attempt $attempt): $e');

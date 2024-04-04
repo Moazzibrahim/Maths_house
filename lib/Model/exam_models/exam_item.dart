@@ -6,6 +6,7 @@ class ExamItem with ChangeNotifier {
   final int countOfQuestions;
   final String section;
   final int marks;
+  int ?examid;
 
   ExamItem({
     required this.year,
@@ -13,6 +14,7 @@ class ExamItem with ChangeNotifier {
     required this.countOfQuestions,
     required this.section,
     required this.marks,
+    this.examid,
   });
 
   factory ExamItem.fromJson(Map<String, dynamic> json) {
@@ -21,7 +23,8 @@ class ExamItem with ChangeNotifier {
       month: json['month'],
       countOfQuestions: json['question'].length,
       section: json['section'],
-      marks: json['score'], // Assuming marks are obtained from 'score' field
+      marks: json['score'],
+      examid: json['id'], // Assuming marks are obtained from 'score' field
     );
   }
 }
