@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/register_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -108,10 +109,13 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20.h),
               ElevatedButton(
                 onPressed: () async {
-                  String email = emailController.text.trim();
-                  String password = passwordController.text.trim();
-                  Provider.of<LoginModel>(context, listen: false)
-                      .loginUser(context, email, password);
+                  // String email = emailController.text.trim();
+                  // String password = passwordController.text.trim();
+                  // Provider.of<LoginModel>(context, listen: false)
+                  //     .loginUser(context, email, password);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx)=> const TabsScreen(isLoggedIn: false))
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: faceBookColor,
@@ -154,7 +158,8 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text(
                         'Sign up',
                         style: TextStyle(
-                          color: Colors.black,
+                          decoration: TextDecoration.underline,
+                          color: Color.fromRGBO(207, 32, 47, 1),
                           fontSize: 16,
                         ),
                       ))

@@ -43,7 +43,7 @@ class _TabsScreenState extends State<TabsScreen> {
           backgroundColor: Colors
               .white, // Set the background color of the entire BottomNavigationBar here
           selectedItemColor: faceBookColor,
-          unselectedItemColor: Colors.black,
+          unselectedItemColor: Colors.redAccent[700],
           currentIndex: selectedIndex,
           items: const [
             BottomNavigationBarItem(
@@ -55,11 +55,11 @@ class _TabsScreenState extends State<TabsScreen> {
               label: 'Courses',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
+              icon: Icon(Icons.chat_bubble_outline),
               label: 'Chat',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.person_outline,size: 28,),
               label: 'Profile',
             ),
           ],

@@ -1,13 +1,30 @@
 class Lesson {
   final String name;
   final int chapterId;
+  final List<Videos>? videos;
+  Lesson(
+      {required this.name, required this.chapterId, required this.videos});
 
-  Lesson({required this.name, required this.chapterId});
+  factory Lesson.fromJson(Map<String, dynamic> json) {
+  List<Videos> videosList = [];
+  
+  if (json.containsKey('ideas')) {
+    // Access the "ideas" list from the JSON data
+    List<dynamic> ideas = json['ideas'];
 
-  factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
-        name: json['lesson_name'],
-        chapterId: json['chapter_id'],
-      );
+    // Iterate over each idea and create Videos objects
+    ideas.forEach((idea) {
+      videosList.add(Videos.fromJson(idea));
+    });
+  }
+
+  return Lesson(
+    name: json['lesson_name'],
+    chapterId: json['chapter_id'],
+    videos: videosList,
+  );
+}
+
 }
 
 class LessonsList {
@@ -17,5 +34,17 @@ class LessonsList {
 
   factory LessonsList.fromJson(Map<String, dynamic> json) => LessonsList(
         lessonsList: json['lessons'],
+      );
+}
+
+class Videos {
+  final String? videoName;
+  final String? videoLink;
+
+  Videos({required this.videoName, required this.videoLink});
+
+  factory Videos.fromJson(Map<String, dynamic> json) => Videos(
+        videoName: json['idea'],
+        videoLink: json['v_link'],
       );
 }

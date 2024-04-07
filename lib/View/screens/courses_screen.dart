@@ -69,12 +69,12 @@ class _CoursesScreenState extends State<CoursesScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: Image.network(
-                                '', // Replace '' with the actual URL
-                                fit: BoxFit.cover, // Adjust the fit as needed
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: Image.network(
+                            //     '', // Replace '' with the actual URL
+                            //     fit: BoxFit.cover, // Adjust the fit as needed
+                            //   ),
+                            // ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(

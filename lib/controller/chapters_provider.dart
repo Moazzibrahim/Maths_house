@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 class ChapterProvider with ChangeNotifier {
   List<Chapter> allChapters = [];
   List<Lesson> allLessons = [];
+  List<Videos>? allvideos = [];
   Future<void> getChaptersData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -54,11 +55,17 @@ class ChapterProvider with ChangeNotifier {
         LessonsList lessonsList = LessonsList.fromJson(responseData);
         List<Lesson> l =
             lessonsList.lessonsList.map((e) => Lesson.fromJson(e)).toList();
+            for(var i in l){
+              i.videos!.forEach((element) {allvideos!.add(element);});
+            }
+            log('all videos : ${allvideos!.map((e) => e.videoName)}');
             allLessons=l;
             notifyListeners();
       }
     } catch (e) {
-      log('Error: $e');
+      log('Errorss: $e');
     }
   }
+
 }
+

@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
 import 'package:flutter_application_1/View/screens/live_screen.dart';
+import 'package:flutter_application_1/View/screens/questions_filter_screen.dart';
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 
 class RegisteredHomeScreen extends StatelessWidget {
   const RegisteredHomeScreen({super.key});
@@ -15,28 +19,31 @@ class RegisteredHomeScreen extends StatelessWidget {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundImage: AssetImage(
-                          'assets/images/logo.jpg'), // Your image path here
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'Welcome student', // Change 'John' to the desired name
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/images/logo.jpg'),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 7,
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage(
+                        'assets/images/moaz.jpeg'), 
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    'Welcome student', 
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
               GridView(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -47,15 +54,15 @@ class RegisteredHomeScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
-                  InkWell(
+                  GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (ctx) => const CoursesScreen()));
                     },
                     child: GridContainer(
                       text: 'Courses',
-                      color: Colors.red[200],
-                      styleColor: Colors.redAccent[700],
+                      color: gridHomeColor,
+                      styleColor: Colors.redAccent[700], image: 'assets/images/verify.png',
                     ),
                   ),
                   GestureDetector(
@@ -65,24 +72,30 @@ class RegisteredHomeScreen extends StatelessWidget {
                     },
                     child: GridContainer(
                       text: 'Exams',
-                      color: Colors.blue[200],
-                      styleColor: Colors.blueAccent[700],
+                      color: gridHomeColor,
+                      styleColor: Colors.redAccent[700], image: 'assets/images/a+.png',
                     ),
                   ),
                   GridContainer(
                     text: 'Quizes',
-                    color: Colors.purple[200],
-                    styleColor: Colors.purpleAccent[700],
+                    color: gridHomeColor,
+                    styleColor: Colors.redAccent[700], image: 'assets/images/timer.png',
                   ),
-                  GridContainer(
-                    text: 'Questions',
-                    color: Colors.green[200],
-                    styleColor: Colors.greenAccent[700],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const QuestionFilterScreen()));
+                    },
+                    child: GridContainer(
+                      text: 'Questions',
+                      color: gridHomeColor,
+                      styleColor: Colors.redAccent[700], image: 'assets/images/290138_document_extension_file_format_paper_icon 1.png',
+                    ),
                   ),
                   GridContainer(
                     text: 'Diagnostic Exams',
-                    color: Colors.yellow[200],
-                    styleColor: Colors.yellow[800],
+                    color: gridHomeColor,
+                    styleColor: Colors.redAccent[700], image: 'assets/images/Frame 232.png',
                   ),
                   GestureDetector(
                     onTap: () {
@@ -91,8 +104,8 @@ class RegisteredHomeScreen extends StatelessWidget {
                     },
                     child: GridContainer(
                       text: 'Live',
-                      color: Colors.indigo[200],
-                      styleColor: Colors.indigoAccent[700],
+                      color: gridHomeColor,
+                      styleColor: Colors.redAccent[700], image: 'assets/images/play-cricle.png',
                     ),
                   ),
                 ],
