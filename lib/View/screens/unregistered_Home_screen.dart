@@ -3,7 +3,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/login_screen.dart';
+import 'package:flutter_application_1/View/screens/unregistered_courses.dart';
 import 'package:flutter_application_1/View/widgets/courses_container.dart';
 import 'package:flutter_application_1/View/widgets/custom_carousel_containers.dart';
 import 'package:flutter_application_1/View/widgets/custom_small_container.dart';
@@ -69,11 +71,18 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    CustomSmallCard(
-                      icon: Icons.book_rounded,
-                      color: Colors.red[200],
-                      text: 'Courses',
-                      iconColor: Colors.red,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (ctx)=> const UnregisteredCourses())
+                        );
+                      },
+                      child: CustomSmallCard(
+                        icon: Icons.book_rounded,
+                        color: Colors.red[200],
+                        text: 'Courses',
+                        iconColor: Colors.red,
+                      ),
                     ),
                     CustomSmallCard(
                       icon: Icons.assignment,
@@ -123,39 +132,27 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                 ],
               ),
               SizedBox(
-                height: 200.h, // Adjust the height as needed
+                height: 160.h, // Adjust the height as needed
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: const [
                     CoursesCard(
                       image: 'assets/images/maths.jpg',
-                      text: 'The course name',
+                      text: 'American',
                     ),
                     SizedBox(width: 20), // Add spacing between cards
                     CoursesCard(
                       image: 'assets/images/maths.jpg',
-                      text: 'The course name',
+                      text: 'IGCSE',
                     ),
                     SizedBox(width: 20), // Add spacing between cards
                     CoursesCard(
                       image: 'assets/images/maths.jpg',
-                      text: 'The course name',
+                      text: 'National',
                     ),
                     SizedBox(width: 20), // Add spacing between cards
-                    CoursesCard(
-                      image: 'assets/images/maths.jpg',
-                      text: 'The course name',
-                    ),
-                    SizedBox(width: 20), // Add spacing between cards
-                    CoursesCard(
-                      image: 'assets/images/maths.jpg',
-                      text: 'The course name',
-                    ),
                   ],
                 ),
-              ),
-              SizedBox(
-                height: 8.h,
               ),
               Row(
                 children: [

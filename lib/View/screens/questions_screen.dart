@@ -72,6 +72,30 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     });
                   },
                 ),
+                RadioListTile<String>(
+                  title: const Text('D. biology'),
+                  value: 'D',
+                  groupValue: selectedAnswer,
+                  activeColor: Colors.redAccent[700],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedAnswer = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent[700],
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 60,
+                  )
+                ),
+                child: const Text('Submit',style: TextStyle(color: Colors.white,fontSize: 20),),
+              ),
             ],
           ),
         ),

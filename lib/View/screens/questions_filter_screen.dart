@@ -96,7 +96,7 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
               ),
               CustomDropdownButton(
                 value: selectedYear,
-                items: const ['Select Year', 'cat a', 'cat b'],
+                items: const ['Select Year', '2020', '2021','2022','2023','2024'],
                 onChanged: (newValue) {
                   setState(() {
                     selectedYear = newValue!;

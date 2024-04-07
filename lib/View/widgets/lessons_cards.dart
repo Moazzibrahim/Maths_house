@@ -7,28 +7,33 @@ class LessonCards extends StatelessWidget {
   final Lesson lesson;
   @override
   Widget build(BuildContext context) {
-    return 
-    InkWell(
-      borderRadius: BorderRadius.circular(13),
-      splashColor: Colors.white,
-      onTap: (){
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (ctx)=> LessonsVideos(lesson: lesson,))
-        );
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (ctx) => LessonsVideos(
+                  lesson: lesson,
+                )));
       },
-      child: Card(
-        margin: const EdgeInsets.all(8),
-        color: Colors.blue[200],
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Icon(Icons.play_circle_outline_rounded),
-              const SizedBox(width: 10,),
-              Text(lesson.name),
-            ],
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.circle,
+              size: 10,
+              color: Colors.redAccent[700],
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              lesson.name,
+              style: TextStyle(
+                color: Colors.redAccent[700],
+              ),
+            ),
+          ],
         ),
       ),
     );

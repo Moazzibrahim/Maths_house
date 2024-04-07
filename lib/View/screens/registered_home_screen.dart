@@ -77,9 +77,9 @@ class RegisteredHomeScreen extends StatelessWidget {
                     ),
                   ),
                   GridContainer(
-                    text: 'Quizes',
+                    text: 'Live',
                     color: gridHomeColor,
-                    styleColor: Colors.redAccent[700], image: 'assets/images/timer.png',
+                    styleColor: Colors.redAccent[700], image: 'assets/images/play-cricle.png',
                   ),
                   GestureDetector(
                     onTap: () {
@@ -103,9 +103,9 @@ class RegisteredHomeScreen extends StatelessWidget {
                           builder: (ctx) => const LiveScreen()));
                     },
                     child: GridContainer(
-                      text: 'Live',
+                      text: 'History',
                       color: gridHomeColor,
-                      styleColor: Colors.redAccent[700], image: 'assets/images/play-cricle.png',
+                      styleColor: Colors.redAccent[700], image: 'assets/images/timer.png',
                     ),
                   ),
                 ],

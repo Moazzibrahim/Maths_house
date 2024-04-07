@@ -12,12 +12,25 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'My Profile',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
-        leading: const Icon(Icons.arrow_back_ios),
+        leading: Container(
+          margin: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+              color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+          child: IconButton(
+              onPressed: () {
+                
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.redAccent[700],
+              )),
+        ),
       ),
       body:!isLoggedIn ? Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
