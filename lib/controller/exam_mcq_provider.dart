@@ -1,15 +1,23 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
+import 'dart:convert';
 import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/controller/start_exam_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class ExamMcqProvider with ChangeNotifier {
-  Future<List<Exam>> fetchExamDataFromApi(
-      BuildContext context, int examId) async {
+  Future<List<QuestionWithAnswers>> fetchExamDataFromApi(
+      BuildContext context) async {
+    final startExamProvider =
+        Provider.of<StartExamProvider>(context, listen: false);
+    final examId = startExamProvider.examId;
+
+    if (examId == null) {
+      print('Exam ID is null');
+      return [];
+    }
+
     final url =
         'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$examId';
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -26,41 +34,35 @@ class ExamMcqProvider with ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        final List<dynamic> examList = jsonData['exam'];
-        List<Exam> examques = [];
+        final List<QuestionWithAnswers> questionsWithAnswers = [];
 
-        for (var examData in examList) {
-          final question = examData['question'];
-          final List<dynamic> answers = examData['Answers'];
+        // Loop through the exam data
+        if (jsonData['exam'] != null) {
+          for (var examData in jsonData['exam']) {
+            final Question question = Question.fromJson(examData['question']);
+            final List<Answer> answerList = [];
 
-          final qNum = question['q_num'];
-          final questionText = question['question'];
-          List<Answer> mcqAnswers = [];
+            // Loop through the answers
+            if (examData['Answers'] != null) {
+              for (var answerData in examData['Answers']) {
+                final Answer answer = Answer.fromJson(answerData);
+                answerList.add(answer);
+              }
+            }
 
-          for (var answer in answers) {
-            final mcqAns = answer['mcq_ans'];
-            mcqAnswers.add(
-              Answer(
-                id: answer['id'],
-                mcqAns: mcqAns ?? '',
-                mcqAnswers: answer['mcq_answers'],
-                qId: answer['q_id'],
-                createdAt: answer['created_at'],
-                updatedAt: answer['updated_at'],
-              ),
-            );
+            // Create a QuestionWithAnswers object and add it to the list
+            questionsWithAnswers.add(QuestionWithAnswers(
+              question: question,
+              answers: answerList,
+              mcqOptions: answerList
+                  .where((answer) => answer.mcqAns != null)
+                  .map((answer) => answer.mcqAns!)
+                  .toList(),
+            ));
           }
-
-          examques.add(
-            Exam(
-              qNum: qNum,
-              questionText: questionText,
-              answers: mcqAnswers,
-            ),
-          );
         }
-        notifyListeners();
-        return examques;
+
+        return questionsWithAnswers;
       } else {
         print('Failed to fetch data: ${response.statusCode}');
       }
@@ -69,4 +71,16 @@ class ExamMcqProvider with ChangeNotifier {
     }
     return []; // Return empty list in case of failure
   }
+}
+
+class QuestionWithAnswers {
+  final Question question;
+  final List<Answer> answers;
+  final List<String> mcqOptions;
+
+  QuestionWithAnswers({
+    required this.question,
+    required this.answers,
+    required this.mcqOptions,
+  });
 }

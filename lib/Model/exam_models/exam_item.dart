@@ -6,7 +6,7 @@ class ExamItem with ChangeNotifier {
   final int countOfQuestions;
   final String section;
   final int marks;
-  int ?examid;
+  int? examid;
 
   ExamItem({
     required this.year,
@@ -24,7 +24,7 @@ class ExamItem with ChangeNotifier {
       countOfQuestions: json['question'].length,
       section: json['section'],
       marks: json['score'],
-      examid: json['id'], // Assuming marks are obtained from 'score' field
+      examid: json['id'] as int?, // Assuming marks are obtained from 'score' field
     );
   }
 }

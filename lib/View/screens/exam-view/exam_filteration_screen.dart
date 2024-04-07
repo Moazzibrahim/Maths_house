@@ -1,10 +1,11 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print, use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/exam-view/start_exam_screen.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -108,6 +109,15 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Exam Filter'),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: faceBookColor,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Consumer<ExamProvider>(
         builder: (context, examProvider, _) {
@@ -132,12 +142,17 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                       _buildDropdownContainer(
                         hint: "Select Category",
                         child: DropdownButtonFormField<String>(
+                          iconEnabledColor: faceBookColor,
                           value: _selectedCategory,
                           items: [
                             ...uniqueCategories.map(
                               (category) => DropdownMenuItem<String>(
                                 value: category,
-                                child: Text(category),
+                                child: Row(
+                                  children: [
+                                    Text(category),
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -152,12 +167,17 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                       _buildDropdownContainer(
                         hint: "Select Course",
                         child: DropdownButtonFormField<String>(
+                          iconEnabledColor: faceBookColor,
                           value: _selectedCourse,
                           items: [
                             ...uniqueCourses.map(
                               (course) => DropdownMenuItem<String>(
                                 value: course,
-                                child: Text(course),
+                                child: Row(
+                                  children: [
+                                    Text(course), // Customize arrow color here
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -172,12 +192,18 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                       _buildDropdownContainer(
                         hint: "Select Year",
                         child: DropdownButtonFormField<String>(
+                          iconEnabledColor: faceBookColor,
                           value: _selectedYear,
                           items: [
                             ..._years.map(
                               (year) => DropdownMenuItem<String>(
                                 value: year,
-                                child: Text(year),
+                                child: Row(
+                                  children: [
+                                    Text(year),
+                                    // Customize arrow color here
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -192,12 +218,18 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                       _buildDropdownContainer(
                         hint: "Select Month",
                         child: DropdownButtonFormField<String>(
+                          iconEnabledColor: faceBookColor,
                           value: _selectedMonth,
                           items: [
                             ..._months.map(
                               (month) => DropdownMenuItem<String>(
                                 value: month,
-                                child: Text(month),
+                                child: Row(
+                                  children: [
+                                    Text(month),
+                                    // Customize arrow color here
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -212,12 +244,18 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                       _buildDropdownContainer(
                         hint: "Select Exam Code",
                         child: DropdownButtonFormField<String>(
+                          iconEnabledColor: faceBookColor,
                           value: _selectedExamCode,
                           items: [
                             ...uniqueExamCodes.map(
                               (code) => DropdownMenuItem<String>(
                                 value: code,
-                                child: Text(code),
+                                child: Row(
+                                  children: [
+                                    Text(code),
+                                    // Customize arrow color here
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -240,7 +278,20 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                           print('Exam Code: $_selectedExamCode');
                           // Here you can implement your logic to fetch exams based on the selected filters
                         },
-                        child: const Text('Search'),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: faceBookColor,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 140,
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18))),
+                        child: const Text(
+                          'Search',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   ),

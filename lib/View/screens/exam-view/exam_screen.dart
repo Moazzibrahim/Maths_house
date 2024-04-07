@@ -1,7 +1,7 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
+import 'package:flutter_application_1/controller/exam_mcq_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExamScreen extends StatelessWidget {
@@ -34,28 +34,39 @@ class ExamBody extends StatefulWidget {
 class _ExamBodyState extends State<ExamBody> {
   int _questionIndex = 0;
   bool _isSubmitting = false;
-  List<String> questions = [
-    "What is the capital of France?",
-    "Who wrote 'Romeo and Juliet'?",
-    "What is the powerhouse of the cell?"
-  ];
-  List<List<String>> options = [
-    ["Paris", "Berlin", "London", "Madrid"],
-    ["William Shakespeare", "Charles Dickens", "Jane Austen", "Mark Twain"],
-    ["Mitochondria", "Nucleus", "Ribosome", "Endoplasmic Reticulum"]
-  ];
-  List<int> answers = [0, 0, 0]; // Index of correct answer for each question
+  List<QuestionWithAnswers>? questionsWithAnswers;
+  int? _selectedOptionIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchExamData();
+  }
+
+  Future<void> fetchExamData() async {
+    final mcqprovider = Provider.of<ExamMcqProvider>(context, listen: false);
+    final data = await mcqprovider.fetchExamDataFromApi(context);
+    setState(() {
+      questionsWithAnswers = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
+
+    if (questionsWithAnswers == null) {
+      return Center(child: CircularProgressIndicator()); // Show loading indicator while fetching data
+    } else if (questionsWithAnswers!.isEmpty) {
+      return Center(child: Text("No questions available")); // Show message when no questions are available
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
           padding: const EdgeInsets.all(16.0),
-          color: Colors.blue,
+          color: faceBookColor,
           child: Consumer<TimerProvider>(
             builder: (context, timer, child) {
               return Text(
@@ -75,7 +86,7 @@ class _ExamBodyState extends State<ExamBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Question ${_questionIndex + 1}: ${questions[_questionIndex]}",
+                  "Question ${_questionIndex + 1}: ${questionsWithAnswers![_questionIndex].question.questionText ?? 'No question available'}",
                   style: const TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -84,14 +95,16 @@ class _ExamBodyState extends State<ExamBody> {
                 const SizedBox(height: 20.0),
                 Column(
                   children: List.generate(
-                    options[_questionIndex].length,
+                    questionsWithAnswers![_questionIndex].mcqOptions.length,
                     (index) => RadioListTile(
-                      title: Text(options[_questionIndex][index]),
+                      title: Text(questionsWithAnswers![_questionIndex]
+                              .mcqOptions[index] ??
+                          ''),
                       value: index,
-                      groupValue: answers[_questionIndex],
+                      groupValue: _selectedOptionIndex,
                       onChanged: (value) {
                         setState(() {
-                          answers[_questionIndex] = value!;
+                          _selectedOptionIndex = value as int;
                         });
                       },
                     ),
@@ -104,11 +117,14 @@ class _ExamBodyState extends State<ExamBody> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (!_isSubmitting &&
-                _questionIndex > 0) // Conditionally render the previous button
+            if (!_isSubmitting && _questionIndex > 0)
               ElevatedButton(
                 onPressed: goToPreviousQuestion,
-                child: const Text("Previous"),
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                child: const Text(
+                  "Previous",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             GestureDetector(
               onTap: () {
@@ -123,15 +139,18 @@ class _ExamBodyState extends State<ExamBody> {
               ),
             ),
             if (!_isSubmitting &&
-                _questionIndex <
-                    questions.length -
-                        1) // Conditionally render the next button
+                _questionIndex < questionsWithAnswers!.length - 1)
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 onPressed: goToNextQuestion,
-                child: const Text("Next"),
+                child: const Text(
+                  "Next",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-            if (_questionIndex == questions.length - 1)
+            if (_questionIndex == questionsWithAnswers!.length - 1)
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 onPressed: () {
                   setState(() {
                     _isSubmitting = true;
@@ -143,7 +162,10 @@ class _ExamBodyState extends State<ExamBody> {
                     ),
                   );
                 },
-                child: const Text('Submit'),
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
           ],
         ),
@@ -170,7 +192,7 @@ class _ExamBodyState extends State<ExamBody> {
         return SimpleDialog(
           title: const Text('Go to Question'),
           children: List.generate(
-            questions.length,
+            questionsWithAnswers!.length,
             (index) => SimpleDialogOption(
               onPressed: () {
                 setState(() {

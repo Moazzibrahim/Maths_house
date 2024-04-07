@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:math';
@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class StartExamProvider with ChangeNotifier {
   List<ExamItem> examData = [];
+  int? examId;
 
   Future<List<ExamItem>> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -19,6 +20,9 @@ class StartExamProvider with ChangeNotifier {
 
     while (attempt < maxRetries) {
       try {
+        // Fetch the exam ID first
+        examId ??= await fetchExamId(context);
+
         final response = await http.get(
           Uri.parse(
             'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process',
@@ -32,38 +36,35 @@ class StartExamProvider with ChangeNotifier {
 
         if (response.statusCode == 200) {
           final jsonData = json.decode(response.body);
-          final List<dynamic> examItems = jsonData['exam_items'];
+          final dynamic examList = jsonData['exam_items'];
 
           // Process exam items
           List<ExamItem> examItemList = [];
-          for (var examItem in examItems) {
-            final List<dynamic> questions = examItem['question'];
+          for (var examData in examList) {
+            final List<dynamic> questions = examData['question'];
             final int countOfQuestions = questions.length;
 
-            // Extract sections from questions
-            List<String> sections = [];
-            for (var question in questions) {
-              sections.add(question['section'] ?? '');
+            // You need to loop through each question in the 'question' list
+            for (var questionData in questions) {
+              final String sectionid = questionData['section'];
+
+              // Other properties of the exam item
+              final int month = examData['month'] ?? 0;
+              final String year = examData['year'] ?? '';
+              final int marks = examData['score'] ?? 0;
+
+              // Create ExamItem object and add to list
+              examItemList.add(
+                ExamItem(
+                  month: month,
+                  year: year,
+                  countOfQuestions: countOfQuestions,
+                  section: sectionid,
+                  marks: marks,
+                  examid: examId,
+                ),
+              );
             }
-
-            // Other properties of the exam item
-            final int month = examItem['month'] ?? 0;
-            final String year = examItem['year'] ?? '';
-            final int marks = examItem['score'] ?? 0;
-            final int examid = examItem['id'] ?? 0;
-
-            // Create ExamItem object and add to list
-            examItemList.add(
-              ExamItem(
-                month: month,
-                year: year,
-                countOfQuestions: countOfQuestions,
-                section: sections
-                    .join(','), // Concatenate sections into a single string
-                marks: marks,
-                examid: examid,
-              ),
-            );
           }
           examData = examItemList;
           notifyListeners();
@@ -85,5 +86,41 @@ class StartExamProvider with ChangeNotifier {
     }
 
     throw Exception('Failed to load data after $maxRetries attempts');
+  }
+
+  Future<int> fetchExamId(BuildContext context) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process',
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final List<dynamic> examItems = jsonData['exam_items'];
+
+        // Assuming we want to get the first exam ID in the response
+        if (examItems.isNotEmpty) {
+          examId = examItems[0]['id'];
+          return examId!;
+        } else {
+          throw Exception('No exam items found.');
+        }
+      } else {
+        throw Exception('Failed to fetch exam ID: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching exam ID: $e');
+      rethrow; // Rethrow the caught error
+    }
   }
 }
