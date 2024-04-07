@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/questions_screen.dart';
 import 'package:flutter_application_1/View/widgets/custom_dropdownbutton.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -119,7 +120,9 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx)=>const QuestionsScreen())
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent[700],

@@ -109,13 +109,10 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20.h),
               ElevatedButton(
                 onPressed: () async {
-                  // String email = emailController.text.trim();
-                  // String password = passwordController.text.trim();
-                  // Provider.of<LoginModel>(context, listen: false)
-                  //     .loginUser(context, email, password);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx)=> const TabsScreen(isLoggedIn: false))
-                  );
+                  String email = emailController.text.trim();
+                  String password = passwordController.text.trim();
+                  Provider.of<LoginModel>(context, listen: false)
+                      .loginUser(context, email, password);
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: faceBookColor,
