@@ -30,13 +30,13 @@ class ChapterProvider with ChangeNotifier {
         List<Chapter> c =
             chaptersList.chaptersList.map((e) => Chapter.fromJson(e)).toList();
             allChapters=c;
-            
             notifyListeners();
       }
     } catch (e) {
       log('Error: $e');
     }
   }
+  
   Future<void> getLessonsData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;

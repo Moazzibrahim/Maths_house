@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomDropdownButton extends StatelessWidget {
   final String value;
-  final List<String> items;
+  final List<dynamic> items;
   final Function(String?) onChanged;
 
   const CustomDropdownButton({
