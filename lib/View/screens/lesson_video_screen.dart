@@ -48,7 +48,7 @@ class LessonsVideos extends StatelessWidget {
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.redAccent[700],
                   tabs: [
-                    _CustomTab(text: 'Videos'),
+                    _CustomTab(text: 'Ideas'),
                     _CustomTab(text: 'Quizzes'),
                   ],
                 ),

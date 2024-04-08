@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/View/screens/onboarding_screen.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/chapters_provider.dart';
 import 'package:flutter_application_1/controller/courses_provider.dart';
@@ -43,7 +43,7 @@ class MathHouse extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Facebook Login Page',
-          home: TabsScreen(isLoggedIn: true),
+          home: OnBoardingScreen(),
         ),
       ),
     );
