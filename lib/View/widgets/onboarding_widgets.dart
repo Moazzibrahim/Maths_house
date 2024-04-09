@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnBoardingWidgets extends StatelessWidget {
   const OnBoardingWidgets({super.key, required this.description, required this.image});
@@ -21,7 +22,7 @@ class OnBoardingWidgets extends StatelessWidget {
                 description,
                 style: const TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 150,),
+              SizedBox(height: 150.h,),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).push(

@@ -76,10 +76,16 @@ class RegisteredHomeScreen extends StatelessWidget {
                       styleColor: Colors.redAccent[700], image: 'assets/images/a+.png',
                     ),
                   ),
-                  GridContainer(
-                    text: 'Live',
-                    color: gridHomeColor,
-                    styleColor: Colors.redAccent[700], image: 'assets/images/play-cricle.png',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const LiveScreen()));
+                    },
+                    child: GridContainer(
+                      text: 'Live',
+                      color: gridHomeColor,
+                      styleColor: Colors.redAccent[700], image: 'assets/images/play-cricle.png',
+                    ),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -97,16 +103,10 @@ class RegisteredHomeScreen extends StatelessWidget {
                     color: gridHomeColor,
                     styleColor: Colors.redAccent[700], image: 'assets/images/Frame 232.png',
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const LiveScreen()));
-                    },
-                    child: GridContainer(
-                      text: 'History',
-                      color: gridHomeColor,
-                      styleColor: Colors.redAccent[700], image: 'assets/images/timer.png',
-                    ),
+                  GridContainer(
+                    text: 'History',
+                    color: gridHomeColor,
+                    styleColor: Colors.redAccent[700], image: 'assets/images/timer.png',
                   ),
                 ],
               ),
