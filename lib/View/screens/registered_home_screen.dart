@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/View/screens/Diagnostic_exams.dart/filter_screen.dart';
 import 'package:flutter_application_1/View/screens/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
 import 'package:flutter_application_1/View/screens/live_screen.dart';
@@ -102,11 +103,17 @@ class RegisteredHomeScreen extends StatelessWidget {
                           'assets/images/290138_document_extension_file_format_paper_icon 1.png',
                     ),
                   ),
-                  GridContainer(
-                    text: 'Diagnostic Exams',
-                    color: gridHomeColor,
-                    styleColor: Colors.redAccent[700],
-                    image: 'assets/images/Frame 232.png',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const DiagnosticFilterScreen()));
+                    },
+                    child: GridContainer(
+                      text: 'Diagnostic Exams',
+                      color: gridHomeColor,
+                      styleColor: Colors.redAccent[700],
+                      image: 'assets/images/Frame 232.png',
+                    ),
                   ),
                   GridContainer(
                     text: 'History',
