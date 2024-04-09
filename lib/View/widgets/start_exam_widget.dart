@@ -30,10 +30,10 @@ class ExamGridItem extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  color: const Color.fromRGBO(250, 226, 229, 1),
                 ),
                 child: Card(
                   elevation: 2.0,
+                  color: gridHomeColor,
                   child: Container(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live_model.dart';
@@ -8,10 +8,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 
 class LiveScreen extends StatefulWidget {
-  const LiveScreen({Key? key}) : super(key: key);
+  const LiveScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LiveScreenState createState() => _LiveScreenState();
 }
 
@@ -43,23 +42,25 @@ class _LiveScreenState extends State<LiveScreen> {
           builder: (context, liveProvider, _) {
             if (liveProvider.allsessions.isEmpty) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Text("No live sessions available"),
               );
             } else {
               return ListView(
                 children: [
                   _buildSectionUpcoming(
-                      "Upcoming Sessions",
-                      liveProvider.allsessions
-                          .where((session) =>
-                              session.session.date.isAfter(DateTime.now()))
-                          .toList()), // Filter upcoming sessions
+                    "Upcoming Sessions",
+                    liveProvider.allsessions
+                        .where((session) =>
+                            session.session.date.isAfter(DateTime.now()))
+                        .toList(),
+                  ), // Filter upcoming sessions
                   _buildSectionHistory(
-                      "History",
-                      liveProvider.allsessions
-                          .where((session) =>
-                              session.session.date.isBefore(DateTime.now()))
-                          .toList()), // Filter past sessions
+                    "History",
+                    liveProvider.allsessions
+                        .where((session) =>
+                            session.session.date.isBefore(DateTime.now()))
+                        .toList(),
+                  ), // Filter past sessions
                 ],
               );
             }
@@ -84,15 +85,16 @@ class _LiveScreenState extends State<LiveScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  "Date: ${dateFormat.format(session.session.date)}"), // Format date here
+                "Date: ${dateFormat.format(session.session.date)}"), // Format date here
               Text("From: ${session.session.from}"),
               Text("To: ${session.session.to}"),
               GestureDetector(
                 child: Text(
                   "link: ${session.session.link}",
-                  style: TextStyle(
-                      color: Colors.blue[800],
-                      decoration: TextDecoration.underline),
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
                 onTap: () => _launchURL(session.session.link),
               ),
@@ -113,7 +115,7 @@ class _LiveScreenState extends State<LiveScreen> {
       }).toList(),
     );
   }
-  
+
   Widget _buildSectionHistory(String title, List<Session> sessions) {
     final dateFormat = DateFormat('dd MMMM yyyy');
 
@@ -129,15 +131,16 @@ class _LiveScreenState extends State<LiveScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  "Date: ${dateFormat.format(session.session.date)}"), // Format date here
+                "Date: ${dateFormat.format(session.session.date)}"), // Format date here
               Text("From: ${session.session.from}"),
               Text("To: ${session.session.to}"),
               GestureDetector(
                 child: Text(
                   "link: ${session.session.link}",
-                  style: TextStyle(
-                      color: Colors.blue[800],
-                      decoration: TextDecoration.underline),
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
                 onTap: () => _launchURL(session.session.link),
               ),
