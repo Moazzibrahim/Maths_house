@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_application_1/controller/exam_mcq_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExamScreen extends StatelessWidget {
-  const ExamScreen({Key? key}) : super(key: key);
+  const ExamScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class ExamScreen extends StatelessWidget {
 }
 
 class ExamBody extends StatefulWidget {
-  const ExamBody({Key? key}) : super(key: key);
+  const ExamBody({super.key});
 
   @override
   _ExamBodyState createState() => _ExamBodyState();
@@ -56,11 +58,11 @@ class _ExamBodyState extends State<ExamBody> {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
 
     if (questionsWithAnswers == null) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     } else if (questionsWithAnswers!.isEmpty) {
-      return Center(
+      return const Center(
         child: Text("No questions available"),
       );
     }
@@ -106,7 +108,7 @@ class _ExamBodyState extends State<ExamBody> {
                       groupValue: _selectedOptionIndex,
                       onChanged: (value) {
                         setState(() {
-                          _selectedOptionIndex = value as int?;
+                          _selectedOptionIndex = value;
                         });
                       },
                     ),
