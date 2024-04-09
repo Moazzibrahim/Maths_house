@@ -305,10 +305,6 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
       {required String hint, required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey), // Rectangular border styling
-        borderRadius: BorderRadius.circular(5), // Rounded corners
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
