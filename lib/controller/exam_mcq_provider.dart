@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'dart:convert';
@@ -35,6 +37,7 @@ class ExamMcqProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final List<QuestionWithAnswers> questionsWithAnswers = [];
+        print(jsonData['exam']);
 
         // Loop through the exam data
         if (jsonData['exam'] != null) {
@@ -56,7 +59,7 @@ class ExamMcqProvider with ChangeNotifier {
               answers: answerList,
               mcqOptions: answerList
                   .where((answer) => answer.mcqAns != null)
-                  .map((answer) => answer.mcqAns!)
+                  .map((answer) => answer.mcqAns)
                   .toList(),
             ));
           }

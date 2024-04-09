@@ -1,63 +1,64 @@
-class ExamApiResponse {
-  final List<ExamData> exam;
+class ExamMcq {
+  List<ExamQuestion> exam;
 
-  ExamApiResponse({required this.exam});
+  ExamMcq({required this.exam});
 
-  factory ExamApiResponse.fromJson(Map<String, dynamic> json) {
-    return ExamApiResponse(
-      exam: List<ExamData>.from(json['exam'].map((x) => ExamData.fromJson(x))),
-    );
+  factory ExamMcq.fromJson(Map<String, dynamic> json) {
+    List<dynamic> examList = json['exam'];
+    List<ExamQuestion> examQuestions = examList
+        .map((question) => ExamQuestion.fromJson(question))
+        .toList();
+    return ExamMcq(exam: examQuestions);
   }
 }
 
-class ExamData {
-  final Question question;
-  final List<Answer> answers;
+class ExamQuestion {
+  Question question;
+  List<Answer> answers;
 
-  ExamData({required this.question, required this.answers});
+  ExamQuestion({required this.question, required this.answers});
 
-  factory ExamData.fromJson(Map<String, dynamic> json) {
-    return ExamData(
+  factory ExamQuestion.fromJson(Map<String, dynamic> json) {
+    return ExamQuestion(
       question: Question.fromJson(json['question']),
-      answers: List<Answer>.from(json['Answers'].map((x) => Answer.fromJson(x))),
+      answers: (json['Answers'] as List)
+          .map((answer) => Answer.fromJson(answer))
+          .toList(),
     );
   }
 }
 
 class Question {
-  final int id;
-  final int lessonId;
-  final String questionText;
-  final String state;
-  final String questionUrl;
-  final String questionCode;
-  final String questionType;
-  final int month;
-  final String questionNumber;
-  final int year;
-  final String section;
-  final String difficulty;
-  final String answerType;
-  final String updatedAt;
-  final dynamic createdAt;
+  int id;
+  int lessonId;
+  String? questionText;
+  String state;
+  String? qUrl;
+  String qCode;
+  String qType;
+  int month;
+  String qNum;
+  int year;
+  String section;
+  String difficulty;
+  String ansType;
+  String updatedAt;
 
-  Question({
-    required this.id,
-    required this.lessonId,
-    required this.questionText,
-    required this.state,
-    required this.questionUrl,
-    required this.questionCode,
-    required this.questionType,
-    required this.month,
-    required this.questionNumber,
-    required this.year,
-    required this.section,
-    required this.difficulty,
-    required this.answerType,
-    required this.updatedAt,
-    required this.createdAt,
-  });
+  Question(
+      {required this.id,
+      required this.lessonId,
+      this.questionText,
+      required this.state,
+      this.qUrl,
+      required this.qCode,
+      required this.qType,
+      required this.month,
+      required this.qNum,
+      required this.year,
+      required this.section,
+      required this.difficulty,
+      required this.ansType,
+      required this.updatedAt});
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
@@ -65,37 +66,35 @@ class Question {
       lessonId: json['lesson_id'],
       questionText: json['question'],
       state: json['state'],
-      questionUrl: json['q_url'],
-      questionCode: json['q_code'],
-      questionType: json['q_type'],
+      qUrl: json['q_url'],
+      qCode: json['q_code'],
+      qType: json['q_type'],
       month: json['month'],
-      questionNumber: json['q_num'],
+      qNum: json['q_num'],
       year: json['year'],
       section: json['section'],
       difficulty: json['difficulty'],
-      answerType: json['ans_type'],
+      ansType: json['ans_type'],
       updatedAt: json['updated_at'],
-      createdAt: json['created_at'],
     );
   }
 }
 
 class Answer {
-  final int id;
-  final String? mcqAns;
-  final String mcqAnswers;
-  final int qId;
-  final String createdAt;
-  final String updatedAt;
+  int id;
+  String mcqAns;
+  String mcqAnswers;
+  int qId;
+  String createdAt;
+  String updatedAt;
 
-  Answer({
-    required this.id,
-    required this.mcqAns,
-    required this.mcqAnswers,
-    required this.qId,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+  Answer(
+      {required this.id,
+      required this.mcqAns,
+      required this.mcqAnswers,
+      required this.qId,
+      required this.createdAt,
+      required this.updatedAt});
 
   factory Answer.fromJson(Map<String, dynamic> json) {
     return Answer(

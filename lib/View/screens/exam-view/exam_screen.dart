@@ -56,9 +56,13 @@ class _ExamBodyState extends State<ExamBody> {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
 
     if (questionsWithAnswers == null) {
-      return Center(child: CircularProgressIndicator()); // Show loading indicator while fetching data
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     } else if (questionsWithAnswers!.isEmpty) {
-      return Center(child: Text("No questions available")); // Show message when no questions are available
+      return Center(
+        child: Text("No questions available"),
+      );
     }
 
     return Column(
@@ -86,7 +90,7 @@ class _ExamBodyState extends State<ExamBody> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Question ${_questionIndex + 1}: ${questionsWithAnswers![_questionIndex].question.questionText ?? 'No question available'}",
+                  "Question ${_questionIndex + 1}: ${questionsWithAnswers![_questionIndex].question.questionText ?? ''}",
                   style: const TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -97,14 +101,12 @@ class _ExamBodyState extends State<ExamBody> {
                   children: List.generate(
                     questionsWithAnswers![_questionIndex].mcqOptions.length,
                     (index) => RadioListTile(
-                      title: Text(questionsWithAnswers![_questionIndex]
-                              .mcqOptions[index] ??
-                          ''),
+                      title: Text(questionsWithAnswers![_questionIndex].mcqOptions[index]),
                       value: index,
                       groupValue: _selectedOptionIndex,
                       onChanged: (value) {
                         setState(() {
-                          _selectedOptionIndex = value as int;
+                          _selectedOptionIndex = value as int?;
                         });
                       },
                     ),
