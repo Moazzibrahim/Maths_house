@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/questions_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -29,7 +31,8 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
     'November',
     'December'
   ];
-  int selectedYear=DateTime.now().year;
+  int indexMonth = 0 ;
+  int selectedYear = DateTime.now().year;
   String selectedMonth = 'Select Month';
   @override
   Widget build(BuildContext context) {
@@ -67,7 +70,7 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                 height: 30,
               ),
               TextField(
-                controller: sectionController,
+                controller: questionNumController,
                 decoration:
                     const InputDecoration(hintText: 'Enter Question number'),
               ),
@@ -85,9 +88,10 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                 onChanged: (newValue) {
                   setState(() {
                     selectedMonth = newValue!;
+                    indexMonth = months.indexOf(selectedMonth);
                   });
                 },
-                items: ['Select Month',...months]
+                items: ['Select Month', ...months]
                     .map<DropdownMenuItem<String>>(
                       (value) => DropdownMenuItem<String>(
                         value: value,
@@ -133,8 +137,23 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => const QuestionsScreen()));
+                  if (selectedMonth == 'Select Month' ||
+                      sectionController.text == '' ||
+                      questionNumController.text == '' ||
+                      examCodeController.text == '') {
+                        log('You have to complete all fields');
+                      }else{
+                        Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (ctx) => QuestionsScreen(
+                              month: indexMonth,
+                              year: selectedYear,
+                              questionNum: questionNumController.text,
+                              examCode: examCodeController.text,
+                              section: sectionController.text,
+                            )),
+                  );
+                      }
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent[700],
