@@ -12,7 +12,7 @@ class LiveProvider extends ChangeNotifier {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
     try {
-    final response = await http.get(
+      final response = await http.get(
         Uri.parse(
             'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_live'),
         headers: {

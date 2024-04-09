@@ -32,12 +32,11 @@ class RegisteredHomeScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: AssetImage(
-                        'assets/images/moaz.jpeg'), 
+                    backgroundImage: AssetImage('assets/images/moaz.jpeg'),
                   ),
                   SizedBox(width: 10),
                   Text(
-                    'Welcome student', 
+                    'Welcome student',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -62,7 +61,8 @@ class RegisteredHomeScreen extends StatelessWidget {
                     child: GridContainer(
                       text: 'Courses',
                       color: gridHomeColor,
-                      styleColor: Colors.redAccent[700], image: 'assets/images/verify.png',
+                      styleColor: Colors.redAccent[700],
+                      image: 'assets/images/verify.png',
                     ),
                   ),
                   GestureDetector(
@@ -73,13 +73,15 @@ class RegisteredHomeScreen extends StatelessWidget {
                     child: GridContainer(
                       text: 'Exams',
                       color: gridHomeColor,
-                      styleColor: Colors.redAccent[700], image: 'assets/images/a+.png',
+                      styleColor: Colors.redAccent[700],
+                      image: 'assets/images/a+.png',
                     ),
                   ),
                   GridContainer(
                     text: 'Live',
                     color: gridHomeColor,
-                    styleColor: Colors.redAccent[700], image: 'assets/images/play-cricle.png',
+                    styleColor: Colors.redAccent[700],
+                    image: 'assets/images/play-cricle.png',
                   ),
                   GestureDetector(
                     onTap: () {
@@ -89,13 +91,16 @@ class RegisteredHomeScreen extends StatelessWidget {
                     child: GridContainer(
                       text: 'Questions',
                       color: gridHomeColor,
-                      styleColor: Colors.redAccent[700], image: 'assets/images/290138_document_extension_file_format_paper_icon 1.png',
+                      styleColor: Colors.redAccent[700],
+                      image:
+                          'assets/images/290138_document_extension_file_format_paper_icon 1.png',
                     ),
                   ),
                   GridContainer(
                     text: 'Diagnostic Exams',
                     color: gridHomeColor,
-                    styleColor: Colors.redAccent[700], image: 'assets/images/Frame 232.png',
+                    styleColor: Colors.redAccent[700],
+                    image: 'assets/images/Frame 232.png',
                   ),
                   GestureDetector(
                     onTap: () {
@@ -105,7 +110,8 @@ class RegisteredHomeScreen extends StatelessWidget {
                     child: GridContainer(
                       text: 'History',
                       color: gridHomeColor,
-                      styleColor: Colors.redAccent[700], image: 'assets/images/timer.png',
+                      styleColor: Colors.redAccent[700],
+                      image: 'assets/images/timer.png',
                     ),
                   ),
                 ],
