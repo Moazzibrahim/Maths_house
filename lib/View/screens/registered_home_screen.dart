@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/Diagnostic_exams.dart/filter_screen.dart';
+import 'package:flutter_application_1/View/screens/Diagnostic_exams/filter_screen.dart';
 import 'package:flutter_application_1/View/screens/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
 import 'package:flutter_application_1/View/screens/live_screen.dart';

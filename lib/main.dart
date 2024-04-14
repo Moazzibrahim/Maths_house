@@ -4,6 +4,7 @@ import 'package:flutter_application_1/View/widgets/onboarding_check.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/chapters_provider.dart';
 import 'package:flutter_application_1/controller/courses_provider.dart';
+import 'package:flutter_application_1/controller/diagnostic_filteration_provider.dart';
 import 'package:flutter_application_1/controller/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam_provider.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
@@ -38,6 +39,7 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => StartExamProvider()),
         ChangeNotifierProvider(create: (_) => ExamMcqProvider()),
         ChangeNotifierProvider(create: (_) => QuestionsProvider()),
+        ChangeNotifierProvider(create: (_) => DiagnosticFilterationProvider()),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,
