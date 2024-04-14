@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
+import 'package:flutter_application_1/View/widgets/ideas_content.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LessonsVideos extends StatelessWidget {
+
+class LessonsVideos extends StatefulWidget {
   const LessonsVideos({super.key, required this.lesson});
   final Lesson lesson;
 
+  @override
+  State<LessonsVideos> createState() => _LessonsVideosState();
+}
+
+class _LessonsVideosState extends State<LessonsVideos> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -15,7 +21,7 @@ class LessonsVideos extends StatelessWidget {
       initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(lesson.name),
+          title: Text(widget.lesson.name),
           leading: Container(
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
@@ -55,10 +61,10 @@ class LessonsVideos extends StatelessWidget {
                   ],
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: TabBarView(children: [
-                  Text('Ideas content'),// replace this text with ideas Widgets
-                  Text('quizes content'),//replace this text with quizes content
+                  IdeasContent(lesson: widget.lesson,),// replace this text with ideas Widgets
+                  const Text('quizes content'),//replace this text with quizes content
                 ]),
               ),
             ],
