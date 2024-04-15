@@ -10,6 +10,7 @@ class DiagnosticFilterationProvider with ChangeNotifier {
   List<String> diagfilters = [];
   List<String> courseData = [];
   List<String> categoryData = [];
+  List<int> courseIds = [];
 
   Future<void> fetchdiagdata(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -35,6 +36,7 @@ class DiagnosticFilterationProvider with ChangeNotifier {
 
         for (var course in data['courses']) {
           courseData.add(course['course_name'] ?? '');
+          courseIds.add(course['id'] ?? 0);
         }
         courseData = courseData.toSet().toList();
 

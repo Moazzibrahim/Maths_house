@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
-import 'package:flutter_application_1/controller/exam_mcq_provider.dart';
+import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExamScreen extends StatelessWidget {
@@ -15,7 +15,10 @@ class ExamScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Exam"),
         leading: InkWell(
-          child: const Icon(Icons.arrow_back_ios),
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: faceBookColor,
+          ),
           onTap: () {
             Navigator.pop(context);
           },
@@ -103,7 +106,8 @@ class _ExamBodyState extends State<ExamBody> {
                   children: List.generate(
                     questionsWithAnswers![_questionIndex].mcqOptions.length,
                     (index) => RadioListTile(
-                      title: Text(questionsWithAnswers![_questionIndex].mcqOptions[index]),
+                      title: Text(questionsWithAnswers![_questionIndex]
+                          .mcqOptions[index]),
                       value: index,
                       groupValue: _selectedOptionIndex,
                       onChanged: (value) {
