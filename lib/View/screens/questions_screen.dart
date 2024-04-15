@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/question_filter_model.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -6,13 +8,13 @@ import 'package:provider/provider.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({
-    Key? key,
+    super.key,
     required this.month,
     required this.section,
     required this.year,
     required this.examCode,
     required this.questionNum,
-  }) : super(key: key);
+  });
 
   final int month;
   final String section;
@@ -25,6 +27,8 @@ class QuestionsScreen extends StatefulWidget {
 }
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
+  TextEditingController answerController = TextEditingController();
+  bool? textAnswer;
   String? selectedAnswer;
   bool isRightAnswer = true;
   Color? containerColor;
@@ -40,10 +44,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   Container _buildRadioListTile(Question question, int index) {
     String mcqText = question.mcqList[index].text;
-    String mcqValue = String.fromCharCode(index + 65); // Convert index to A, B, C, D
-
+    String mcqValue =
+        String.fromCharCode(index + 65); // Convert index to A, B, C, D
     Color? currentContainerColor;
-
     // Determine color based on answer selection and whether answer was submitted
     if (answerSubmitted) {
       currentContainerColor = index == correctAnswerIndex
@@ -139,57 +142,85 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   ),
                 );
               } else {
-                return Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        question[0].question,
-                        style: const TextStyle(fontSize: 25),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Image.asset('assets/images/planet.png'),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      for (int i = 0; i < question[0].mcqList.length; i++)
-                        _buildRadioListTile(question[0], i),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (selectedAnswer != null && !answerSubmitted) {
-                            String correctAnswer = question[0].mcqList[0].answer;
-                            correctAnswerIndex = correctAnswer.codeUnitAt(0) - 65;
-                            setState(() {
-                              answerSubmitted = true;
-                            });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please select an answer'),
-                              ),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent[700],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                return SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          question[0].question,
+                          style: const TextStyle(fontSize: 25),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Image.asset('assets/images/planet.png'),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        if (question[0].mcqList.isNotEmpty)
+                          for (int i = 0; i < question[0].mcqList.length; i++)
+                            _buildRadioListTile(question[0], i)
+                        else
+                          TextFormField(
+                            controller: answerController,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter your answer',
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 60,
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (selectedAnswer != null && !answerSubmitted) {
+                              String correctAnswer =
+                                  question[0].mcqList[0].answer;
+                              correctAnswerIndex =
+                                  correctAnswer.codeUnitAt(0) - 65;
+                              setState(() {
+                                answerSubmitted = true;
+                              });
+                            }else if(question[0].mcqAnswerList[0].mcqAnswer == answerController.text){
+                              setState(() {
+                                textAnswer = true;
+                              });
+                            }else if(question[0].mcqAnswerList[0].mcqAnswer != answerController.text){
+                              setState(() {
+                                textAnswer = false;
+                              });
+                            }
+                            else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please select an answer'),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent[700],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 60,
+                            ),
+                          ),
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         ),
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                      ),
-                    ],
+                        const SizedBox(height: 20,),
+                        if(textAnswer == null)
+                          const Text('')
+                        else if(textAnswer!)
+                          Text('Correct Answer',style: TextStyle(color: Colors.greenAccent[700],fontSize: 20),)
+                        else
+                          Text('Wrong answer',style: TextStyle(color: Colors.redAccent[700],fontSize: 20),)
+                      ],
+                    ),
                   ),
                 );
               }
@@ -200,3 +231,5 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     );
   }
 }
+
+
