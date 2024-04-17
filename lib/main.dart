@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/widgets/onboarding_check.dart';
+import 'package:flutter_application_1/View/screens/splash_screen.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/chapters_provider.dart';
 import 'package:flutter_application_1/controller/courses_provider.dart';
@@ -12,7 +12,6 @@ import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
-
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -52,7 +51,7 @@ class MathHouse extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Facebook Login Page',
-          home: OnBoardingCheck(),
+          home: SplashScreen(),
         ),
       ),
     );
