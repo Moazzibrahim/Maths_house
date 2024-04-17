@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/widgets/start_exam_widget.dart';
+import 'package:flutter_application_1/View/widgets/Exams/start_exam_widget.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class ExamScreenstart extends StatelessWidget {

@@ -8,10 +8,10 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_prov
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_filteration_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_provider.dart';
+import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
-import 'package:flutter_application_1/controller/start_exam_provider.dart';
 
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

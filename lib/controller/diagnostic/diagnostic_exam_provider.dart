@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class DiagExamProvider with ChangeNotifier {
-  List<dynamic> alldiagnostics = [];
+  List<Map<String, dynamic>> alldiagnostics = [];
 
   Future<void> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -37,25 +37,33 @@ class DiagExamProvider with ChangeNotifier {
 
         if (data['exam'] != null && data['exam']['question_with_ans'] != null) {
           for (var exam in data['exam']['question_with_ans']) {
-            alldiagnostics.add({
+            // Create a map representing a question
+            final questionMap = {
               'question': exam['question'],
-              'question_num': exam['q_num'], // Adding question number
+              'question_num': exam['q_num'],
               'q_type': exam['q_type'],
               'ans_type': exam['ans_type'],
-            });
+            };
 
+            // Add the question map to the list
+            alldiagnostics.add(questionMap);
+
+            // If the question has multiple-choice answers, add them to the list
             if (exam['mcq'] != null) {
               for (var mcq in exam['mcq']) {
-                alldiagnostics.add({
+                final mcqMap = {
                   'mcq_ans': mcq['mcq_ans'],
                   'mcq_answers': mcq['mcq_answers'],
-                });
+                };
+                alldiagnostics.add(mcqMap);
               }
             }
 
+            // If the question has grid-type answers, add them to the list
             if (exam['g_ans'] != null) {
               for (var gAns in exam['g_ans']) {
-                alldiagnostics.add({'grid_ans': gAns['grid_ans']});
+                final gAnsMap = {'grid_ans': gAns['grid_ans']};
+                alldiagnostics.add(gAnsMap);
               }
             }
           }

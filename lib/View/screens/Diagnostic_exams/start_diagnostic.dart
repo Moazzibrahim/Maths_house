@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Model/diagnostic_exams/diagnostic_exam_model.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -36,23 +36,27 @@ class DiagnosticBody extends StatefulWidget {
 
 class _DiagnosticBodyState extends State<DiagnosticBody> {
   int _currentQuestionIndex = 0;
+  List<String?> selectedAnswers = [];
 
   @override
   Widget build(BuildContext context) {
+    final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final diagProvider = Provider.of<DiagExamProvider>(context);
-    final questionData = diagProvider.alldiagnostics.isNotEmpty
-        ? diagProvider.alldiagnostics[_currentQuestionIndex]
-        : QuestionData(
-            courseId: 0,
-            question: '',
-            qNum: '',
-            qType: '',
-            mcq: null,
-            gAns: null,
-          );
+    final List<Map<String, dynamic>> allDiagnostics =
+        diagProvider.alldiagnostics;
+    final bool hasData = allDiagnostics.isNotEmpty;
+    final Map<String, dynamic> questionData = hasData
+        ? allDiagnostics[_currentQuestionIndex]
+        : {
+            'question': '',
+            'q_num': '',
+            'q_type': '',
+            'mcq': null,
+            'g_ans': null,
+          };
 
     void goToNextQuestion() {
-      if (_currentQuestionIndex < diagProvider.alldiagnostics.length - 1) {
+      if (_currentQuestionIndex < allDiagnostics.length - 1) {
         setState(() {
           _currentQuestionIndex++;
         });
@@ -67,60 +71,112 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       }
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Question: ${questionData.question}',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+    void submitAnswers() {
+      // Logic to submit answers goes here
+      timerProvider.stopTimer();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Your answers are submitted')),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16.0),
+          color: faceBookColor,
+          child: Consumer<TimerProvider>(
+            builder: (context, timer, child) {
+              return Text(
+                "Timer: ${timer.secondsSpent ~/ 60}:${(timer.secondsSpent % 60).toString().padLeft(2, '0')}",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
+              );
+            },
           ),
-          const SizedBox(height: 20),
-          if (questionData.qType == 'MCQ' && questionData.mcq != null)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: questionData.mcq!.map<Widget>((mcq) {
-                return Row(
-                  children: [
-                    Radio(
-                      value: mcq.mcqAns,
-                      groupValue: null,
-                      onChanged: null,
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(
+                    'Question: ${questionData['question']}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(mcq.mcqAnswers),
-                  ],
-                );
-              }).toList(),
-            )
-          else
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Enter your answer...',
-                border: OutlineInputBorder(),
+                  ),
+                ],
               ),
             ),
-          const SizedBox(
-            height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: goToPreviousQuestion,
-                child: const Text('Previous'),
-              ),
-              ElevatedButton(
-                onPressed: goToNextQuestion,
-                child: const Text('Next'),
-              ),
-            ],
+        ),
+        const SizedBox(height: 20),
+        if (questionData['q_type'] == 'MCQ' && questionData['mcq'] != null)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: (questionData['mcq'] as List).map<Widget>((mcq) {
+              return Row(
+                children: [
+                  Radio(
+                    value: mcq['mcq_ans'],
+                    groupValue: selectedAnswers[_currentQuestionIndex],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedAnswers[_currentQuestionIndex] =
+                            value.toString();
+                      });
+                    },
+                    activeColor:
+                        selectedAnswers[_currentQuestionIndex] == mcq['mcq_ans']
+                            ? Colors.green
+                            : Colors.red,
+                  ),
+                  Text(mcq['mcq_answers']),
+                ],
+              );
+            }).toList(),
+          )
+        else
+          TextFormField(
+            decoration: const InputDecoration(
+              hintText: 'Enter your answer...',
+              border: OutlineInputBorder(),
+            ),
           ),
-        ],
-      ),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+              onPressed: goToPreviousQuestion,
+              child: const Text(
+                'Previous',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: _currentQuestionIndex < allDiagnostics.length - 1
+                  ? goToNextQuestion
+                  : submitAnswers,
+              style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+              child: Text(
+                _currentQuestionIndex < allDiagnostics.length - 1
+                    ? 'Next'
+                    : 'Submit',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

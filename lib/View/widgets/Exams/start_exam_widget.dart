@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/controller/start_exam_provider.dart';
+import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExamGridItem extends StatelessWidget {
