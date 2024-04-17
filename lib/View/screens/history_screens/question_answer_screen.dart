@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/history_screens/parallel_question_screen.dart';
-import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +27,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context, "Answers"),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionAnswerProvider, _) {
           return Stack(children: [
@@ -86,10 +85,11 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                         return AlertDialog(
                           title: const Text("Choose Parallel"),
                           content: ListView.builder(
-                            itemCount: questionAnswerProvider.allParallelQuestions.length,
+                            itemCount: questionAnswerProvider
+                                .allParallelQuestions.length,
                             itemBuilder: (context, index) {
                               int parallelNumber = index + 1;
-                            return ListTile(
+                              return ListTile(
                                 title: Text("Parallel $parallelNumber"),
                                 onTap: () {
                                   setState(() {
@@ -102,7 +102,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                                           id: widget.id)));
                                 },
                               );
-                          },
+                            },
                           ),
                         );
                       },
