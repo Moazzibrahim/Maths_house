@@ -89,7 +89,6 @@ class QuestionHistoryProvider with ChangeNotifier {
             .map((e) => Parallel.fromJson(e))
             .toList();
         allParallelQuestions = p;
-        log('logloglog');
         notifyListeners();
       }
     } catch (e) {

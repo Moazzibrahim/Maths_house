@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/history_screens/parallel_question_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -22,30 +23,12 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
     super.initState();
   }
 
+  int selectedParallel = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Questions History',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: Container(
-          margin: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-              color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.redAccent[700],
-            ),
-          ),
-        ),
-      ),
+      appBar: buildAppBar(context),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionAnswerProvider, _) {
           return Stack(children: [
@@ -97,24 +80,52 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                 margin: const EdgeInsets.all(8),
                 child: ElevatedButton(
                   onPressed: () {
-                    Provider.of<QuestionHistoryProvider>(context,listen: false).getParallelQuestion(context, widget.id);
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (ctx)=> ParallelQuestionScreen(id: widget.id))
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Choose Parallel"),
+                          content: ListView.builder(
+                            itemCount: questionAnswerProvider.allParallelQuestions.length,
+                            itemBuilder: (context, index) {
+                              int parallelNumber = index + 1;
+                            return ListTile(
+                                title: Text("Parallel $parallelNumber"),
+                                onTap: () {
+                                  setState(() {
+                                    selectedParallel = parallelNumber;
+                                  });
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (ctx) => ParallelQuestionScreen(
+                                          selectedParallel: selectedParallel,
+                                          id: widget.id)));
+                                },
+                              );
+                          },
+                          ),
+                        );
+                      },
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent[700],
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 9.h,
-                      horizontal: 10.w,
-                    )
-                  ),
+                      backgroundColor: Colors.redAccent[700],
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 9.h,
+                        horizontal: 10.w,
+                      )),
                   child: Row(
                     children: [
-                      Text('Solve parallel',style:TextStyle(fontSize: 16.sp),),
-                      SizedBox(width: 200.w,),
+                      Text(
+                        'Solve parallel',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      SizedBox(
+                        width: 200.w,
+                      ),
                       const Icon(Icons.arrow_forward_ios),
                     ],
                   ),

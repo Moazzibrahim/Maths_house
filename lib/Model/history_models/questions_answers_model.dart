@@ -24,13 +24,26 @@ class QuestionAnswerList {
 class Parallel {
   final String question;
   final String? qUrl;
+  final List<McqParallel> mcqParallelList;
+  Parallel(
+      {required this.question,
+      required this.qUrl,
+      required this.mcqParallelList});
 
-  Parallel({required this.question, required this.qUrl});
-
-  factory Parallel.fromJson(Map<String, dynamic> json) => Parallel(
-        question: json['question'],
-        qUrl: json['q_url'],
-      );
+  factory Parallel.fromJson(Map<String, dynamic> json) {
+    List<McqParallel> mcqParallelList = [];
+    if (json.containsKey('mcq')) {
+      List<dynamic> mcqs = json['mcq'];
+      mcqs.forEach((mcq) {
+        mcqParallelList.add(McqParallel.fromJson(mcq));
+      });
+    }
+    return Parallel(
+      question: json['question'],
+      qUrl: json['q_url'],
+      mcqParallelList: mcqParallelList,
+    );
+  }
 }
 
 class ParallelList {
@@ -41,4 +54,14 @@ class ParallelList {
   factory ParallelList.fromJson(Map<String, dynamic> json) => ParallelList(
         parallelList: json['parallel'],
       );
+}
+
+class McqParallel {
+  final String text;
+  final String answer;
+
+  McqParallel({required this.text, required this.answer});
+
+  factory McqParallel.fromJson(Map<String, dynamic> json) =>
+      McqParallel(text: json['mcq_ans'], answer: json['mcq_answers']);
 }
