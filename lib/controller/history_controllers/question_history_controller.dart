@@ -33,6 +33,7 @@ class QuestionHistoryProvider with ChangeNotifier {
             .map((e) => QuestionHistory.fromJson(e))
             .toList();
         allQuestionsHistory = q;
+        log('allquestionHistory ids: ${allQuestionsHistory.map((e) => e.id)}');
         notifyListeners();
       }
     } catch (e) {
@@ -89,6 +90,7 @@ class QuestionHistoryProvider with ChangeNotifier {
             .map((e) => Parallel.fromJson(e))
             .toList();
         allParallelQuestions = p;
+        log('all pppppppppp: $allParallelQuestions');
         notifyListeners();
       }
     } catch (e) {

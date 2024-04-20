@@ -24,24 +24,39 @@ class QuestionAnswerList {
 class Parallel {
   final String question;
   final String? qUrl;
+  final int id;
   final List<McqParallel> mcqParallelList;
+  final List<McqParallelAnswer> mcqAnswerList;
   Parallel(
       {required this.question,
       required this.qUrl,
-      required this.mcqParallelList});
+      required this.mcqParallelList,
+      required this.id,
+      required this.mcqAnswerList,
+      });
 
   factory Parallel.fromJson(Map<String, dynamic> json) {
     List<McqParallel> mcqParallelList = [];
+    List<McqParallelAnswer> mcqParallelAnswerList = [];
     if (json.containsKey('mcq')) {
       List<dynamic> mcqs = json['mcq'];
       mcqs.forEach((mcq) {
         mcqParallelList.add(McqParallel.fromJson(mcq));
       });
     }
+
+    if (json.containsKey('g_ans')) {
+      List<dynamic> mcqsAnswers = json['g_ans'];
+      mcqsAnswers.forEach((ans) {
+        mcqParallelAnswerList.add(McqParallelAnswer.fromJson(ans));
+      });
+    }
     return Parallel(
       question: json['question'],
       qUrl: json['q_url'],
-      mcqParallelList: mcqParallelList,
+      mcqParallelList: mcqParallelList, 
+      id: json['id'],
+      mcqAnswerList: mcqParallelAnswerList,
     );
   }
 }
@@ -64,4 +79,13 @@ class McqParallel {
 
   factory McqParallel.fromJson(Map<String, dynamic> json) =>
       McqParallel(text: json['mcq_ans'], answer: json['mcq_answers']);
+}
+
+class McqParallelAnswer{
+  final String mcqParallelAnswer;
+
+  McqParallelAnswer({required this.mcqParallelAnswer});
+
+  factory McqParallelAnswer.fromJson(Map<String,dynamic> json)=>
+  McqParallelAnswer(mcqParallelAnswer: json['grid_ans']);
 }

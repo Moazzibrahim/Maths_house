@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/history_models/questions_answers_model.dart';
-import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +15,8 @@ class ParallelQuestionScreen extends StatefulWidget {
 }
 
 class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
+  TextEditingController answerController = TextEditingController();
+  bool? textAnswer;
   @override
   void initState() {
     Provider.of<QuestionHistoryProvider>(context, listen: false)
@@ -65,27 +67,7 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Parallel Questions',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: Container(
-          margin: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-              color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.redAccent[700],
-            ),
-          ),
-        ),
-      ),
+      appBar: buildAppBar(context, 'Parallel Question'),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, parallelProvider, _) {
           return SingleChildScrollView(
@@ -103,7 +85,8 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  for (int i = 0;
+                  if(parallelProvider.allParallelQuestions[0].mcqParallelList.isNotEmpty)
+                    for (int i = 0;
                       i <
                           parallelProvider
                               .allParallelQuestions[widget.selectedParallel]
@@ -113,7 +96,56 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                     _buildRadioListTile(
                         parallelProvider
                             .allParallelQuestions[widget.selectedParallel],
-                        i)
+                        i),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (selectedAnswer != null && !answerSubmitted) {
+                              String correctAnswer =
+                                  parallelProvider.allParallelQuestions[0].mcqParallelList[0].answer;
+                              correctAnswerIndex =
+                                  correctAnswer.codeUnitAt(0) - 65;
+                              setState(() {
+                                answerSubmitted = true;
+                              });
+                            }else if(parallelProvider.allParallelQuestions[0].mcqAnswerList[0].mcqParallelAnswer == answerController.text){
+                              setState(() {
+                                textAnswer = true;
+                              });
+                            }else if(parallelProvider.allParallelQuestions[0].mcqAnswerList[0].mcqParallelAnswer != answerController.text){
+                              setState(() {
+                                textAnswer = false;
+                              });
+                            }
+                            else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please select an answer'),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent[700],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 60,
+                            ),
+                          ),
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        ),
+                        const SizedBox(height: 20,),
+                        if(textAnswer == null)
+                          const Text('')
+                        else if(textAnswer!)
+                          Text('Correct Answer',style: TextStyle(color: Colors.greenAccent[700],fontSize: 20),)
+                        else
+                          Text('Wrong answer',style: TextStyle(color: Colors.redAccent[700],fontSize: 20),)
                 ],
               ),
             ),

@@ -19,7 +19,7 @@ class QuestionHistory {
         month: json['question']['month'],
         year: json['question']['year'],
         section: json['question']['section'] ?? 'no section',
-        id: json['id'],
+        id: json['question_id'],
       );
 }
 
