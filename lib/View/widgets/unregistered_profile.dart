@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/login_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/register_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class UnregisteredProfile extends StatelessWidget {
@@ -16,12 +17,12 @@ class UnregisteredProfile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('You have no account'),
+            const Text('Login to see your ptofile'),
             Container(
               margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                width: double.infinity,
+              width: double.infinity,
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (ctx) => const LoginPage()));
                 },
@@ -50,6 +51,21 @@ class UnregisteredProfile extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Don\'t have account'),
+                TextButton(onPressed: (){
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx)=> const RegisterScreen())
+                  );
+                }, child: const Text('Sign Up',style: TextStyle(color: Colors.black),))
+              ],
+            ),
+            
           ],
         ),
       ),

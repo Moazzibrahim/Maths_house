@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({super.key, required this.controller, required this.hintText});
+  const CustomTextField({super.key, required this.controller, required this.hintText,this.passIcon, required this.isvisText});
   final TextEditingController controller;
   final String hintText;
+  final IconButton? passIcon;
+  final bool isvisText;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -13,11 +15,11 @@ class CustomTextField extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
+        obscureText: !isvisText,
         decoration: InputDecoration(
           hintText: hintText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13)
-          )
+          suffixIcon: passIcon,
+          suffixIconColor: Colors.redAccent[700],
         ),
       ),
     );

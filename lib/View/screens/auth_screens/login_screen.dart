@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/register_screen.dart';
-
+import 'package:flutter_application_1/View/screens/auth_screens/register_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -70,10 +69,8 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextField(
                   controller: emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13)),
                   ),
                 ),
               ),
@@ -97,16 +94,27 @@ class _LoginPageState extends State<LoginPage> {
                         obscurePassword
                             ? Icons.visibility_outlined
                             : Icons.visibility_off_outlined,
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.redAccent[700],
                       ),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 5.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Forgot password?',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: faceBookColor),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.h),
               ElevatedButton(
                 onPressed: () async {
                   String email = emailController.text.trim();
@@ -121,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                       horizontal: 140,
                     ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18))),
+                        borderRadius: BorderRadius.circular(12))),
                 child: const Text(
                   'Login',
                   style: TextStyle(
@@ -130,36 +138,51 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
+              const SizedBox(height: 15,),
+              const Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 25
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(child: Divider(color: Colors.black,)),
+                    SizedBox(width: 10,),
+                    Text('Or Login With'),
+                    SizedBox(width: 10,),
+                    Expanded(child: Divider(color: Colors.black,)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 15,),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Forgot password?',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: faceBookColor),
-                    ),
-                  ),
+                  Image.asset('assets/images/google.png'),
+                  const SizedBox(width: 50,),
+                  Image.asset('assets/images/apple.png'),
                 ],
               ),
+              const SizedBox(height: 10,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('Don\'t have an account?'),
                   TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => const RegisterScreen()));
-                      },
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Color.fromRGBO(207, 32, 47, 1),
-                          fontSize: 16,
-                        ),
-                      ))
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const RegisterScreen()));
+                    },
+                    child: const Text(
+                      'Sign up',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color.fromRGBO(207, 32, 47, 1),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ],
               )
             ],

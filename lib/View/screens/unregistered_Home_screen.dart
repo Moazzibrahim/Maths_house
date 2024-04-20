@@ -3,8 +3,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/View/screens/login_screen.dart';
+
+import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/View/screens/unregistered_courses.dart';
 import 'package:flutter_application_1/View/widgets/courses_container.dart';
 import 'package:flutter_application_1/View/widgets/custom_carousel_containers.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UnregisteredHomescreen extends StatefulWidget {
-  const UnregisteredHomescreen({Key? key}) : super(key: key);
+  const UnregisteredHomescreen({super.key});
 
   @override
   State<UnregisteredHomescreen> createState() => _UnregisteredHomescreenState();
