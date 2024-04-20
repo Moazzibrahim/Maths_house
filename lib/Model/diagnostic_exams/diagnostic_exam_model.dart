@@ -1,11 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 List<QuestionData> questionDataFromJson(String str) => List<QuestionData>.from(
     json.decode(str).map((x) => QuestionData.fromJson(x)));
 
 String questionDataToJson(List<QuestionData> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-class QuestionData {
+class QuestionData  with ChangeNotifier{
   QuestionData({
     required this.courseId,
     required this.question,
@@ -45,7 +47,7 @@ class QuestionData {
       };
 }
 
-class Mcq {
+class Mcq  with ChangeNotifier{
   Mcq({
     required this.id,
     required this.mcqAns,
