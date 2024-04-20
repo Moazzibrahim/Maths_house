@@ -36,41 +36,21 @@ class DiagExamProvider with ChangeNotifier {
         print(data);
 
         if (data['exam'] != null && data['exam']['question_with_ans'] != null) {
-          for (var exam in data['exam']['question_with_ans']) {
-            // Create a map representing a question
+          final List<dynamic> questions = data['exam']['question_with_ans'];
+          alldiagnostics.clear(); // Clear previous data
+          for (var question in questions) {
             final questionMap = {
-              'question': exam['question'],
-              'question_num': exam['q_num'],
-              'q_type': exam['q_type'],
-              'ans_type': exam['ans_type'],
+              'question': question['question'],
+              'q_num': question['q_num'],
+              'q_type': question['q_type'],
+              'mcq': question['mcq'], // MCQ options
+              'g_ans': question['g_ans'], // Grid answers
             };
-
-            // Add the question map to the list
             alldiagnostics.add(questionMap);
-
-            // If the question has multiple-choice answers, add them to the list
-            if (exam['mcq'] != null) {
-              for (var mcq in exam['mcq']) {
-                final mcqMap = {
-                  'mcq_ans': mcq['mcq_ans'],
-                  'mcq_answers': mcq['mcq_answers'],
-                };
-                alldiagnostics.add(mcqMap);
-              }
-            }
-
-            // If the question has grid-type answers, add them to the list
-            if (exam['g_ans'] != null) {
-              for (var gAns in exam['g_ans']) {
-                final gAnsMap = {'grid_ans': gAns['grid_ans']};
-                alldiagnostics.add(gAnsMap);
-              }
-            }
           }
+          // Notify listeners that the data has been updated
+          notifyListeners();
         }
-
-        // Notify listeners that the data has been updated
-        notifyListeners();
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
       }
