@@ -15,11 +15,30 @@ class QuestionAnswerScreen extends StatefulWidget {
 }
 
 class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
+  late YoutubePlayerController controller;
   @override
   void initState() {
+    _initYoutubePlayerController();
+    super.initState();
+  }
+
+  void _initYoutubePlayerController() {
     Provider.of<QuestionHistoryProvider>(context, listen: false)
         .getQuestionAnswer(context, widget.id);
-    super.initState();
+    Provider.of<QuestionHistoryProvider>(context, listen: false)
+        .getParallelQuestion(context, widget.id);
+    controller = YoutubePlayerController(
+      initialVideoId: '',
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    );
   }
 
   int selectedParallel = 0;
@@ -49,6 +68,11 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                             flags: const YoutubePlayerFlags(
                               autoPlay: false,
                               mute: false,
+                              disableDragSeek: false,
+                              loop: false,
+                              isLive: false,
+                              forceHD: false,
+                              enableCaption: true,
                             ),
                           ),
                           showVideoProgressIndicator: true,
@@ -84,25 +108,32 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("Choose Parallel"),
-                          content: ListView.builder(
-                            itemCount: questionAnswerProvider
-                                .allParallelQuestions.length,
-                            itemBuilder: (context, index) {
-                              int parallelNumber = index + 1;
-                              return ListTile(
-                                title: Text("Parallel $parallelNumber"),
-                                onTap: () {
-                                  setState(() {
-                                    selectedParallel = parallelNumber;
-                                  });
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).push(MaterialPageRoute(
+                          content: SizedBox(
+                            width: 200,
+                            height: 145,
+                            child: ListView.builder(
+                              itemCount: questionAnswerProvider
+                                  .allParallelQuestions.length,
+                              itemBuilder: (context, index) {
+                                int parallelNumber = index + 1;
+                                return ListTile(
+                                  title: Text("Parallel $parallelNumber"),
+                                  onTap: () {
+                                    setState(() {
+                                      selectedParallel = index;
+                                    });
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
                                       builder: (ctx) => ParallelQuestionScreen(
-                                          selectedParallel: selectedParallel,
-                                          id: widget.id)));
-                                },
-                              );
-                            },
+                                        selectedParallel: selectedParallel,
+                                        id: widget.id,
+                                      ),
+                                    ));
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         );
                       },
@@ -136,5 +167,11 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

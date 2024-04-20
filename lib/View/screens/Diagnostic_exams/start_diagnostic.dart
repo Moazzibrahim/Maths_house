@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_provider.dart';
@@ -36,7 +37,6 @@ class DiagnosticBody extends StatefulWidget {
 
 class _DiagnosticBodyState extends State<DiagnosticBody> {
   int _currentQuestionIndex = 0;
-  List<String?> selectedAnswers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +44,16 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
     final diagProvider = Provider.of<DiagExamProvider>(context);
     final List<Map<String, dynamic>> allDiagnostics =
         diagProvider.alldiagnostics;
+    List<String?> selectedAnswers = List.filled(allDiagnostics.length, null);
     final bool hasData = allDiagnostics.isNotEmpty;
     final Map<String, dynamic> questionData = hasData
         ? allDiagnostics[_currentQuestionIndex]
         : {
-            'question': '',
+            'question': 'Question not available',
             'q_num': '',
             'q_type': '',
-            'mcq': null,
-            'g_ans': null,
+            'mcq': [],
+            'g_ans': [],
           };
 
     void goToNextQuestion() {
@@ -77,6 +78,13 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Your answers are submitted')),
       );
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const DiagnosticResultScreen()),
+        );
+      });
     }
 
     return Column(
@@ -104,7 +112,7 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
               child: Column(
                 children: [
                   Text(
-                    'Question: ${questionData['question']}',
+                    'Question${_currentQuestionIndex + 1}: ${questionData['question']}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
