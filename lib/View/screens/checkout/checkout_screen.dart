@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -10,6 +12,7 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutscreenState extends State<CheckoutScreen> {
+  String couponCode = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,9 +130,63 @@ class _CheckoutscreenState extends State<CheckoutScreen> {
                 ),
               ],
             ),
-          const  SizedBox(
+            const SizedBox(
               height: 14,
-            )
+            ),
+            // Define a variable to store the coupon code
+
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: faceBookColor),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      onChanged: (value) {
+                        couponCode =
+                            value; // Update the coupon code when text changes
+                      },
+                      decoration: const InputDecoration(
+                        hintText: "Discount code",
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    color: gridHomeColor,
+                    child: TextButton(
+                      onPressed: () {
+                        // Add your apply button functionality here using the couponCode variable
+                        print("Applied coupon code: $couponCode");
+                      },
+                      child: const Text(
+                        "Apply",
+                        style: TextStyle(color: faceBookColor, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 17,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: faceBookColor, shape: LinearBorder()),
+              onPressed: () {},
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: Text(
+                  "Checkout",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),
