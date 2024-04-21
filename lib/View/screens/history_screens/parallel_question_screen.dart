@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/history_models/questions_answers_model.dart';
+import 'package:flutter_application_1/View/screens/history_screens/question_answer_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +20,7 @@ class ParallelQuestionScreen extends StatefulWidget {
 class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
   TextEditingController answerController = TextEditingController();
   bool? textAnswer;
+
   @override
   void initState() {
     Provider.of<QuestionHistoryProvider>(context, listen: false)
@@ -75,7 +79,8 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
               child: Column(
                 children: [
                   Text(
-                    parallelProvider.allParallelQuestions[widget.selectedParallel].question,
+                    parallelProvider
+                        .allParallelQuestions[widget.selectedParallel].question,
                     style: const TextStyle(fontSize: 25),
                   ),
                   const SizedBox(
@@ -85,67 +90,146 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  if(parallelProvider.allParallelQuestions[0].mcqParallelList.isNotEmpty)
+                  if (parallelProvider
+                      .allParallelQuestions[0].mcqParallelList.isNotEmpty)
                     for (int i = 0;
-                      i <
+                        i <
+                            parallelProvider
+                                .allParallelQuestions[widget.selectedParallel]
+                                .mcqParallelList
+                                .length;
+                        i++)
+                      _buildRadioListTile(
                           parallelProvider
-                              .allParallelQuestions[widget.selectedParallel]
-                              .mcqParallelList
-                              .length;
-                      i++)
-                    _buildRadioListTile(
-                        parallelProvider
-                            .allParallelQuestions[widget.selectedParallel],
-                        i),
-                        ElevatedButton(
+                              .allParallelQuestions[widget.selectedParallel],
+                          i)
+                  else
+                    TextFormField(
+                      controller: answerController,
+                      decoration: const InputDecoration(
+                        hintText: 'Enter your answer',
+                      ),
+                    ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (selectedAnswer != null && !answerSubmitted) {
+                        if (parallelProvider.allParallelQuestions.isNotEmpty) {
+                          String correctAnswer = parallelProvider
+                                  .allParallelQuestions[0]
+                                  .mcqParallelList
+                                  .isNotEmpty
+                              ? parallelProvider.allParallelQuestions[0]
+                                  .mcqParallelList[0].answer
+                              : ''; // You might want to handle this case based on your logic
+                          correctAnswerIndex = correctAnswer.isNotEmpty
+                              ? correctAnswer.codeUnitAt(0) - 65
+                              : -1;
+                          setState(() {
+                            answerSubmitted = true;
+                          });
+                        } else {
+                          // Handle case when allParallelQuestions is empty
+                        }
+                      } else if (parallelProvider.allParallelQuestions[0]
+                              .mcqAnswerList[0].mcqParallelAnswer ==
+                          answerController.text) {
+                        setState(() {
+                          textAnswer = true;
+                        });
+                      } else if (parallelProvider.allParallelQuestions[0]
+                              .mcqAnswerList[0].mcqParallelAnswer !=
+                          answerController.text) {
+                        setState(() {
+                          textAnswer = false;
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please select an answer'),
+                          ),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent[700],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 60,
+                      ),
+                    ),
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  !answerSubmitted
+                      ? const Text('')
+                      : ElevatedButton(
                           onPressed: () {
-                            if (selectedAnswer != null && !answerSubmitted) {
-                              String correctAnswer =
-                                  parallelProvider.allParallelQuestions[0].mcqParallelList[0].answer;
-                              correctAnswerIndex =
-                                  correctAnswer.codeUnitAt(0) - 65;
-                              setState(() {
-                                answerSubmitted = true;
-                              });
-                            }else if(parallelProvider.allParallelQuestions[0].mcqAnswerList[0].mcqParallelAnswer == answerController.text){
-                              setState(() {
-                                textAnswer = true;
-                              });
-                            }else if(parallelProvider.allParallelQuestions[0].mcqAnswerList[0].mcqParallelAnswer != answerController.text){
-                              setState(() {
-                                textAnswer = false;
-                              });
-                            }
-                            else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please select an answer'),
-                                ),
-                              );
-                            }
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Confirmation"),
+                                  content: const Text(
+                                    "Are you sure you want to view the answer for this question?",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  actions: <Widget>[
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        log('Q ID : ${parallelProvider.allParallelQuestions[0].id}');
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    QuestionAnswerScreen(
+                                                      id: parallelProvider
+                                                          .allParallelQuestions[
+                                                              0]
+                                                          .id,
+                                                    )));
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Colors.redAccent[700],
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12))),
+                                      child: const Text('Yes'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        'Close',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent[700],
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 7, horizontal: 5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 60,
-                            ),
+                            backgroundColor: Colors.redAccent[700],
+                            foregroundColor: Colors.white,
                           ),
-                          child: const Text(
-                            'Submit',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
+                          child: const Text('View Answer'),
                         ),
-                        const SizedBox(height: 20,),
-                        if(textAnswer == null)
-                          const Text('')
-                        else if(textAnswer!)
-                          Text('Correct Answer',style: TextStyle(color: Colors.greenAccent[700],fontSize: 20),)
-                        else
-                          Text('Wrong answer',style: TextStyle(color: Colors.redAccent[700],fontSize: 20),)
                 ],
               ),
             ),

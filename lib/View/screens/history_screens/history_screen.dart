@@ -20,6 +20,7 @@ class HistoryScreen extends StatelessWidget {
           },child: const CustomUnregisteredWidgets(text: 'Questions')),
           const CustomUnregisteredWidgets(text: 'Exams'),
           const CustomUnregisteredWidgets(text: 'Diagnostic Exams'),
+          const CustomUnregisteredWidgets(text: 'Quizes'),
         ]),
       ),
     );

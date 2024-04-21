@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/history_screens/parallel_question_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
@@ -50,52 +51,59 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionAnswerProvider, _) {
           return Stack(children: [
-            ListView.builder(
-              itemCount: questionAnswerProvider.allQuestionAnswers.length,
-              itemBuilder: (context, index) {
-                RegExp regExp = RegExp(r"\/embed\/([^?]+)");
-                Match? match = regExp.firstMatch(
-                    questionAnswerProvider.allQuestionAnswers[index].answerVid);
-                String videoId = match?.group(1) ?? "";
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        YoutubePlayer(
-                          controller: YoutubePlayerController(
-                            initialVideoId: videoId,
-                            flags: const YoutubePlayerFlags(
-                              autoPlay: false,
-                              mute: false,
-                              disableDragSeek: false,
-                              loop: false,
-                              isLive: false,
-                              forceHD: false,
-                              enableCaption: true,
-                            ),
-                          ),
-                          showVideoProgressIndicator: true,
-                          progressIndicatorColor: Colors.redAccent[700],
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent[700],
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+            Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: questionAnswerProvider.allQuestionAnswers.length,
+                    itemBuilder: (context, index) {
+                      RegExp regExp = RegExp(r"\/embed\/([^?]+)");
+                      Match? match = regExp.firstMatch(
+                          questionAnswerProvider.allQuestionAnswers[index].answerVid);
+                      String videoId = match?.group(1) ?? "";
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              YoutubePlayer(
+                                controller: YoutubePlayerController(
+                                  initialVideoId: videoId,
+                                  flags: const YoutubePlayerFlags(
+                                    autoPlay: false,
+                                    mute: false,
+                                    disableDragSeek: false,
+                                    loop: false,
+                                    isLive: false,
+                                    forceHD: false,
+                                    enableCaption: true,
+                                  ),
+                                ),
+                                showVideoProgressIndicator: true,
+                                progressIndicatorColor: Colors.redAccent[700],
                               ),
-                            ),
-                            child: Text('Download PDF ${index + 1}'))
-                      ],
-                    ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.redAccent[700],
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: Text('Download PDF ${index + 1}')),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 70,)
+              ],
             ),
             Positioned(
               bottom: 10,
