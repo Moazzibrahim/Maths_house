@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
-import 'package:flutter_application_1/View/screens/checkout/payment_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
@@ -101,7 +100,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PaymentScreen()),
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
               style: ElevatedButton.styleFrom(

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/checkout/payment_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
@@ -176,7 +177,12 @@ class _CheckoutscreenState extends State<CheckoutScreen> {
               height: 17,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PaymentScreen()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
                   padding: const EdgeInsets.symmetric(
