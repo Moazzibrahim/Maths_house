@@ -176,15 +176,21 @@ class _CheckoutscreenState extends State<CheckoutScreen> {
               height: 17,
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor, shape: LinearBorder()),
               onPressed: () {},
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                child: Text(
-                  "Checkout",
-                  style: TextStyle(color: Colors.white),
-                ),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: faceBookColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 140,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
+              child: const Text(
+                'Checkout',
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ],
