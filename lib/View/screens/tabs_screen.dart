@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/book_screen.dart';
 import 'package:flutter_application_1/View/screens/profile_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
@@ -19,13 +20,18 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   void initState() {
     pages = [
-    widget.isLoggedIn? const UnregisteredHomescreen() : const RegisteredHomeScreen(),
-    const BooksScreen(),
-    const ChatScreen(),
-    ProfileScreen(isLoggedIn: widget.isLoggedIn,),
-  ];
+      widget.isLoggedIn
+          ? const UnregisteredHomescreen()
+          : const RegisteredHomeScreen(),
+      const PackageScreen(),
+      const ChatScreen(),
+      ProfileScreen(
+        isLoggedIn: widget.isLoggedIn,
+      ),
+    ];
     super.initState();
   }
+
   void onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
@@ -52,36 +58,21 @@ class _TabsScreenState extends State<TabsScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.book),
-              label: 'Courses',
+              label: 'Package',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.chat_bubble_outline),
               label: 'Chat',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline,size: 28,),
+              icon: Icon(
+                Icons.person_outline,
+                size: 28,
+              ),
               label: 'Profile',
             ),
           ],
           onTap: onItemTapped),
-    );
-  }
-}
-
-class BooksScreen extends StatelessWidget {
-  const BooksScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Books'),
-        backgroundColor: Colors.white,
-        leading: const Icon(Icons.arrow_back_ios),
-      ),
-      body: const Center(
-        child: Text('Books Screen Content'),
-      ),
     );
   }
 }
@@ -103,5 +94,3 @@ class ChatScreen extends StatelessWidget {
     );
   }
 }
-
-
