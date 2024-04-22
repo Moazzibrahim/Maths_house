@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/history_screens/question_answer_screen.dart';
-import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -24,27 +24,7 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Questions History',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: Container(
-          margin: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-              color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.redAccent[700],
-            ),
-          ),
-        ),
-      ),
+      appBar: buildAppBar(context,'Question History'),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionHistoryProvider, _) {
           return SingleChildScrollView(

@@ -14,6 +14,7 @@ class ChaptersTiles extends StatefulWidget {
 }
 
 class _ChaptersTilesState extends State<ChaptersTiles> {
+  bool istapped=true;
   @override
   void initState() {
     Provider.of<ChapterProvider>(context, listen: false)
@@ -24,11 +25,17 @@ class _ChaptersTilesState extends State<ChaptersTiles> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: istapped? gridHomeColor : const Color.fromARGB(255, 234, 228, 228),
       margin: const EdgeInsets.symmetric(
         vertical: 15,
       ),
       elevation: 3,
       child: ExpansionTile(
+        onExpansionChanged: (_) {
+          setState(() {
+            istapped = !istapped;
+          });
+        },
         title: Row(
           children: [
             const Icon(

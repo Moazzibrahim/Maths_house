@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/question_history_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_courses_custom.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -18,7 +20,11 @@ class HistoryScreen extends StatelessWidget {
               MaterialPageRoute(builder: (ctx)=> const QuestionHistoryScreen())
             );
           },child: const CustomUnregisteredWidgets(text: 'Questions')),
-          const CustomUnregisteredWidgets(text: 'Exams'),
+          GestureDetector(onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (ctx)=> const ExamHistoryScreen())
+            );
+          },child: const CustomUnregisteredWidgets(text: 'Exams')),
           const CustomUnregisteredWidgets(text: 'Diagnostic Exams'),
           const CustomUnregisteredWidgets(text: 'Quizes'),
         ]),
