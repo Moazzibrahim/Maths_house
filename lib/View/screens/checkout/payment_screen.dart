@@ -35,7 +35,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Row(
+            const Row(
               children: [
                 Text(
                   'Enter Payment Details',
@@ -70,7 +70,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Expanded(
@@ -90,7 +90,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => OrderDetails()),
+                    MaterialPageRoute(builder: (context) => const OrderDetails()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -120,8 +120,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: Colors.grey,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 13),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 13),
                     child: Text('or'),
                   ),
                   Expanded(

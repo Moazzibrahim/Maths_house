@@ -6,9 +6,10 @@ import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({Key? key}) : super(key: key);
+  const OtpVerificationScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _OtpVerificationScreenState createState() => _OtpVerificationScreenState();
 }
 
@@ -29,7 +30,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
+    const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
@@ -63,7 +64,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         color: Colors.black,
       ),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 214, 212, 212),
+        color: const Color.fromARGB(255, 214, 212, 212),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.transparent),
       ),
@@ -77,9 +78,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: const Text(
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
                   "OTP Verification",
                   style: TextStyle(
                     color: Colors.black,
@@ -88,13 +89,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ),
                 ),
               ),
-              Container(
-                child: Text(
-                  "Enter the OTP sent to - +91-8976500001 ",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
+              const Text(
+                "Enter the OTP sent to - +91-8976500001 ",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 18,
                 ),
               ),
               Padding(
@@ -112,18 +111,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(
-                  child: Text(
-                    " $timerText",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
-                    ),
+                child: Text(
+                  " $timerText",
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
                   ),
                 ),
               ),
               RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   text: 'Don’t receive code ?',
                   style: TextStyle(
                       fontSize: 15,
@@ -140,14 +137,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ConfirmPassword()),
+                    MaterialPageRoute(builder: (context) => const ConfirmPassword()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

@@ -17,7 +17,7 @@ class ForgetPasswordScreen extends StatelessWidget {
           child: Column(
             children: [
               RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   text: 'Forget password ',
                   style: TextStyle(
                     fontSize: 20,
@@ -33,11 +33,11 @@ class ForgetPasswordScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   text:
                       'Dont worry! that happens. Please \n register your phone  or email to \n which we will send your One Time \n Password ',
                   style: TextStyle(
@@ -55,16 +55,16 @@ class ForgetPasswordScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              TextField(
-                decoration: const InputDecoration(
+              const TextField(
+                decoration: InputDecoration(
                   labelStyle: TextStyle(color: Colors.grey),
                   labelText: 'Enter Phone Or Email',
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
               ElevatedButton(
@@ -72,7 +72,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => OtpVerificationScreen()),
+                        builder: (context) => const OtpVerificationScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

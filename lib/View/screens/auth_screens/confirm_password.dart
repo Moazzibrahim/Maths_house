@@ -14,6 +14,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
   late TextEditingController passwordController;
   bool obscurePassword = true;
 
+  @override
   void initState() {
     super.initState();
     passwordController = TextEditingController();
@@ -27,7 +28,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            Row(
+            const Row(
               children: [
                 Text(
                   'New password',
@@ -35,7 +36,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
                 ),
               ],
             ),
-            Row(
+            const Row(
               children: [
                 Text(
                   'Create a new password',
@@ -100,7 +101,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
               style: ElevatedButton.styleFrom(
