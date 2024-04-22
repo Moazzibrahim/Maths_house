@@ -9,6 +9,7 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_filterati
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
+import 'package:flutter_application_1/controller/history_controllers/exam_history_controller.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
@@ -43,6 +44,7 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DiagnosticFilterationProvider()),
         ChangeNotifierProvider(create: (_) => QuestionHistoryProvider()),
         ChangeNotifierProvider(create: (_) => DiagExamProvider()),
+        ChangeNotifierProvider(create: (_) => ExamHistoryProvider()),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

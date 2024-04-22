@@ -57,8 +57,8 @@ class _TabsScreenState extends State<TabsScreen> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Package',
+              icon: Icon(Icons.add_box),
+              label: 'Packages',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.chat_bubble_outline),

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class ExamHistoryProvider with ChangeNotifier{
   List<ExamHistory>allExamHistory =[];
-  Future<void> getQuestionsHistoryData(BuildContext context) async {
+  Future<void> getExamHistoryData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
     try {
@@ -29,7 +29,6 @@ class ExamHistoryProvider with ChangeNotifier{
             .map((e) => ExamHistory.fromJson(e))
             .toList();
         allExamHistory = q;
-        // log('allquestionHistory ids: ${allExamHistory.map((e) => e.id)}');
         notifyListeners();
       }
     } catch (e) {
