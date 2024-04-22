@@ -82,18 +82,19 @@ class Question {
 class Answer {
   int id;
   String mcqAns;
-  String mcqAnswers;
+  String? mcqAnswers; // Add this line
   int qId;
   String createdAt;
   String updatedAt;
 
-  Answer(
-      {required this.id,
-      required this.mcqAns,
-      required this.mcqAnswers,
-      required this.qId,
-      required this.createdAt,
-      required this.updatedAt});
+  Answer({
+    required this.id,
+    required this.mcqAns,
+    required this.mcqAnswers,
+    required this.qId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
   factory Answer.fromJson(Map<String, dynamic> json) {
     return Answer(
