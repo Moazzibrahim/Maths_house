@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/history_screens/question_answer_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -109,6 +111,7 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                                         actions: <Widget>[
                                           ElevatedButton(
                                             onPressed: () {
+                                              log('QQQQ ID: ${e.id}');
                                               Navigator.of(context).pop();
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
