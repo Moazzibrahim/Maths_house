@@ -1,14 +1,20 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/exam-view/exam_result.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:provider/provider.dart';
 
-class ExamScreen extends StatelessWidget {
+class ExamScreen extends StatefulWidget {
   const ExamScreen({super.key});
 
+  @override
+  State<ExamScreen> createState() => _ExamScreenState();
+}
+
+class _ExamScreenState extends State<ExamScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +46,7 @@ class _ExamBodyState extends State<ExamBody> {
   int _questionIndex = 0;
   bool _isSubmitting = false;
   List<QuestionWithAnswers>? questionsWithAnswers;
+  // ignore: unused_field
   int? _selectedOptionIndex;
 
   @override
@@ -102,22 +109,43 @@ class _ExamBodyState extends State<ExamBody> {
                   ),
                 ),
                 const SizedBox(height: 20.0),
-                Column(
-                  children: List.generate(
-                    questionsWithAnswers![_questionIndex].mcqOptions.length,
-                    (index) => RadioListTile(
-                      title: Text(questionsWithAnswers![_questionIndex]
-                          .mcqOptions[index]),
-                      value: index,
-                      groupValue: _selectedOptionIndex,
+                if (questionsWithAnswers![_questionIndex].question.ansType ==
+                    'MCQ')
+                  Column(
+                    children: List.generate(
+                      questionsWithAnswers![_questionIndex].mcqOptions.length,
+                      (index) => RadioListTile(
+                        title: Text(
+                          questionsWithAnswers![_questionIndex]
+                              .mcqOptions[index],
+                        ),
+                        value: index,
+                        groupValue: questionsWithAnswers![_questionIndex]
+                            .selectedSolutionIndex,
+                        onChanged: (value) {
+                          setState(() {
+                            questionsWithAnswers![_questionIndex]
+                                .selectedSolutionIndex = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                if (questionsWithAnswers![_questionIndex].question.ansType !=
+                    'MCQ')
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Enter your answer',
+                        border: OutlineInputBorder(),
+                      ),
+                      // Handle text input for non-MCQ questions
                       onChanged: (value) {
-                        setState(() {
-                          _selectedOptionIndex = value;
-                        });
+                        // You can store the entered text in your data model or handle it as needed
                       },
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -163,7 +191,14 @@ class _ExamBodyState extends State<ExamBody> {
                   setState(() {
                     _isSubmitting = true;
                   });
-                  timerProvider.stopTimer(); // Stop timer
+                  timerProvider.stopTimer();
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ExamResultScreen()),
+                    );
+                  }); // Stop timer
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Answers submitted.'),
@@ -214,5 +249,25 @@ class _ExamBodyState extends State<ExamBody> {
         );
       },
     );
+  }
+
+  List<int> wrongAnswerIndices = [];
+
+  void submitAnswers() {
+    // Clear wrong answer indices list before checking again
+    wrongAnswerIndices.clear();
+    for (var i = 0; i < questionsWithAnswers!.length; i++) {
+      final selectedAnswerIndex =
+          questionsWithAnswers![i].selectedSolutionIndex;
+
+      // Check if selected answer is not equal to correct answer (the first choice)
+      if (selectedAnswerIndex != null &&
+          selectedAnswerIndex != 0 &&
+          questionsWithAnswers![i].question.ansType == 'MCQ') {
+        // Add the index to the list of wrong answers
+        wrongAnswerIndices.add(i);
+        print(wrongAnswerIndices);
+      }
+    }
   }
 }

@@ -46,15 +46,8 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
         diagProvider.alldiagnostics;
     List<String?> selectedAnswers = List.filled(allDiagnostics.length, null);
     final bool hasData = allDiagnostics.isNotEmpty;
-    final Map<String, dynamic> questionData = hasData
-        ? allDiagnostics[_currentQuestionIndex]
-        : {
-            'question': 'Question not available',
-            'q_num': '',
-            'q_type': '',
-            'mcq': [],
-            'g_ans': [],
-          };
+    final Map<String, dynamic> questionData =
+        hasData ? allDiagnostics[_currentQuestionIndex] : {};
 
     void goToNextQuestion() {
       if (_currentQuestionIndex < allDiagnostics.length - 1) {
@@ -82,10 +75,14 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => const DiagnosticResultScreen()),
+            builder: (context) => const DiagnosticResultScreen(),
+          ),
         );
       });
     }
+
+    final String questionText =
+        questionData['question'] ?? 'Question not available';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,53 +109,58 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
               child: Column(
                 children: [
                   Text(
-                    'Question${_currentQuestionIndex + 1}: ${questionData['question']}',
+                    'Question ${_currentQuestionIndex + 1}: $questionText',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  if (questionText != 'Question not available' &&
+                      questionData.containsKey('mcq') &&
+                      questionData['mcq'] != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:
+                          (questionData['mcq'] as List).map<Widget>((mcq) {
+                        return Row(
+                          children: [
+                            Radio(
+                              value: mcq['mcq_ans'],
+                              groupValue:
+                                  selectedAnswers[_currentQuestionIndex],
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedAnswers[_currentQuestionIndex] =
+                                      value.toString();
+                                });
+                              },
+                              activeColor:
+                                  selectedAnswers[_currentQuestionIndex] ==
+                                          mcq['mcq_ans']
+                                      ? Colors.green
+                                      : Colors.red,
+                            ),
+                            Text(mcq['mcq_answers']),
+                          ],
+                        );
+                      }).toList(),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your answer...',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
         ),
         const SizedBox(height: 20),
-        if (questionData['q_type'] == 'MCQ' && questionData['mcq'] != null)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: (questionData['mcq'] as List).map<Widget>((mcq) {
-              return Row(
-                children: [
-                  Radio(
-                    value: mcq['mcq_ans'],
-                    groupValue: selectedAnswers[_currentQuestionIndex],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedAnswers[_currentQuestionIndex] =
-                            value.toString();
-                      });
-                    },
-                    activeColor:
-                        selectedAnswers[_currentQuestionIndex] == mcq['mcq_ans']
-                            ? Colors.green
-                            : Colors.red,
-                  ),
-                  Text(mcq['mcq_answers']),
-                ],
-              );
-            }).toList(),
-          )
-        else
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your answer...',
-              border: OutlineInputBorder(),
-            ),
-          ),
-        const SizedBox(
-          height: 10,
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

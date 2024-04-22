@@ -5,9 +5,8 @@ class ExamMcq {
 
   factory ExamMcq.fromJson(Map<String, dynamic> json) {
     List<dynamic> examList = json['exam'];
-    List<ExamQuestion> examQuestions = examList
-        .map((question) => ExamQuestion.fromJson(question))
-        .toList();
+    List<ExamQuestion> examQuestions =
+        examList.map((question) => ExamQuestion.fromJson(question)).toList();
     return ExamMcq(exam: examQuestions);
   }
 }
