@@ -29,6 +29,7 @@ Future<void> getQuizHistory(BuildContext context) async {
             .map((e) => QuizHistory.fromJson(e))
             .toList();
         allQuizHistory = q;
+        // log('all quiz: $allQuizHistory');
         notifyListeners();
       }
     } catch (e) {

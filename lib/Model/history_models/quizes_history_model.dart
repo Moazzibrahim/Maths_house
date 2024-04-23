@@ -6,9 +6,8 @@ class QuizHistory {
   final String quizName;
   final String time;
   final int score;
-  final int questionCount;
+  final List<dynamic> questions;
   final int rightCount;
-  final int wrongCount;
   final int id;
 
   QuizHistory(
@@ -19,23 +18,21 @@ class QuizHistory {
       required this.quizName,
       required this.time,
       required this.score,
-      required this.questionCount,
+      required this.questions,
       required this.rightCount,
-      required this.wrongCount,
       required this.id});
 
   factory QuizHistory.fromJson(Map<String, dynamic> json) => QuizHistory(
         date: json['date'],
-        courseName: json['quizze']['title'],
-        chapterName: json['']??'',
-        lessonName: json[''],
-        quizName: json[''],
+        courseName: json['lesson_api']['chapter_api']['course']['course_name']??'no course',
+        chapterName: json['lesson_api']['chapter_api']['chapter_name']??'no chapter',
+        lessonName: json['lesson_api']['lesson_name']??'no lesson',
+        quizName: json['quizze']['title'],
         time: json['time'],
-        score: json['score'],
-        questionCount: json[''],
-        rightCount: json[''],
-        wrongCount: json[''],
-        id: json[''],
+        score: json['quizze']['score'],
+        questions: json['questions']??[],
+        rightCount: json['r_questions']??0,
+        id: json['quizze_id'],
       );
 }
 

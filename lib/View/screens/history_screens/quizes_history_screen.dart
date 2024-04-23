@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/quiz_history_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class QuizesHistoryScreen extends StatefulWidget {
@@ -14,45 +14,65 @@ class QuizesHistoryScreen extends StatefulWidget {
 class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
   @override
   void initState() {
-    Provider.of<QuizHistoryProvider>(context).getQuizHistory(context);
+    Provider.of<QuizHistoryProvider>(context, listen: false)
+        .getQuizHistory(context);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context,'Quizes History'),
-      body: Consumer<QuizHistoryProvider>(builder: (context, quizHistoryProvider, _) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                DataTable(
-                    dataRowMaxHeight: 55,
-                    columnSpacing:
-                        25, // Adjust the spacing between columns here
+      appBar: buildAppBar(context, 'Quizes History'),
+      body: Consumer<QuizHistoryProvider>(
+        builder: (context, quizHistoryProvider, _) {
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  DataTable(
+                    dataRowMaxHeight: 55.h,
+                    columnSpacing: 25,
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Text(
-                          'Year',
-                        ),
-                        numeric: true, // Set to true for numeric data
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Month',
+                          'Date',
                         ),
                         numeric: true,
                       ),
                       DataColumn(
                         label: Text(
-                          'Section',
+                          'Quiz Details',
+                        ),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Quiz',
                         ),
                       ),
                       DataColumn(
                         label: Text(
-                          'Answer',
+                          'Score',
+                        ),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Q.num',
+                        ),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Score Details',
+                        ),
+                        numeric: true,
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Time',
                         ),
                         numeric: true,
                       ),
@@ -67,10 +87,30 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                       for (var e in quizHistoryProvider.allQuizHistory)
                         DataRow(
                           cells: [
-                            DataCell(Text(e.quizName.toString())),
-                            DataCell(Text(e.lessonName.toString())),
                             DataCell(Text(e.date)),
+                            DataCell(
+                              Column(
+                                children: [
+                                  Text('Course: ${e.courseName}'),
+                                  Text('Chapter: ${e.chapterName}'),
+                                  Text('Lesson: ${e.lessonName}')
+                                ],
+                              ),
+                            ),
+                            DataCell(Text(e.quizName)),
                             DataCell(Text(e.score.toString())),
+                            DataCell(
+                              Text(e.questions.length.toString()),
+                            ),
+                            DataCell(
+                              Column(
+                                children: [
+                                  Text('right answers: ${e.rightCount.toString()}'),
+                                  Text('wrong answers: ${e.questions.length - e.rightCount}'),
+                                ],
+                              ),
+                            ),
+                            DataCell(Text(e.time)),
                             DataCell(
                               ElevatedButton(
                                 onPressed: () {
@@ -80,24 +120,31 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                       return AlertDialog(
                                         title: const Text("Confirmation"),
                                         content: const Text(
-                                            "Are you sure you want to view the answer for this question?",style: TextStyle(fontSize: 18),),
+                                          "Are you sure you want to view the answer for this question?",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
                                         actions: <Widget>[
                                           ElevatedButton(
-                                            onPressed: () {
-                                              
-                                            },
+                                            onPressed: () {},
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.redAccent[700],
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
-                                            ),
+                                                backgroundColor:
+                                                    Colors.redAccent[700],
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12))),
                                             child: const Text('Yes'),
                                           ),
                                           TextButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: const Text('Close',style: TextStyle(color: Colors.black),),
+                                            child: const Text(
+                                              'Close',
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
                                           ),
                                         ],
                                       );
@@ -113,18 +160,19 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                   backgroundColor: Colors.redAccent[700],
                                   foregroundColor: Colors.white,
                                 ),
-                                child: const Text('View Answer'),
+                                child: const Text('View Mistake'),
                               ),
                             ),
                           ],
                         ),
                     ],
                   ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },) ,
+          );
+        },
+      ),
     );
   }
 }

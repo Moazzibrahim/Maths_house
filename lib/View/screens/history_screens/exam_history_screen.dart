@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/exam_history_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class ExamHistoryScreen extends StatefulWidget {
@@ -28,15 +29,15 @@ class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
             child: Column(
               children: [
                 DataTable(
-                    dataRowMaxHeight: 55,
+                    dataRowMaxHeight: 55.h,
                     columnSpacing:
-                        25, // Adjust the spacing between columns here
+                        25,
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Text(
                           'Name',
                         ),
-                        numeric: true, // Set to true for numeric data
+                        numeric: true, 
                       ),
                       DataColumn(
                         label: Text(

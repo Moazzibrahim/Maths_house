@@ -1,9 +1,10 @@
 class Lesson {
   final String name;
   final int chapterId;
+  final int lessonId;
   final List<Videos>? videos;
   Lesson(
-      {required this.name, required this.chapterId, required this.videos});
+      {required this.name, required this.chapterId, required this.videos,required this.lessonId});
 
   factory Lesson.fromJson(Map<String, dynamic> json) {
   List<Videos> videosList = [];
@@ -21,6 +22,7 @@ class Lesson {
   return Lesson(
     name: json['lesson_name'],
     chapterId: json['chapter_id'],
+    lessonId: json['id'],
     videos: videosList,
   );
 }

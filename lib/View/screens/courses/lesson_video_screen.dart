@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:flutter_application_1/View/widgets/ideas_content.dart';
+import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -64,7 +65,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
               Expanded(
                 child: TabBarView(children: [
                   IdeasContent(lesson: widget.lesson,),// replace this text with ideas Widgets
-                  const Text('quizes content'),//replace this text with quizes content
+                  const QuizzesContent(),
                 ]),
               ),
             ],
