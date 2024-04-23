@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
+import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
@@ -104,7 +105,12 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
               const SizedBox(height: 15),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ExamHistoryScreen()));
+                },
                 child: const Text("View mistakes",
                     style: TextStyle(color: Colors.white)),
               ),
