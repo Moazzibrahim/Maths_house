@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';

@@ -194,7 +194,11 @@ class _ExamBodyState extends State<ExamBody> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ExamResultScreen()),
+                          builder: (context) => ExamResultScreen(
+                                correctAnswerCount: correctAnswerCount,
+                                totalQuestions: totalQuestions,
+                                wrongAnswerQuestions: wrongAnswerCount,
+                              )),
                     );
                   }); // Stop timer
                   ScaffoldMessenger.of(context).showSnackBar(

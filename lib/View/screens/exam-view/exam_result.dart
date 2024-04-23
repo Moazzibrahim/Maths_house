@@ -4,8 +4,15 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
 class ExamResultScreen extends StatefulWidget {
+  final int? wrongAnswerQuestions;
   final int? correctAnswerCount;
-  const ExamResultScreen({super.key, this.correctAnswerCount});
+  final int? totalQuestions;
+
+  const ExamResultScreen(
+      {super.key,
+      this.correctAnswerCount,
+      this.wrongAnswerQuestions,
+      this.totalQuestions});
 
   @override
   State<ExamResultScreen> createState() => _DiagnosticResultScreenState();
@@ -31,7 +38,7 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Total Questions", "10"),
+            _buildInfoRow("Total Questions", widget.totalQuestions.toString()),
             const SizedBox(
               height: 15,
             ),
@@ -40,7 +47,8 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Wrong Questions", "0"),
+            _buildInfoRow(
+                "Wrong Questions", widget.wrongAnswerQuestions.toString()),
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
