@@ -10,6 +10,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key, required this.isLoggedIn});
   final bool isLoggedIn;
+  
   @override
   State<TabsScreen> createState() => _TabsScreenState();
 }
