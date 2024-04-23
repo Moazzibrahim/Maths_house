@@ -23,7 +23,9 @@ class _TabsScreenState extends State<TabsScreen> {
       widget.isLoggedIn
           ? const UnregisteredHomescreen()
           : const RegisteredHomeScreen(),
-      const PackageScreen(),
+      PackageScreen(
+        isLoggedIn: widget.isLoggedIn,
+      ),
       const ChatScreen(),
       ProfileScreen(
         isLoggedIn: widget.isLoggedIn,

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/confirm_password.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({super.key});
+  const OtpVerificationScreen({Key? key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _OtpVerificationScreenState createState() => _OtpVerificationScreenState();
 }
 
@@ -57,47 +57,50 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 60,
-      textStyle: const TextStyle(
-        fontSize: 22,
+      width: 56.w,
+      height: 60.h,
+      textStyle: TextStyle(
+        fontSize: 22.sp,
         color: Colors.black,
       ),
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 214, 212, 212),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: Colors.transparent),
       ),
     );
     return Scaffold(
       appBar: buildAppBar(context, ' MathHouse'),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         child: Container(
-          margin: const EdgeInsets.only(top: 40),
+          margin: EdgeInsets.only(top: 40.h),
           width: double.infinity,
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 child: Text(
                   "OTP Verification",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              const Text(
-                "Enter the OTP sent to - +91-8976500001 ",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 18,
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  "Enter the OTP sent to - +91-8976500001 ",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18.sp,
+                  ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(vertical: 20.h),
                 child: Pinput(
                   length: 5,
                   defaultPinTheme: defaultPinTheme,
@@ -110,20 +113,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 child: Text(
                   " $timerText",
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.grey,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                   ),
                 ),
               ),
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   text: 'Don’t receive code ?',
                   style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       color: Colors.grey,
                       fontWeight: FontWeight.w400),
                   children: <TextSpan>[
@@ -137,28 +140,30 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: 20.h,
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ConfirmPassword()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ConfirmPassword(),
+                      ));
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: faceBookColor,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 140,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 130.w,
                     ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12))),
-                child: const Text(
-                  'Submit',
+                        borderRadius: BorderRadius.circular(12.r))),
+                child: Text(
+                  maxLines: 1,
+                  'submit',
                   style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 15.sp,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),

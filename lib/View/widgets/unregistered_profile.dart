@@ -4,7 +4,8 @@ import 'package:flutter_application_1/View/screens/auth_screens/register_screen.
 import 'package:flutter_application_1/constants/colors.dart';
 
 class UnregisteredProfile extends StatelessWidget {
-  const UnregisteredProfile({super.key});
+  const UnregisteredProfile({super.key, required this.text});
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class UnregisteredProfile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Login to see your ptofile'),
+             Text(text),
             Container(
               margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
               width: double.infinity,
@@ -58,14 +59,17 @@ class UnregisteredProfile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('Don\'t have account'),
-                TextButton(onPressed: (){
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx)=> const RegisterScreen())
-                  );
-                }, child: const Text('Sign Up',style: TextStyle(color: Colors.black),))
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const RegisterScreen()));
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(color: Colors.black),
+                    ))
               ],
             ),
-            
           ],
         ),
       ),

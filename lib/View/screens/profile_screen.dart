@@ -86,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               )
-            : const UnregisteredProfile(),
+            : const UnregisteredProfile(text: 'Login to see your ptofile',),
       ),
     );
   }

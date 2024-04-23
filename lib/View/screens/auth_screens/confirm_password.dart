@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ConfirmPassword extends StatefulWidget {
   const ConfirmPassword({super.key});
@@ -12,54 +13,62 @@ class ConfirmPassword extends StatefulWidget {
 
 class _ConfirmPasswordState extends State<ConfirmPassword> {
   late TextEditingController passwordController;
+  late TextEditingController confirmpasswordController;
+
   bool obscurePassword = true;
 
   @override
   void initState() {
     super.initState();
     passwordController = TextEditingController();
+    confirmpasswordController =TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Initialize ScreenUtil
+    ScreenUtil.init(context);
+
     return Scaffold(
       appBar: buildAppBar(context, 'Math house'),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(15.w), // Use ScreenUtil for padding
         child: Column(
           children: [
-            const Row(
+            Row(
               children: [
                 Text(
                   'New password',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight:
+                          FontWeight.w400), // Use ScreenUtil for font size
                 ),
               ],
             ),
-            const Row(
+            Row(
               children: [
                 Text(
                   'Create a new password',
                   style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500),
+                    fontSize: 14.sp,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: TextField(
                 controller: passwordController,
-                obscureText:
-                    obscurePassword, // Use obscurePassword to toggle visibility
+                obscureText: obscurePassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
-                        obscurePassword =
-                            !obscurePassword; // Toggle password visibility
+                        obscurePassword = !obscurePassword;
                       });
                     },
                     icon: Icon(
@@ -73,18 +82,16 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.w),
               child: TextField(
-                controller: passwordController,
-                obscureText:
-                    obscurePassword, // Use obscurePassword to toggle visibility
+                controller: confirmpasswordController,
+                obscureText: obscurePassword,
                 decoration: InputDecoration(
-                  labelText: 'confirm Password',
+                  labelText: 'Confirm Password',
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
-                        obscurePassword =
-                            !obscurePassword; // Toggle password visibility
+                        obscurePassword = !obscurePassword;
                       });
                     },
                     icon: Icon(
@@ -105,19 +112,24 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 140,
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12))),
-              child: const Text(
+                backgroundColor: faceBookColor,
+                padding: EdgeInsets.symmetric(
+                  vertical: 12.h,
+                  horizontal: 130.w,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                      12.r), // Use ScreenUtil for border radius
+                ),
+              ),
+              child: Text(
+                maxLines: 1,
                 'Continue',
                 style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                  fontSize: 15.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],

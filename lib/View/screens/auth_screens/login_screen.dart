@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -41,22 +41,22 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: 20.h,
               ),
               Image.asset(
                 "assets/images/logo.jpg",
-                width: 200,
-                height: 200,
+                width: 200.w,
+                height: 200.h,
                 fit: BoxFit.contain,
               ),
-              const SizedBox(
-                height: 6,
+              SizedBox(
+                height: 6.h,
               ),
-              const Text(
+              Text(
                 'Login',
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.black, // Facebook blue color
                 ),
@@ -64,20 +64,20 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 10.h,
               ),
-              const Text('Welcome to Maths house!'),
+              Text('Welcome to Maths house!'),
               SizedBox(height: 20.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
                   ),
                 ),
               ),
               SizedBox(height: 20.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: TextField(
                   controller: passwordController,
                   obscureText:
@@ -107,12 +107,13 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   TextButton(
                     onPressed: () {
-                       Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ForgetPasswordScreen()),
-            );
-                  },
-                    child: const Text(
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgetPasswordScreen()),
+                      );
+                    },
+                    child: Text(
                       'Forgot password?',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: faceBookColor),
@@ -130,57 +131,55 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: faceBookColor,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 140,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 140.w,
                     ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12))),
-                child: const Text(
+                        borderRadius: BorderRadius.circular(12.r))),
+                child: Text(
                   'Login',
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 15,),
-              const Padding(
+              SizedBox(height: 15.h),
+              Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: 6,
-                  horizontal: 25
-                ),
+                    vertical: 6.h, horizontal: 25.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(child: Divider(color: Colors.black,)),
-                    SizedBox(width: 10,),
+                    Expanded(child: Divider(color: Colors.black)),
+                    SizedBox(width: 10.w),
                     Text('Or Login With'),
-                    SizedBox(width: 10,),
-                    Expanded(child: Divider(color: Colors.black,)),
+                    SizedBox(width: 10.w),
+                    Expanded(child: Divider(color: Colors.black)),
                   ],
                 ),
               ),
-              const SizedBox(height: 15,),
+              SizedBox(height: 15.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset('assets/images/google.png'),
-                  const SizedBox(width: 50,),
+                  SizedBox(width: 50.w),
                   Image.asset('assets/images/apple.png'),
                 ],
               ),
-              const SizedBox(height: 10,),
+              SizedBox(height: 10.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Don\'t have an account?'),
+                  Text('Don\'t have an account?'),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const RegisterScreen()));
+                          builder: (ctx) => RegisterScreen()));
                     },
-                    child: const Text(
+                    child: Text(
                       'Sign up',
                       style: TextStyle(
                         decoration: TextDecoration.underline,
