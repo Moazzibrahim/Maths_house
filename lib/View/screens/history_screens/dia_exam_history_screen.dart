@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
-import 'package:flutter_application_1/controller/history_controllers/exam_history_controller.dart';
+import 'package:flutter_application_1/controller/history_controllers/dia_exam_history_controller.dart';
 import 'package:provider/provider.dart';
 
-class ExamHistoryScreen extends StatefulWidget {
-  const ExamHistoryScreen({super.key});
+class DiaExamHistoryScreen extends StatefulWidget {
+  const DiaExamHistoryScreen({super.key});
 
   @override
-  State<ExamHistoryScreen> createState() => _ExamHistoryScreenState();
+  State<DiaExamHistoryScreen> createState() => _DiaExamHistoryScreenState();
 }
 
-class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
+class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
   @override
   void initState() {
-    Provider.of<ExamHistoryProvider>(context,listen: false).getExamHistoryData(context);
+    Provider.of<DiaExamHistoryProvider>(context,listen: false).getDiaExamHistory(context);
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context,'Exam History'),
-      body: Consumer<ExamHistoryProvider>(builder: (context, examHistoryProvider, _) {
+      appBar: buildAppBar(context, 'Diagnostic exam history'),
+      body: Consumer<DiaExamHistoryProvider>(builder: (context, diaExamHistory, _) {
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SingleChildScrollView(
@@ -51,35 +51,18 @@ class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
                       ),
                       DataColumn(
                         label: Text(
-                          'Actions',
-                        ),
-                        numeric: true,
-                      ),
-                      DataColumn(
-                        label: Text(
                           'Recommendation',
                         ),
                         numeric: true,
                       ),
                     ],
                     rows: <DataRow>[
-                      for (var e in examHistoryProvider.allExamHistory)
+                      for (var e in diaExamHistory.allDiaExam)
                         DataRow(
                           cells: [
-                            DataCell(Text(e.examName)),
+                            DataCell(Text(e.examTitle)),
                             DataCell(Text(e.date)),
                             DataCell(Text(e.score.toString())),
-                            DataCell(ElevatedButton(onPressed: () {
-                              
-                            },style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 7, horizontal: 5),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  backgroundColor: Colors.redAccent[700],
-                                  foregroundColor: Colors.white,
-                                ),child: const Text('View mistake'),)),
                             DataCell(
                               ElevatedButton(
                                 onPressed: () {
@@ -103,10 +86,9 @@ class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
                   ),
               ],
             ),
-          ) ,
+          ),
         );
-      },
-      ),
+      },),
     );
   }
 }

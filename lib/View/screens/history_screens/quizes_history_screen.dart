@@ -1,39 +1,34 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/history_screens/question_answer_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
-import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
+import 'package:flutter_application_1/controller/history_controllers/quiz_history_controller.dart';
 import 'package:provider/provider.dart';
 
-class QuestionHistoryScreen extends StatefulWidget {
-  const QuestionHistoryScreen({super.key});
+class QuizesHistoryScreen extends StatefulWidget {
+  const QuizesHistoryScreen({super.key});
 
   @override
-  State<QuestionHistoryScreen> createState() => _QuestionHistoryScreenState();
+  State<QuizesHistoryScreen> createState() => _QuizesHistoryScreenState();
 }
 
-class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
+class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
   @override
   void initState() {
-    Provider.of<QuestionHistoryProvider>(context, listen: false)
-        .getQuestionsHistoryData(context);
+    Provider.of<QuizHistoryProvider>(context).getQuizHistory(context);
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context,'Question History'),
-      body: Consumer<QuestionHistoryProvider>(
-        builder: (context, questionHistoryProvider, _) {
-          return SingleChildScrollView(
+      appBar: buildAppBar(context,'Quizes History'),
+      body: Consumer<QuizHistoryProvider>(builder: (context, quizHistoryProvider, _) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                children: [
-                  DataTable(
+            child: Column(
+              children: [
+                DataTable(
                     dataRowMaxHeight: 55,
                     columnSpacing:
                         25, // Adjust the spacing between columns here
@@ -69,15 +64,13 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                       ),
                     ],
                     rows: <DataRow>[
-                      for (var e in questionHistoryProvider.allQuestionsHistory)
+                      for (var e in quizHistoryProvider.allQuizHistory)
                         DataRow(
                           cells: [
-                            DataCell(Text(e.year.toString())),
-                            DataCell(Text(e.month.toString())),
-                            DataCell(Text(e.section)),
-                            DataCell(e.answer == 0
-                                ? const Text('false')
-                                : const Text('true')),
+                            DataCell(Text(e.quizName.toString())),
+                            DataCell(Text(e.lessonName.toString())),
+                            DataCell(Text(e.date)),
+                            DataCell(Text(e.score.toString())),
                             DataCell(
                               ElevatedButton(
                                 onPressed: () {
@@ -91,14 +84,7 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                                         actions: <Widget>[
                                           ElevatedButton(
                                             onPressed: () {
-                                              log('QQQQ ID: ${e.id}');
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).pushReplacement(
-                                                  MaterialPageRoute(
-                                                      builder: (ctx) =>
-                                                          QuestionAnswerScreen(
-                                                            id: e.id,
-                                                          )));
+                                              
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.redAccent[700],
@@ -134,12 +120,11 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                         ),
                     ],
                   ),
-                ],
-              ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },) ,
     );
   }
 }
