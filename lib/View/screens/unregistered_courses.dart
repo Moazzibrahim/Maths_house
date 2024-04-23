@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/american_courses_screen.dart';
+import 'package:flutter_application_1/View/screens/igcse_courses_screen.dart';
+import 'package:flutter_application_1/View/screens/national_courses_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_courses_custom.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -31,17 +35,26 @@ class UnregisteredCourses extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(children:  [
+        child: ListView(children: [
           InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx)=> const AmericanCoursesScreen())
-              );
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const AmericanCoursesScreen()));
             },
             child: const CustomUnregisteredWidgets(text: 'American'),
           ),
-          const CustomUnregisteredWidgets(text: 'IGCSE'),
-          const CustomUnregisteredWidgets(text: 'National'),
+          GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const IgcseCoursesScreen()));
+              },
+              child: const CustomUnregisteredWidgets(text: 'IGCSE')),
+          GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const NationalCoursesScreen()));
+              },
+              child: const CustomUnregisteredWidgets(text: 'National')),
         ]),
       ),
     );

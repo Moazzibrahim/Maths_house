@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/View/screens/act_courses_screen.dart';
+import 'package:flutter_application_1/View/screens/ect_courses_screen.dart';
+import 'package:flutter_application_1/View/screens/sat_courses.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_courses_custom.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -30,10 +35,33 @@ class AmericanCoursesScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(children: const [
-          CustomUnregisteredWidgets(text: 'SAT'),
-          CustomUnregisteredWidgets(text: 'ECT'),
-          CustomUnregisteredWidgets(text: 'ACT'),
+        child: ListView(children: [
+          GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SatCourses()),
+                );
+              },
+              child: CustomUnregisteredWidgets(text: 'SAT')),
+          GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EctCoursesScreen()),
+                );
+              },
+              child: CustomUnregisteredWidgets(text: 'ECT')),
+          GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ActCoursesScreen()),
+                );
+              },
+              child: CustomUnregisteredWidgets(text: 'ACT')),
         ]),
       ),
     );
