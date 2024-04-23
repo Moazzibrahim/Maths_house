@@ -4,7 +4,8 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
 class ExamResultScreen extends StatefulWidget {
-  const ExamResultScreen({super.key});
+  final int? correctAnswerCount;
+  const ExamResultScreen({super.key, this.correctAnswerCount});
 
   @override
   State<ExamResultScreen> createState() => _DiagnosticResultScreenState();
@@ -34,7 +35,8 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Correct Questions", "6"),
+            _buildInfoRow(
+                "Correct Questions", widget.correctAnswerCount.toString()),
             const SizedBox(
               height: 15,
             ),

@@ -46,8 +46,6 @@ class _ExamBodyState extends State<ExamBody> {
   int _questionIndex = 0;
   bool _isSubmitting = false;
   List<QuestionWithAnswers>? questionsWithAnswers;
-  // ignore: unused_field
-  int? _selectedOptionIndex;
 
   @override
   void initState() {
@@ -204,6 +202,7 @@ class _ExamBodyState extends State<ExamBody> {
                       content: Text('Answers submitted.'),
                     ),
                   );
+                  submitAnswers(questionsWithAnswers!);
                 },
                 child: const Text(
                   'Submit',
@@ -251,23 +250,48 @@ class _ExamBodyState extends State<ExamBody> {
     );
   }
 
-  List<int> wrongAnswerIndices = [];
+  List<Map<String, dynamic>> wrongAnswerQuestions = [];
+  int correctAnswerCount = 0;
+  int wrongAnswerCount = 0;
+  int totalQuestions = 0; // Counter for total questions
 
-  void submitAnswers() {
-    // Clear wrong answer indices list before checking again
-    wrongAnswerIndices.clear();
-    for (var i = 0; i < questionsWithAnswers!.length; i++) {
-      final selectedAnswerIndex =
-          questionsWithAnswers![i].selectedSolutionIndex;
+  void submitAnswers(List<QuestionWithAnswers> questionsWithAnswers) {
+    // Clear wrong answer questions list before checking again
+    wrongAnswerQuestions.clear();
+    correctAnswerCount = 0;
+    wrongAnswerCount = 0;
+    totalQuestions =
+        questionsWithAnswers.length; // Initialize total questions counter
 
-      // Check if selected answer is not equal to correct answer (the first choice)
-      if (selectedAnswerIndex != null &&
-          selectedAnswerIndex != 0 &&
-          questionsWithAnswers![i].question.ansType == 'MCQ') {
-        // Add the index to the list of wrong answers
-        wrongAnswerIndices.add(i);
-        print(wrongAnswerIndices);
+    for (var i = 0; i < totalQuestions; i++) {
+      final selectedAnswerIndex = questionsWithAnswers[i].selectedSolutionIndex;
+      final correctAnswerIndex = questionsWithAnswers[i]
+          .answers
+          // ignore: unnecessary_null_comparison
+          .indexWhere((answer) => answer.mcqAns != null);
+
+      // Check if both selected answer and correct answer are valid
+      if (selectedAnswerIndex != null && correctAnswerIndex != -1) {
+        // Compare the positions of selected answer and correct answer
+        if (selectedAnswerIndex == correctAnswerIndex) {
+          correctAnswerCount++;
+        } else {
+          // Add the question to the list of wrong answer questions
+          wrongAnswerQuestions.add({
+            'question': questionsWithAnswers[i].question,
+            'selectedAnswer': String.fromCharCode(selectedAnswerIndex +
+                65), // Convert index to letter representation
+            'correctAnswer': String.fromCharCode(correctAnswerIndex +
+                65), // Convert index to letter representation
+          });
+          wrongAnswerCount++;
+        }
       }
     }
+
+    print('Correct Answers: $correctAnswerCount');
+    print('Wrong Answers: $wrongAnswerCount');
+    print('Total Questions: $totalQuestions');
+    print(wrongAnswerQuestions);
   }
 }

@@ -50,6 +50,7 @@ class ExamMcqProvider with ChangeNotifier {
               for (var answerData in examData['Answers']) {
                 final Answer answer = Answer.fromJson(answerData);
                 answerList.add(answer);
+                print(answer.mcqAnswers); // Access mcqAnswers field here
               }
             }
 
