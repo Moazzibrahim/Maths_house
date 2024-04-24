@@ -8,6 +8,7 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_prov
 import 'package:provider/provider.dart';
 
 class StartDiagnostic extends StatelessWidget {
+  // ignore: use_key_in_widget_constructors
   const StartDiagnostic({Key? key});
 
   @override
@@ -31,6 +32,7 @@ class StartDiagnostic extends StatelessWidget {
 }
 
 class DiagnosticBody extends StatefulWidget {
+  // ignore: use_key_in_widget_constructors
   const DiagnosticBody({Key? key});
 
   @override

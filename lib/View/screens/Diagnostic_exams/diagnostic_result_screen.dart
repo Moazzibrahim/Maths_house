@@ -9,7 +9,7 @@ class DiagnosticResultScreen extends StatefulWidget {
   final int? correctAnswerCount;
   final int? totalQuestions;
 
-  DiagnosticResultScreen(
+  const DiagnosticResultScreen(
       {super.key,
       this.wrongAnswerQuestions,
       this.correctAnswerCount,
