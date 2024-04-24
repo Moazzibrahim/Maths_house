@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -6,7 +8,7 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_prov
 import 'package:provider/provider.dart';
 
 class StartDiagnostic extends StatelessWidget {
-  const StartDiagnostic({super.key});
+  const StartDiagnostic({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class StartDiagnostic extends StatelessWidget {
 }
 
 class DiagnosticBody extends StatefulWidget {
-  const DiagnosticBody({super.key});
+  const DiagnosticBody({Key? key});
 
   @override
   State<DiagnosticBody> createState() => _DiagnosticBodyState();
@@ -37,6 +39,22 @@ class DiagnosticBody extends StatefulWidget {
 
 class _DiagnosticBodyState extends State<DiagnosticBody> {
   int _currentQuestionIndex = 0;
+  late DateTime startTime;
+  List<int> wrongQuestionIds = [];
+  DateTime? endTime;
+  Duration? elapsedTime;
+
+  @override
+  void initState() {
+    fetchdata();
+    super.initState();
+    startTime = DateTime.now();
+  }
+
+  Future<void> fetchdata() async {
+    final diagprov = Provider.of<DiagExamProvider>(context, listen: false);
+    final data = await diagprov.fetchDataFromApi(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +83,66 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       }
     }
 
+    void navigateToQuestion(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Go to Question'),
+            children: List.generate(
+              questionData.length,
+              (index) => SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    _currentQuestionIndex = index;
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text("Question ${index + 1}"),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     void submitAnswers() {
-      // Logic to submit answers goes here
+      int correctAnswerCount = 0;
+      List<Map<String, dynamic>> wrongAnswerQuestions = [];
+      List<int> wrongQuestionIds = [];
+      int totalQuestions = 0;
+
+      for (int i = 0; i < allDiagnostics.length; i++) {
+        final Map<String, dynamic> questionData = allDiagnostics[i];
+        final List<Map<String, dynamic>> mcqData =
+            questionData['mcq'] as List<Map<String, dynamic>>;
+        final String correctAnswer = mcqData[0]['mcq_answers'];
+        totalQuestions = allDiagnostics
+            .length; // Assuming correct answer is the same for all options
+
+        if (selectedAnswers[i] == correctAnswer) {
+          correctAnswerCount++;
+        } else {
+          wrongAnswerQuestions.add(
+              questionData); // Add the entire question data to the list of wrong questions
+          final int questionId = questionData['question_with_ans'] != null
+              ? questionData['question_with_ans']['id']
+              : -1;
+
+          wrongQuestionIds
+              .add(questionId); // Add the ID of wrong question to the list
+        }
+      }
+
+      int wrongAnswerCount = wrongAnswerQuestions.length;
+
+      // Now you have counts and details of wrong questions along with their IDs
+      print('Total Questions: $totalQuestions');
+      print('Correct Answers: $correctAnswerCount');
+      print('Wrong Answers: $wrongAnswerCount');
+      print('Wrong Answer Questions: $wrongAnswerQuestions');
+      print('Wrong Question IDs: $wrongQuestionIds');
+
       timerProvider.stopTimer();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Your answers are submitted')),
@@ -75,7 +151,11 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const DiagnosticResultScreen(),
+            builder: (context) => DiagnosticResultScreen(
+              wrongAnswerQuestions: wrongAnswerCount,
+              correctAnswerCount: correctAnswerCount,
+              totalQuestions: allDiagnostics.length,
+            ),
           ),
         );
       });
@@ -120,30 +200,27 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
                       questionData['mcq'] != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          (questionData['mcq'] as List).map<Widget>((mcq) {
-                        return Row(
-                          children: [
-                            Radio(
-                              value: mcq['mcq_ans'],
-                              groupValue:
-                                  selectedAnswers[_currentQuestionIndex],
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedAnswers[_currentQuestionIndex] =
-                                      value.toString();
-                                });
-                              },
-                              activeColor:
-                                  selectedAnswers[_currentQuestionIndex] ==
-                                          mcq['mcq_ans']
-                                      ? Colors.green
-                                      : Colors.red,
-                            ),
-                            Text(mcq['mcq_answers']),
-                          ],
-                        );
-                      }).toList(),
+                      children: List.generate(
+                        (questionData['mcq'] as List).length,
+                        (index) {
+                          final mcq = questionData['mcq'][index];
+                          final mcqAns = mcq['mcq_ans']
+                              as String; // Assuming mcq_ans is a String
+                          return RadioListTile(
+                            title: Text(mcq['mcq_ans'] ?? ''),
+                            value: mcqAns,
+                            groupValue: selectedAnswers[_currentQuestionIndex],
+                            onChanged: (value) {
+                              setState(() {
+                                selectedAnswers[_currentQuestionIndex] = value;
+                                print("Selected Answer: $value");
+                                print(
+                                    "${selectedAnswers[_currentQuestionIndex]}"); // Print selected answer
+                              });
+                            },
+                          );
+                        },
+                      ),
                     )
                   else
                     Padding(
