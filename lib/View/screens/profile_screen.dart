@@ -67,8 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             CircleAvatar(
                               radius: 50,
-                              backgroundImage: AssetImage(
-                                  'assets/images/moaz.jpeg'), // Your image path here
+                              backgroundImage:
+                                  AssetImage('assets/images/moaz.jpeg'),
                             ),
                           ],
                         ),
@@ -146,78 +146,122 @@ class RequesterContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.person_outline),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Name: ${user.fName}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.person_outline),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Name: ${user.fName}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.person_outline),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Second Name:${user.lName}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.person_outline),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Second Name:${user.lName}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.email_outlined),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Email: ${user.email}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.email_outlined),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Email: ${user.email}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.mobile_screen_share_outlined),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Mobile: ${user.phone}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.mobile_screen_share_outlined),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Mobile: ${user.phone}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
+            const Divider(),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    elevation: 4,
+                    shadowColor: Colors.black,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(13))),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.wallet),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          'Wallet',
+                          style: TextStyle(fontSize: 17),
+                        ),
+                      ],
+                    ),
+                    Icon(Icons.arrow_forward_ios)
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await LogoutModel().logout(context);
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (ctx) => const TabsScreen(
+                            isLoggedIn: true,
+                          )));
+                },
+                style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   elevation: 4,
                   shadowColor: Colors.black,
@@ -227,65 +271,23 @@ class RequesterContent extends StatelessWidget {
                     vertical: 15,
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13))),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.wallet),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                        'Wallet',
-                        style: TextStyle(fontSize: 17),
-                      ),
-                    ],
-                  ),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () async {
-                await LogoutModel().logout(context);
-                // ignore: use_build_context_synchronously
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (ctx) => const TabsScreen(
-                          isLoggedIn: true,
-                        )));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 4,
-                shadowColor: Colors.black,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 15,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13),
-                  side: const BorderSide(
-                    color: faceBookColor,
+                    borderRadius: BorderRadius.circular(13),
+                    side: const BorderSide(
+                      color: faceBookColor,
+                    ),
                   ),
                 ),
-              ),
-              child: const Text(
-                'Logout',
-                style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                    color: faceBookColor),
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                      color: faceBookColor),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -298,57 +300,59 @@ class ParentContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.person_outline),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Name: ${user.lName}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.person_outline),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Name: ${user.lName}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.email_outlined),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Email: ${user.parentEmail}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.email_outlined),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Email: ${user.parentEmail}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.mobile_screen_share_outlined),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Mobile: ${user.parentPhone}',
-                  style: const TextStyle(fontSize: 18),
-                )
-              ],
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(Icons.mobile_screen_share_outlined),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Mobile: ${user.parentPhone}',
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             ),
-          ),
-          const Divider(),
-        ],
+            const Divider(),
+          ],
+        ),
       ),
     );
   }
