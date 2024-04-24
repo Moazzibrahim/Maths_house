@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class ProfileProvider with ChangeNotifier {
-  List<User> profiledetails = [];
+  late User userData;
 
-  Future<void> getCoursesData(BuildContext context) async {
+  Future<void> getprofileData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
@@ -26,15 +26,8 @@ class ProfileProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        // Assuming responseData contains a list of user data under the key 'users'
-        final List<dynamic> userDataList = responseData['users'];
-        profiledetails.clear(); // Clear existing data before adding new data
-
-        // Parse each user data and add it to profiledetails list
-        for (var userData in userDataList) {
-          profiledetails.add(User.fromJson(userData));
-        }
-
+        User user = User.fromJson(responseData);
+        userData = user;
         notifyListeners();
       } else {
         log('Failed to fetch data');

@@ -32,7 +32,7 @@ class _CardWidgetState extends State<CardWidget> {
           },
           title: Text(
             ChapterNo,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 25,
             ),
@@ -44,8 +44,8 @@ class _CardWidgetState extends State<CardWidget> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Lesson 1'),
-                      content: Text('This is the content of Lesson 1.'),
+                      title: const Text('Lesson 1'),
+                      content: const Text('This is the content of Lesson 1.'),
                       actions: [
                         Row(
                           children: [
@@ -57,13 +57,13 @@ class _CardWidgetState extends State<CardWidget> {
                                       builder: (context) => const LoginPage()),
                                 );
                               },
-                              child: Text('login'),
+                              child: const Text('login'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('close '),
+                              child: const Text('close '),
                             ),
                           ],
                         ),
@@ -72,7 +72,7 @@ class _CardWidgetState extends State<CardWidget> {
                   },
                 );
               },
-              child: ListTile(
+              child: const ListTile(
                 title: Row(
                   children: [
                     Icon(
@@ -96,8 +96,8 @@ class _CardWidgetState extends State<CardWidget> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Lesson 2'),
-                      content: Text('This is the content of Lesson 2.'),
+                      title: const Text('Lesson 2'),
+                      content: const Text('This is the content of Lesson 2.'),
                       actions: [
                         Row(
                           children: [
@@ -109,13 +109,13 @@ class _CardWidgetState extends State<CardWidget> {
                                       builder: (context) => const LoginPage()),
                                 );
                               },
-                              child: Text('login'),
+                              child: const Text('login'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('close '),
+                              child: const Text('close '),
                             ),
                           ],
                         ),
@@ -124,7 +124,7 @@ class _CardWidgetState extends State<CardWidget> {
                   },
                 );
               },
-              child: ListTile(
+              child: const ListTile(
                 title: Row(
                   children: [
                     Icon(
@@ -148,8 +148,8 @@ class _CardWidgetState extends State<CardWidget> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Lesson 3'),
-                      content: Text('This is the content of Lesson 3.'),
+                      title: const Text('Lesson 3'),
+                      content: const Text('This is the content of Lesson 3.'),
                       actions: [
                         Row(
                           children: [
@@ -161,13 +161,13 @@ class _CardWidgetState extends State<CardWidget> {
                                       builder: (context) => const LoginPage()),
                                 );
                               },
-                              child: Text('login'),
+                              child: const Text('login'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('close '),
+                              child: const Text('close '),
                             ),
                           ],
                         ),
@@ -176,7 +176,7 @@ class _CardWidgetState extends State<CardWidget> {
                   },
                 );
               },
-              child: ListTile(
+              child: const ListTile(
                 title: Row(
                   children: [
                     Icon(
@@ -200,8 +200,8 @@ class _CardWidgetState extends State<CardWidget> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Lesson 4'),
-                      content: Text('This is the content of Lesson 4.'),
+                      title: const Text('Lesson 4'),
+                      content: const Text('This is the content of Lesson 4.'),
                       actions: [
                         Row(
                           children: [
@@ -213,13 +213,13 @@ class _CardWidgetState extends State<CardWidget> {
                                       builder: (context) => const LoginPage()),
                                 );
                               },
-                              child: Text('login'),
+                              child: const Text('login'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('close '),
+                              child: const Text('close '),
                             ),
                           ],
                         ),
@@ -228,7 +228,7 @@ class _CardWidgetState extends State<CardWidget> {
                   },
                 );
               },
-              child: ListTile(
+              child: const ListTile(
                 title: Row(
                   children: [
                     Icon(

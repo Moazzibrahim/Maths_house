@@ -129,7 +129,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       fontSize: 15.sp,
                       color: Colors.grey,
                       fontWeight: FontWeight.w400),
-                  children: <TextSpan>[
+                  children: const <TextSpan>[
                     TextSpan(
                       text: 'Re-send',
                       style: TextStyle(

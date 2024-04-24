@@ -30,37 +30,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Padding(
                 padding: EdgeInsets.all(12.w),
                 child: Container(
-                  decoration: BoxDecoration(color: gridHomeColor),
+                  decoration: const BoxDecoration(color: gridHomeColor),
                   child: Column(
                     children: [
                       SizedBox(height: 15.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("product",
+                          const Text("product",
                               style: TextStyle(color: faceBookColor)),
                           SizedBox(width: 13.w),
-                          Text("Price", style: TextStyle(color: faceBookColor))
+                          const Text("Price", style: TextStyle(color: faceBookColor))
                         ],
                       ),
                       SizedBox(height: 10.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("Chapter 1:",
+                          const Text("Chapter 1:",
                               style: TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          Text("18.92\$", style: TextStyle(color: Colors.grey)),
+                          const Text("18.92\$", style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                       SizedBox(height: 10.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("Chapter 2:",
+                          const Text("Chapter 2:",
                               style: TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          Text("22.92\$", style: TextStyle(color: Colors.grey)),
+                          const Text("22.92\$", style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                       SizedBox(height: 15.h),
@@ -68,13 +68,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         padding: EdgeInsets.only(left: 18.w, bottom: 18.h),
                         child: Row(
                           children: [
-                            Text("Total: ",
+                            const Text("Total: ",
                                 style: TextStyle(color: Colors.grey)),
                             SizedBox(width: 8.w),
-                            Text("37.85\$",
+                            const Text("37.85\$",
                                 style: TextStyle(color: Colors.grey)),
                             SizedBox(width: 24.w),
-                            Text(
+                            const Text(
                               "43\$",
                               style: TextStyle(
                                 color: faceBookColor,
@@ -89,7 +89,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
               SizedBox(height: 12.h),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
@@ -112,7 +112,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           couponCode =
                               value; // Update the coupon code when text changes
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Discount code",
                         ),
                       ),

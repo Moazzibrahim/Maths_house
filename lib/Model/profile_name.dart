@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
-class User with ChangeNotifier {
+class User {
   int id;
   String fName;
   String lName;
@@ -27,16 +25,16 @@ class User with ChangeNotifier {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['user']['id'],
-      fName: json['user']['f_name'],
-      lName: json['user']['l_name'],
-      name: json['user']['name'],
-      email: json['user']['email'],
-      profilePhotoPath: json['user']['profile_photo_path'],
-      phone: json['user']['phone'],
-      parentPhone: json['user']['parent_phone'],
-      parentEmail: json['user']['parent_email'],
-      image: json['user']['image'],
+      id: json['user']['id']??'',
+      fName: json['user']['f_name']?? 'non user',
+      lName: json['user']['l_name']??'',
+      name: json['user']['name']??'',
+      email: json['user']['email']??'',
+      profilePhotoPath: json['user']['profile_photo_path']??'',
+      phone: json['user']['phone']??'',
+      parentPhone: json['user']['parent_phone']??'',
+      parentEmail: json['user']['parent_email']??'',
+      image: json['user']['image']??'',
     );
   }
 }

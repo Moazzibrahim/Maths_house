@@ -9,7 +9,7 @@ class IgcseCoursesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, 'IGCSE'),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
             CardWidget(ChapterNo: 'Chapter 1'),

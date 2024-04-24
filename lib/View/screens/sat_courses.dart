@@ -9,7 +9,7 @@ class SatCourses extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, 'Sat'),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
             CardWidget(ChapterNo: 'Chapter 1'),

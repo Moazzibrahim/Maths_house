@@ -64,13 +64,13 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 10.h,
               ),
-              Text('Welcome to Maths house!'),
+              const Text('Welcome to Maths house!'),
               SizedBox(height: 20.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: TextField(
                   controller: emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                   ),
                 ),
@@ -110,10 +110,10 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ForgetPasswordScreen()),
+                            builder: (context) => const ForgetPasswordScreen()),
                       );
                     },
-                    child: Text(
+                    child: const Text(
                       'Forgot password?',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: faceBookColor),
@@ -152,11 +152,11 @@ class _LoginPageState extends State<LoginPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(child: Divider(color: Colors.black)),
+                    const Expanded(child: Divider(color: Colors.black)),
                     SizedBox(width: 10.w),
-                    Text('Or Login With'),
+                    const Text('Or Login With'),
                     SizedBox(width: 10.w),
-                    Expanded(child: Divider(color: Colors.black)),
+                    const Expanded(child: Divider(color: Colors.black)),
                   ],
                 ),
               ),
@@ -173,13 +173,13 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Don\'t have an account?'),
+                  const Text('Don\'t have an account?'),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => RegisterScreen()));
+                          builder: (ctx) => const RegisterScreen()));
                     },
-                    child: Text(
+                    child: const Text(
                       'Sign up',
                       style: TextStyle(
                         decoration: TextDecoration.underline,

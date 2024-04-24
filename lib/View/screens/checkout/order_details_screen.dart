@@ -18,9 +18,9 @@ class OrderDetails extends StatelessWidget {
               child: Container(
                 height: 150,
                 decoration: const BoxDecoration(color: gridHomeColor),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: const Column(
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 40),
+                  child: Column(
                     children: [
                       SizedBox(
                         height: 15,
@@ -104,7 +104,7 @@ class OrderDetails extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => OrderDetails()),
+                  MaterialPageRoute(builder: (context) => const OrderDetails()),
                 );
               },
               style: ElevatedButton.styleFrom(

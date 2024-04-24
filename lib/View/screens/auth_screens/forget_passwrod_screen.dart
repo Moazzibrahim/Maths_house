@@ -5,7 +5,7 @@ import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
-  const ForgetPasswordScreen({Key? key});
+  const ForgetPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ForgetPasswordScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(19.w), // Use ScreenUtil for padding
         child: ScreenUtilInit(
-          designSize: Size(375, 812), // Define your design size
+          designSize: const Size(375, 812), // Define your design size
           builder: (BuildContext context, Widget? child) {
             return Container(
               // Wrap your Column with a Container
@@ -29,7 +29,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                         fontWeight: FontWeight.w300,
                         color: Colors.black,
                       ),
-                      children: <TextSpan>[
+                      children: const <TextSpan>[
                         TextSpan(
                           text: '?',
                           style: TextStyle(
@@ -52,7 +52,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                         color: Colors.grey,
                         fontWeight: FontWeight.w400,
                       ),
-                      children: <TextSpan>[
+                      children: const <TextSpan>[
                         TextSpan(
                           text: '(OTP)',
                           style: TextStyle(
@@ -66,7 +66,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                   SizedBox(
                     height: 10.sp, // Use ScreenUtil for height
                   ),
-                  TextField(
+                  const TextField(
                     decoration: InputDecoration(
                       labelStyle: TextStyle(color: Colors.grey),
                       labelText: 'Enter Phone Or Email',

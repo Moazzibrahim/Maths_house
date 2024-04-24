@@ -10,7 +10,7 @@ class ChapterListTileWidgts extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {},
-      title: Row(
+      title: const Row(
         children: [
           Icon(
             Icons.video_collection_rounded,

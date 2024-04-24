@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/act_courses_screen.dart';
 import 'package:flutter_application_1/View/screens/ect_courses_screen.dart';
 import 'package:flutter_application_1/View/screens/sat_courses.dart';
@@ -40,10 +38,10 @@ class AmericanCoursesScreen extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SatCourses()),
+                  MaterialPageRoute(builder: (context) => const SatCourses()),
                 );
               },
-              child: CustomUnregisteredWidgets(text: 'SAT')),
+              child: const CustomUnregisteredWidgets(text: 'SAT')),
           GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -52,7 +50,7 @@ class AmericanCoursesScreen extends StatelessWidget {
                       builder: (context) => const EctCoursesScreen()),
                 );
               },
-              child: CustomUnregisteredWidgets(text: 'ECT')),
+              child: const CustomUnregisteredWidgets(text: 'ECT')),
           GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -61,7 +59,7 @@ class AmericanCoursesScreen extends StatelessWidget {
                       builder: (context) => const ActCoursesScreen()),
                 );
               },
-              child: CustomUnregisteredWidgets(text: 'ACT')),
+              child: const CustomUnregisteredWidgets(text: 'ACT')),
         ]),
       ),
     );

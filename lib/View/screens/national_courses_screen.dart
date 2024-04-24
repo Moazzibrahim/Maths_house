@@ -9,7 +9,7 @@ class NationalCoursesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, 'National'),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Column(
           children: [
             CardWidget(ChapterNo: 'Chapter 1'),

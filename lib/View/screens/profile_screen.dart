@@ -1,93 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
+import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.isLoggedIn});
   final bool isLoggedIn;
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    Provider.of<ProfileProvider>(context, listen: false)
+        .getprofileData(context)
+        .catchError((e) {
+      print(e);
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      initialIndex: 1,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'My Profile',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-          leading: Container(
-            margin: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
-            child: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.redAccent[700],
-                )),
-          ),
-        ),
-        body: !isLoggedIn
-            ? Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+    return Consumer<ProfileProvider>(
+      builder: (context, profileProvider, _) {
+        return DefaultTabController(
+          length: 2,
+          initialIndex: 1,
+          child: Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const Text(
+                'My Profile',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.white,
+              leading: Container(
+                margin: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                    color: gridHomeColor,
+                    borderRadius: BorderRadius.circular(12)),
+                child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.redAccent[700],
+                    )),
+              ),
+            ),
+            body: !widget.isLoggedIn
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: AssetImage(
-                              'assets/images/moaz.jpeg'), // Your image path here
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundImage: AssetImage(
+                                  'assets/images/moaz.jpeg'), // Your image path here
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Edit Profile'),
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.edit_outlined,
+                                  size: 21,
+                                ))
+                          ],
+                        ),
+                        TabBar(
+                          labelPadding: EdgeInsets
+                              .zero, // No padding between label and indicator
+                          indicator: BoxDecoration(
+                            color: Colors.redAccent[700],
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          labelColor: Colors.white,
+                          unselectedLabelColor: Colors.redAccent[700],
+                          tabs: const [
+                            _CustomTabProfile(text: 'Requester'),
+                            _CustomTabProfile(text: 'Parent'),
+                          ],
+                        ),
+                        Expanded(
+                          child: TabBarView(children: [
+                            RequesterContent(
+                              user: profileProvider.userData,
+                            ),
+                            ParentContent(
+                              user: profileProvider.userData,
+                            ),
+                          ]),
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Edit Profile'),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.edit_outlined,
-                              size: 21,
-                            ))
-                      ],
-                    ),
-                    TabBar(
-                      labelPadding: EdgeInsets
-                          .zero, // No padding between label and indicator
-                      indicator: BoxDecoration(
-                        color: Colors.redAccent[700],
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.redAccent[700],
-                      tabs: const [
-                        _CustomTabProfile(text: 'Requester'),
-                        _CustomTabProfile(text: 'Parent'),
-                      ],
-                    ),
-                    const Expanded(
-                      child: TabBarView(children: [
-                        RequesterContent(),
-                        ParentContent(),
-                      ]),
-                    ),
-                  ],
-                ),
-              )
-            : const UnregisteredProfile(text: 'Login to see your ptofile',),
-      ),
+                  )
+                : const UnregisteredProfile(
+                    text: 'Login to see your profile',
+                  ),
+          ),
+        );
+      },
     );
   }
 }
@@ -111,72 +140,73 @@ class _CustomTabProfile extends StatelessWidget {
 }
 
 class RequesterContent extends StatelessWidget {
-  const RequesterContent({super.key});
+  const RequesterContent({super.key, required this.user});
+  final User user;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.person_outline),
-                SizedBox(
+                const Icon(Icons.person_outline),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Name: Youssef',
-                  style: TextStyle(fontSize: 18),
+                  'Name: ${user.fName}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
           ),
           const Divider(),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.person_outline),
-                SizedBox(
+                const Icon(Icons.person_outline),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Second Name: Tamer',
-                  style: TextStyle(fontSize: 18),
+                  'Second Name:${user.lName}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
           ),
           const Divider(),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.email_outlined),
-                SizedBox(
+                const Icon(Icons.email_outlined),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Email: YoussefTamer@gmail.com',
-                  style: TextStyle(fontSize: 18),
+                  'Email: ${user.email}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
           ),
           const Divider(),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.mobile_screen_share_outlined),
-                SizedBox(
+                const Icon(Icons.mobile_screen_share_outlined),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Mobile: 01005019348',
-                  style: TextStyle(fontSize: 18),
+                  'Mobile: ${user.phone}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
@@ -262,63 +292,62 @@ class RequesterContent extends StatelessWidget {
 }
 
 class ParentContent extends StatelessWidget {
-  const ParentContent({super.key});
-
+  const ParentContent({super.key, required this.user});
+  final User user;
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding:  EdgeInsets.all(8.0),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.person_outline),
-                SizedBox(
+                const Icon(Icons.person_outline),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Name: Youssef',
-                  style: TextStyle(fontSize: 18),
+                  'Name: ${user.lName}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
           ),
-          Divider(),
-          
+          const Divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.email_outlined),
-                SizedBox(
+                const Icon(Icons.email_outlined),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Email: YoussefTamer@gmail.com',
-                  style: TextStyle(fontSize: 18),
+                  'Email: ${user.parentEmail}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
             child: Row(
               children: [
-                Icon(Icons.mobile_screen_share_outlined),
-                SizedBox(
+                const Icon(Icons.mobile_screen_share_outlined),
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  'Mobile: 01005019348',
-                  style: TextStyle(fontSize: 18),
+                  'Mobile: ${user.parentPhone}',
+                  style: const TextStyle(fontSize: 18),
                 )
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );
