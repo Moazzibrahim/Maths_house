@@ -62,6 +62,7 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final diagProvider = Provider.of<DiagExamProvider>(context);
+    final int idd = diagProvider.exid;
     final List<Map<String, dynamic>> allDiagnostics =
         diagProvider.alldiagnostics;
     List<String?> selectedAnswers = List.filled(allDiagnostics.length, null);
@@ -113,26 +114,25 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       List<Map<String, dynamic>> wrongAnswerQuestions = [];
       List<int> wrongQuestionIds = [];
       int totalQuestions = 0;
+      DateTime endTime = DateTime.now();
+      Duration elapsedTime = endTime.difference(startTime);
+      print(
+          'Time taken: ${elapsedTime.inMinutes} minutes and ${elapsedTime.inSeconds % 60} seconds');
 
       for (int i = 0; i < allDiagnostics.length; i++) {
         final Map<String, dynamic> questionData = allDiagnostics[i];
         final List<Map<String, dynamic>> mcqData =
             questionData['mcq'] as List<Map<String, dynamic>>;
         final String correctAnswer = mcqData[0]['mcq_answers'];
-        totalQuestions = allDiagnostics
-            .length; // Assuming correct answer is the same for all options
+        totalQuestions = allDiagnostics.length;
 
         if (selectedAnswers[i] == correctAnswer) {
           correctAnswerCount++;
         } else {
-          wrongAnswerQuestions.add(
-              questionData); // Add the entire question data to the list of wrong questions
-          final int questionId = questionData['question_with_ans'] != null
-              ? questionData['question_with_ans']['id']
-              : -1;
-
-          wrongQuestionIds
-              .add(questionId); // Add the ID of wrong question to the list
+          wrongAnswerQuestions.add(questionData);
+          final int questionId =
+              questionData['id'] ?? -1; // Extract ID directly
+          wrongQuestionIds.add(questionId);
         }
       }
 
@@ -144,6 +144,7 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       print('Wrong Answers: $wrongAnswerCount');
       print('Wrong Answer Questions: $wrongAnswerQuestions');
       print('Wrong Question IDs: $wrongQuestionIds');
+      print("exam id: $idd");
 
       timerProvider.stopTimer();
       ScaffoldMessenger.of(context).showSnackBar(
