@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
@@ -104,7 +105,8 @@ class OrderDetails extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const OrderDetails()),
+                  MaterialPageRoute(
+                      builder: (context) => const RegisteredHomeScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(

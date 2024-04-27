@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class ProfileProvider with ChangeNotifier {
-  late User userData;
+  User? _userData;
 
+  User? get userData => _userData;
   Future<void> getprofileData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -26,8 +27,8 @@ class ProfileProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        User user = User.fromJson(responseData);
-        userData = user;
+        User? user = User.fromJson(responseData); // Use User? instead of User
+        _userData = user;
         notifyListeners();
       } else {
         log('Failed to fetch data');

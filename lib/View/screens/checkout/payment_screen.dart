@@ -1,28 +1,41 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
-
   @override
-  State<PaymentScreen> createState() => _PaymentScreenState();
+  _PaymentScreenState createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  late TextEditingController cardnumber;
-  late TextEditingController cardholder;
-  late TextEditingController expirydate;
-  late TextEditingController securitycode;
+  String? _selectedOption;
+  File? _image;
 
-  @override
-  void initState() {
-    super.initState();
-    cardnumber = TextEditingController();
-    cardholder = TextEditingController();
-    expirydate = TextEditingController();
-    securitycode = TextEditingController();
+  Future<void> _uploadFromGallery() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _takePhoto() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   @override
@@ -31,60 +44,148 @@ class _PaymentScreenState extends State<PaymentScreen> {
       appBar: buildAppBar(context, 'Payment'),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Row(
-              children: [
-                Text(
-                  'Enter Payment Details',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: TextField(
-                controller: cardnumber,
-                decoration: const InputDecoration(
-                  labelText: 'card number',
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Choose payment method',
+                style: TextStyle(
+                  fontSize: 20,
                 ),
               ),
-            ),
-            TextField(
-              controller: cardholder,
-              decoration: const InputDecoration(
-                labelText: 'card holder',
+              const SizedBox(height: 20),
+              ListTile(
+                title: const Text(
+                  'visa',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                leading: Radio<String>(
+                  activeColor: faceBookColor,
+                  value: 'visa',
+                  groupValue: _selectedOption,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedOption = value;
+                    });
+                  },
+                ),
+                tileColor: _selectedOption == 'visa' ? gridHomeColor : null,
+                onTap: () {
+                  setState(() {
+                    _selectedOption = 'visa';
+                  });
+                },
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: expirydate,
-                      decoration: const InputDecoration(
-                        labelText: 'expiry date',
-                      ),
+              ListTile(
+                title: const Text('Binance'),
+                leading: Radio<String>(
+                  activeColor: faceBookColor,
+                  value: 'Binance',
+                  groupValue: _selectedOption,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedOption = value;
+                    });
+                  },
+                ),
+                tileColor: _selectedOption == 'Binance' ? gridHomeColor : null,
+                onTap: () {
+                  setState(() {
+                    _selectedOption = 'Binance';
+                  });
+                },
+              ),
+              ListTile(
+                title: const Text('Skrill'),
+                leading: Radio<String>(
+                  activeColor: faceBookColor,
+                  value: 'Skrill',
+                  groupValue: _selectedOption,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedOption = value;
+                    });
+                  },
+                ),
+                tileColor: _selectedOption == 'Skrill' ? gridHomeColor : null,
+                onTap: () {
+                  setState(() {
+                    _selectedOption = 'Skrill';
+                  });
+                },
+              ),
+              ListTile(
+                title: Row(
+                  children: [
+                    Image.asset('assets/images/vodafone_icon 1.png'),
+                    const SizedBox(
+                      width: 5,
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      controller: securitycode,
-                      decoration: const InputDecoration(
-                        labelText: 'Security Code',
+                    const Text('Vodafone Cash')
+                  ],
+                ),
+                leading: Radio<String>(
+                  activeColor: faceBookColor,
+                  value: 'Vodafone Cash',
+                  groupValue: _selectedOption,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedOption = value;
+                    });
+                  },
+                ),
+                tileColor:
+                    _selectedOption == 'Vodafone Cash' ? gridHomeColor : null,
+                onTap: () {
+                  setState(() {
+                    _selectedOption = 'Vodafone Cash';
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _image != null
+                      ? Image.file(
+                          _image!,
+                          width: 200,
+                          height: 200,
+                        )
+                      : Text(
+                          'Upload receipt',
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            color: faceBookColor,
+                          ),
+                        ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _uploadFromGallery,
+                        child: const Text(
+                          'Upload from Gallery',
+                          style: TextStyle(color: faceBookColor),
+                        ),
                       ),
-                    ),
+                      ElevatedButton(
+                        onPressed: _takePhoto,
+                        child: const Text(
+                          'Take Photo',
+                          style: TextStyle(color: faceBookColor),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: ElevatedButton(
+              const SizedBox(height: 20),
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -92,46 +193,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: faceBookColor,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 140,
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12))),
-                child: const Text(
-                  'Pay Now',
+                  backgroundColor: faceBookColor,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12.h,
+                    horizontal: 130.w,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.w)),
+                ),
+                child: Text(
+                  'submit',
                   style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 16.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 1,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 13),
-                    child: Text('or'),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 1,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
