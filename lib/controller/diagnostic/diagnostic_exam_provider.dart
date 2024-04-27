@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 class DiagExamProvider with ChangeNotifier {
   List<Map<String, dynamic>> alldiagnostics = [];
-  late int exid;
+  int exid = 0;
 
   Future<void> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
