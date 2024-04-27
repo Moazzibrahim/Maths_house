@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/start_quiz.dart';
+import 'package:flutter_application_1/View/screens/courses/start_quiz.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/quiz_provider.dart';
 import 'package:provider/provider.dart';
