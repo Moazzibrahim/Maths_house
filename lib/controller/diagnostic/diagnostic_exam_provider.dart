@@ -38,7 +38,7 @@ class DiagExamProvider with ChangeNotifier {
 
         if (data['exam'] != null && data['exam']['question_with_ans'] != null) {
           final List<dynamic> questions = data['exam']['question_with_ans'];
-          int exid = data['exam']['id'];
+          exid = data['exam']['id'];
           print(exid);
           alldiagnostics.clear(); // Clear previous data
           for (var question in questions) {
@@ -47,6 +47,7 @@ class DiagExamProvider with ChangeNotifier {
               'question': question['question'] ?? '',
               'q_num': question['q_num'] ?? '',
               'q_type': question['q_type'] ?? '',
+              'q_url': question['q_url'] ?? '', // Include q_url field
               'mcq': question['mcq'] != null
                   ? (question['mcq'] as List).map((mcq) {
                       return {

@@ -65,7 +65,8 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final diagProvider = Provider.of<DiagExamProvider>(context);
-    final int idd = diagProvider.exid;
+    final int idd =
+        diagProvider.exid; // assuming a default value of 0 if exid is null
     final List<Map<String, dynamic>> allDiagnostics =
         diagProvider.alldiagnostics;
     List<String?> selectedAnswers = List.filled(allDiagnostics.length, null);
@@ -256,27 +257,38 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
                       questionData['mcq'] != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                        (questionData['mcq'] as List).length,
-                        (index) {
-                          final mcq = questionData['mcq'][index];
-                          final mcqAns = mcq['mcq_ans']
-                              as String; // Assuming mcq_ans is a String
-                          return RadioListTile(
-                            title: Text(mcq['mcq_ans'] ?? ''),
-                            value: mcqAns,
-                            groupValue: selectedAnswers[_currentQuestionIndex],
-                            onChanged: (value) {
-                              setState(() {
-                                selectedAnswers[_currentQuestionIndex] = value;
-                                print("Selected Answer: $value");
-                                print(
-                                    "${selectedAnswers[_currentQuestionIndex]}"); // Print selected answer
-                              });
-                            },
-                          );
-                        },
-                      ),
+                      children: [
+                        if (questionData['q_url'] != null)
+                          // Image.network(
+                          //   questionData['q_url'],
+                          //   width: double.infinity,
+                          //   fit: BoxFit.cover,
+                          // ),
+                        const SizedBox(
+                            height: 8), // Adjust the spacing as needed
+                        ...List.generate(
+                          (questionData['mcq'] as List).length,
+                          (index) {
+                            final mcq = questionData['mcq'][index];
+                            final mcqAns = mcq['mcq_ans'] as String;
+                            return RadioListTile(
+                              title: Text(mcq['mcq_ans'] ?? ''),
+                              value: mcqAns,
+                              groupValue:
+                                  selectedAnswers[_currentQuestionIndex],
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedAnswers[_currentQuestionIndex] =
+                                      value;
+                                  print("Selected Answer: $value");
+                                  print(
+                                      "${selectedAnswers[_currentQuestionIndex]}");
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     )
                   else
                     Padding(
