@@ -264,8 +264,8 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
                           //   width: double.infinity,
                           //   fit: BoxFit.cover,
                           // ),
-                        const SizedBox(
-                            height: 8), // Adjust the spacing as needed
+                          const SizedBox(
+                              height: 8), // Adjust the spacing as needed
                         ...List.generate(
                           (questionData['mcq'] as List).length,
                           (index) {
