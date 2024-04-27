@@ -65,7 +65,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
               Expanded(
                 child: TabBarView(children: [
                   IdeasContent(lesson: widget.lesson,),// replace this text with ideas Widgets
-                  const QuizzesContent(),
+                  QuizzesContent(lessonId:widget.lesson.lessonId ,),
                 ]),
               ),
             ],

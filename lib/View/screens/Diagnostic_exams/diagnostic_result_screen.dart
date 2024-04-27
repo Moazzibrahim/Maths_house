@@ -5,7 +5,15 @@ import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 
 class DiagnosticResultScreen extends StatefulWidget {
-  const DiagnosticResultScreen({super.key});
+  final int? wrongAnswerQuestions;
+  final int? correctAnswerCount;
+  final int? totalQuestions;
+
+  const DiagnosticResultScreen(
+      {super.key,
+      this.wrongAnswerQuestions,
+      this.correctAnswerCount,
+      this.totalQuestions});
 
   @override
   State<DiagnosticResultScreen> createState() => _DiagnosticResultScreenState();
@@ -31,15 +39,15 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Total Questions", "10"),
+            _buildInfoRow("Total Questions", " ${widget.totalQuestions}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Correct Questions", "6"),
+            _buildInfoRow("Correct Questions", "${widget.correctAnswerCount}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Wrong Questions", "0"),
+            _buildInfoRow("Wrong Questions", "${widget.wrongAnswerQuestions}"),
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),

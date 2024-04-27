@@ -16,6 +16,7 @@ import 'package:flutter_application_1/controller/history_controllers/quiz_histor
 import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
+import 'package:flutter_application_1/controller/quiz_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -51,6 +52,7 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DiaExamHistoryProvider()),
         ChangeNotifierProvider(create: (_) => QuizHistoryProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => QuizzesProvider()),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

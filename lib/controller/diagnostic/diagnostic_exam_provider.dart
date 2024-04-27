@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class DiagExamProvider with ChangeNotifier {
   List<Map<String, dynamic>> alldiagnostics = [];
+  late int exid;
 
   Future<void> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -33,21 +34,32 @@ class DiagExamProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);
+        print('Response body: $data');
 
         if (data['exam'] != null && data['exam']['question_with_ans'] != null) {
           final List<dynamic> questions = data['exam']['question_with_ans'];
+          int exid = data['exam']['id'];
+          print(exid);
           alldiagnostics.clear(); // Clear previous data
           for (var question in questions) {
             final questionMap = {
-              'question': question['question'],
-              'q_num': question['q_num'],
-              'q_type': question['q_type'],
-              'mcq': question['mcq'], // MCQ options
-              'g_ans': question['g_ans'], // Grid answers
+              'id': question['id'] ?? -1,
+              'question': question['question'] ?? '',
+              'q_num': question['q_num'] ?? '',
+              'q_type': question['q_type'] ?? '',
+              'mcq': question['mcq'] != null
+                  ? (question['mcq'] as List).map((mcq) {
+                      return {
+                        'mcq_ans': mcq['mcq_ans'] ?? '',
+                        'mcq_answers': mcq['mcq_answers'] ?? '',
+                      };
+                    }).toList()
+                  : [],
+              'g_ans': question['g_ans'] ?? '',
             };
             alldiagnostics.add(questionMap);
           }
+          print('All diagnostics: $alldiagnostics');
           // Notify listeners that the data has been updated
           notifyListeners();
         }
