@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/quizzes_model.dart';
+import 'package:flutter_application_1/View/screens/courses/quiz_score_screen.dart';
 import 'dart:async';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -17,15 +18,17 @@ class StartQuiz extends StatefulWidget {
 
 class _StartQuizState extends State<StartQuiz> {
   late Timer _timer;
+  int indexOfUnsolvedQuestion = 0;
   int _secondsElapsed = 0;
   int currentQuestionIndex = 0;
-  List<String?> selectedAnswers=[];
-  List<QuestionsQuiz> correctAnswers = [];
-  List<QuestionsQuiz> wrongAnswers = [];
+  List<String?> selectedAnswers = [];
+  Set<QuestionsQuiz> correctAnswers = {};
+  Set<QuestionsQuiz> wrongAnswers = {};
 
   @override
   void initState() {
-    selectedAnswers = List.generate(widget.quiz.questionQuizList.length, (index) => null);
+    selectedAnswers =
+        List.generate(widget.quiz.questionQuizList.length, (index) => null);
     _startTimer();
     super.initState();
   }
@@ -83,6 +86,7 @@ class _StartQuizState extends State<StartQuiz> {
     String mcqValue = String.fromCharCode(i + 65);
 
     return RadioListTile(
+        activeColor: Colors.redAccent[700],
         title: Text(mcqChoice),
         value: mcqValue,
         groupValue: getSelectedAnswer(),
@@ -146,7 +150,7 @@ class _StartQuizState extends State<StartQuiz> {
                     child: const Text('Previous'),
                   ),
                   SizedBox(
-                    width: 55.w,
+                    width: 50.w,
                   ),
                   GestureDetector(
                       onTap: () {
@@ -173,7 +177,7 @@ class _StartQuizState extends State<StartQuiz> {
                       },
                       child: Text('Question ${currentQuestionIndex + 1}')),
                   SizedBox(
-                    width: 55.w,
+                    width: 45.w,
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -182,10 +186,16 @@ class _StartQuizState extends State<StartQuiz> {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
                                 currentQuestion.mcqQuizList[0].answer) {
+                              if (wrongAnswers.contains(currentQuestion)) {
+                                wrongAnswers.remove(currentQuestion);
+                              }
                               correctAnswers.add(currentQuestion);
                               log('correct added');
                               nextQuestion();
                             } else {
+                              if (correctAnswers.contains(currentQuestion)) {
+                                correctAnswers.remove(currentQuestion);
+                              }
                               wrongAnswers.add(currentQuestion);
                               log('wrong added');
                               nextQuestion();
@@ -202,8 +212,53 @@ class _StartQuizState extends State<StartQuiz> {
                               wrongAnswers.add(currentQuestion);
                             }
                           }
-                          log('correct q: $correctAnswers');
-                          log('wrong q: $wrongAnswers');
+                          if (selectedAnswers.contains(null)) {
+                            for (var e in selectedAnswers) {
+                              if (e == null) {
+                                setState(() {
+                                  indexOfUnsolvedQuestion =
+                                      selectedAnswers.indexOf(e);
+                                });
+                              }
+                            }
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Submit Quiz'),
+                                  content: Text(
+                                      'you have not answered q.num: ${indexOfUnsolvedQuestion + 1}, are you sure you want to submit?'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                  builder: (ctx) =>
+                                                      const QuizScoreScreen()));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.redAccent[700],
+                                            foregroundColor: Colors.white),
+                                        child: const Text('Yes')),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.redAccent[700],
+                                            foregroundColor: Colors.white),
+                                        child: const Text('No')),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (ctx) => const QuizScoreScreen()));
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(

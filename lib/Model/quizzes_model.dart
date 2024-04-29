@@ -23,14 +23,17 @@ class QuizzesModel {
 }
 
 class QuestionsQuiz {
+  final int questionId;
   final String question;
   final List<McqQuiz> mcqQuizList;
   final List<GridAnswer> gridList;
 
-  QuestionsQuiz(
-      {required this.question,
+  QuestionsQuiz({
+      required this.questionId,
+      required this.question,
       required this.mcqQuizList,
-      required this.gridList});
+      required this.gridList,
+      });
   factory QuestionsQuiz.fromJson(Map<String, dynamic> json) {
     List<McqQuiz> mcql = [];
     List<dynamic> mcqQuizList = json['mcq'];
@@ -43,6 +46,7 @@ class QuestionsQuiz {
       gal.add(GridAnswer.fromJson(e));
     }
     return QuestionsQuiz(
+        questionId: json['id']?? 'no id',
         question: json['question']??'no question',
         mcqQuizList: mcql,
         gridList: gal,
