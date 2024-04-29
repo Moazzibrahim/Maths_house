@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, profileProvider, _) {
         return DefaultTabController(
           length: 2,
-          initialIndex: 1,
+          initialIndex: 0,
           child: Scaffold(
             appBar: AppBar(
               centerTitle: true,
@@ -170,7 +170,7 @@ class RequesterContent extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      'Name: ${user!.fName}',
+                      'Name: ${user!.fName} ${user!.lName}',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -187,7 +187,7 @@ class RequesterContent extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      'Second Name:${user!.lName}',
+                      'NickName:${user!.nickname}',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -375,6 +375,22 @@ class ParentContent extends StatelessWidget {
                 ),
               ),
               const Divider(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                child: Row(
+                  children: [
+                    const Icon(Icons.email_outlined),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      'Extra Email: ${user!.extraemail}',
+                      style: const TextStyle(fontSize: 18),
+                    )
+                  ],
+                ),
+              ),
 
               // Other fields...
             ] else
