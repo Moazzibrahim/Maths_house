@@ -15,13 +15,11 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   bool isvisText = true;
   TextEditingController newName = TextEditingController();
-    TextEditingController newEmail = TextEditingController();
-    TextEditingController newPass = TextEditingController();
-    TextEditingController confirmPass = TextEditingController();
+  TextEditingController newEmail = TextEditingController();
+  TextEditingController newPass = TextEditingController();
+  TextEditingController confirmPass = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    
-    
     return Scaffold(
       appBar: buildAppBar(context, 'Maths House'),
       body: Center(
@@ -59,7 +57,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         isvisText = !isvisText;
                       });
                     },
-                    icon: Icon(isvisText ? Icons.visibility_outlined : Icons.visibility_off_outlined)),
+                    icon: Icon(isvisText
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined)),
                 isvisText: !isvisText,
               ),
               CustomTextField(
@@ -71,7 +71,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         isvisText = !isvisText;
                       });
                     },
-                    icon: Icon(isvisText ? Icons.visibility_outlined : Icons.visibility_off_outlined)),
+                    icon: Icon(isvisText
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined)),
                 isvisText: !isvisText,
               ),
               const SizedBox(
@@ -154,8 +156,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                       child: Text(
                         'Login',
-                        style:
-                            TextStyle(color: Colors.redAccent[700], fontSize: 15),
+                        style: TextStyle(
+                            color: Colors.redAccent[700], fontSize: 15),
                       ))
                 ],
               ),

@@ -3,6 +3,7 @@ import 'package:flutter_application_1/Model/logout_model.dart';
 import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/edit_profile_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
@@ -187,7 +188,7 @@ class RequesterContent extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      'NickName:${user!.nickname}',
+                      'NickName:  ${user!.nickname}',
                       style: const TextStyle(fontSize: 18),
                     )
                   ],
@@ -244,23 +245,32 @@ class RequesterContent extends StatelessWidget {
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(13))),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.wallet),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Text(
-                            'Wallet',
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ],
-                      ),
-                      Icon(Icons.arrow_forward_ios)
-                    ],
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WalletScreen()),
+                      );
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.wallet),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text(
+                              'Wallet',
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.arrow_forward_ios)
+                      ],
+                    ),
                   ),
                 ),
               ),
