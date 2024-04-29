@@ -48,6 +48,7 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
   List<int> wrongQuestionIds = [];
   DateTime? endTime;
   Duration? elapsedTime;
+  List<String?> selectedAnswers = [];
 
   @override
   void initState() {
@@ -163,6 +164,13 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       }
     }
 
+    void onChanged(String value, int index) {
+      setState(() {
+        selectedAnswers[_currentQuestionIndex] =
+            value; // Update selected answer
+      });
+    }
+
     void submitAnswers() {
       int correctAnswerCount = 0;
       List<Map<String, dynamic>> wrongAnswerQuestions = [];
@@ -175,30 +183,45 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
 
       for (int i = 0; i < allDiagnostics.length; i++) {
         final Map<String, dynamic> questionData = allDiagnostics[i];
-        final List<Map<String, dynamic>> mcqData =
-            questionData['mcq'] as List<Map<String, dynamic>>;
-        final String correctAnswer = mcqData[0]['mcq_answers'];
+        final List<Map<String, dynamic>>? mcqData =
+            questionData['mcq'] as List<Map<String, dynamic>>?;
+        final String? correctAnswer = mcqData?.firstWhere(
+            (mcq) => mcq['mcq_answers'] == 'A',
+            orElse: () => {})['mcq_ans'];
+
+        print('Correct answer for Question ${i + 1}: $correctAnswer');
         totalQuestions = allDiagnostics.length;
 
-        if (selectedAnswers[i] == correctAnswer) {
+        final String selectedAnswer = selectedAnswers[i] ?? '';
+        print('Question ${i + 1}:');
+        print('Selected Answers: $selectedAnswers');
+        print('Correct answer: $correctAnswer');
+
+        final String selectedAnswerIndex = mcqData?.firstWhere(
+                (mcq) => mcq['mcq_ans'] == selectedAnswer,
+                orElse: () => {})['mcq_answers'] ??
+            '';
+
+        if (selectedAnswerIndex == correctAnswer) {
           correctAnswerCount++;
         } else {
-          wrongAnswerQuestions.add(questionData);
-          final int questionId =
-              questionData['id'] ?? -1; // Extract ID directly
+          wrongAnswerQuestions.add({
+            'question': questionData,
+            'selectedAnswer': selectedAnswer,
+            'correctAnswer': correctAnswer,
+          });
+          final int questionId = questionData['id'] ?? -1;
           wrongQuestionIds.add(questionId);
         }
       }
 
       int wrongAnswerCount = wrongAnswerQuestions.length;
 
-      // Now you have counts and details of wrong questions along with their IDs
       print('Total Questions: $totalQuestions');
       print('Correct Answers: $correctAnswerCount');
       print('Wrong Answers: $wrongAnswerCount');
       print('Wrong Answer Questions: $wrongAnswerQuestions');
       print('Wrong Question IDs: $wrongQuestionIds');
-      print("exam id: $idd");
 
       timerProvider.stopTimer();
       ScaffoldMessenger.of(context).showSnackBar(

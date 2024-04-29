@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ExamResultScreen extends StatefulWidget {
   final int? wrongAnswerQuestions;
@@ -21,6 +25,19 @@ class ExamResultScreen extends StatefulWidget {
 
 class _DiagnosticResultScreenState extends State<ExamResultScreen> {
   bool showRecommendation = false;
+  Map<String, dynamic> examResultData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchExamResults().then((data) {
+      setState(() {
+        examResultData = data;
+      });
+    }).catchError((error) {
+      print('Error fetching exam results: $error');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +48,11 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInfoRow("Quizzes", "ADf"),
+            _buildInfoRow("total score", "${examResultData['total_score']}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Score", "5"),
+            _buildInfoRow("grade", "${examResultData['grade']}"),
             const SizedBox(
               height: 15,
             ),
@@ -157,5 +174,20 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
         style: const TextStyle(color: faceBookColor),
       ),
     );
+  }
+
+  Future<Map<String, dynamic>> fetchExamResults() async {
+    // Replace 'api_endpoint_url' with the actual URL of your API endpoint
+    final response = await http.get(Uri.parse(
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'));
+
+    if (response.statusCode == 200) {
+      // Parse the JSON response body
+      Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      // If the request fails, throw an error
+      throw Exception('Failed to fetch exam results');
+    }
   }
 }

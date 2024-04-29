@@ -1,5 +1,4 @@
 // ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -42,6 +41,7 @@ class DiagExamProvider with ChangeNotifier {
           print(exid);
           alldiagnostics.clear(); // Clear previous data
           for (var question in questions) {
+            print('Question: $question');
             final questionMap = {
               'id': question['id'] ?? -1,
               'question': question['question'] ?? '',
@@ -50,6 +50,7 @@ class DiagExamProvider with ChangeNotifier {
               'q_url': question['q_url'] ?? '', // Include q_url field
               'mcq': question['mcq'] != null
                   ? (question['mcq'] as List).map((mcq) {
+                      print('MCQ: $mcq');
                       return {
                         'mcq_ans': mcq['mcq_ans'] ?? '',
                         'mcq_answers': mcq['mcq_answers'] ?? '',
@@ -59,8 +60,8 @@ class DiagExamProvider with ChangeNotifier {
               'g_ans': question['g_ans'] ?? '',
             };
             alldiagnostics.add(questionMap);
+            print('Alldiagnostics: $alldiagnostics');
           }
-          print('All diagnostics: $alldiagnostics');
           // Notify listeners that the data has been updated
           notifyListeners();
         }

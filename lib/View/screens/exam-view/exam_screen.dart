@@ -51,9 +51,9 @@ class _ExamBodyState extends State<ExamBody> {
   bool _isSubmitting = false;
   List<QuestionWithAnswers>? questionsWithAnswers;
   late DateTime startTime;
-  List<int> wrongQuestionIds = [];
   DateTime? endTime;
   Duration? elapsedTime;
+  List<int> wrongQuestionIds = [];
 
   @override
   void initState() {
@@ -208,11 +208,12 @@ class _ExamBodyState extends State<ExamBody> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ExamResultScreen(
-                                correctAnswerCount: correctAnswerCount,
-                                totalQuestions: totalQuestions,
-                                wrongAnswerQuestions: wrongAnswerCount,
-                              )),
+                        builder: (context) => ExamResultScreen(
+                          correctAnswerCount: correctAnswerCount,
+                          totalQuestions: totalQuestions,
+                          wrongAnswerQuestions: wrongAnswerCount,
+                        ),
+                      ),
                     );
                   }); // Stop timer
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -221,8 +222,11 @@ class _ExamBodyState extends State<ExamBody> {
                     ),
                   );
                   submitAnswers(questionsWithAnswers!);
+                  // Call postExamResults with correct parameters
                   postExamResults(
-                      correctAnswerCount, elapsedTime, wrongQuestionIds);
+                    correctAnswerCount,
+                    elapsedTime, // Pass wrongQuestionIds here
+                  );
                 },
                 child: const Text(
                   'Submit',
@@ -270,8 +274,7 @@ class _ExamBodyState extends State<ExamBody> {
     );
   }
 
-  void postExamResults(int correctAnswerCount, Duration? elapsedTime,
-      List<int> wrongQuestionIds) async {
+  void postExamResults(int correctAnswerCount, Duration? elapsedTime) async {
     const url =
         'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade';
     final startExamProvider =
@@ -285,12 +288,13 @@ class _ExamBodyState extends State<ExamBody> {
         '${elapsedTime.inMinutes}:${(elapsedTime.inSeconds % 60).toString().padLeft(2, '0')}';
     final int elapsedMinutes = elapsedTime.inMinutes;
     final int elapsedSeconds = elapsedTime.inSeconds % 60;
+    wrongQuestionIds = submitAnswers(questionsWithAnswers!);
 
     final Map<String, dynamic> postData = {
       'exam_id': examId,
       'right_question': correctAnswerCount,
       'timer': elapsedMinutes,
-      'mistakes': wrongQuestionIds,
+      'mistakes': wrongQuestionIds, // Include wrongQuestionIds directly
     };
 
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -310,6 +314,7 @@ class _ExamBodyState extends State<ExamBody> {
       if (response.statusCode == 200) {
         print('Exam results posted successfully.');
         print("exam id: $examId");
+        print(response.body);
       } else {
         print('Failed to post exam results: ${response.statusCode}');
         // Print response body for more details
@@ -325,7 +330,7 @@ class _ExamBodyState extends State<ExamBody> {
   int wrongAnswerCount = 0;
   int totalQuestions = 0; // Counter for total questions
 
-  void submitAnswers(List<QuestionWithAnswers> questionsWithAnswers) {
+  List<int> submitAnswers(List<QuestionWithAnswers> questionsWithAnswers) {
     // Clear wrong answer questions list before checking again
     wrongAnswerQuestions.clear();
     correctAnswerCount = 0;
@@ -374,7 +379,23 @@ class _ExamBodyState extends State<ExamBody> {
       // Assuming 'id' is the key for question IDs
       final questionId = question['question'].id;
       wrongQuestionIds.add(questionId);
+      print(wrongQuestionIds);
     }
-    print(wrongQuestionIds);
+    return wrongQuestionIds;
+  }
+
+  Future<Map<String, dynamic>> fetchExamResults() async {
+    // Replace 'api_endpoint_url' with the actual URL of your API endpoint
+    final response = await http.get(Uri.parse(
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'));
+
+    if (response.statusCode == 200) {
+      // Parse the JSON response body
+      Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      // If the request fails, throw an error
+      throw Exception('Failed to fetch exam results');
+    }
   }
 }
