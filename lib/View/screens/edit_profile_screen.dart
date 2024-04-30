@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/screens/profile_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,9 +19,12 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController extraemailController = TextEditingController();
+
+  TextEditingController nicknameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
   TextEditingController emailparentController = TextEditingController();
   TextEditingController phoneparentController = TextEditingController();
 
@@ -29,23 +33,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final token = tokenProvider.token;
 
     // Get values from text controllers
-    var firstname = fnameController.text;
-    var lastname = lnameController.text;
+    var fname = fnameController.text;
+    var lname = lnameController.text;
+
+    var nickname = nicknameController.text;
     var email = emailController.text;
     var phone = phoneController.text;
     var parentphone = phoneparentController.text;
     var emailparent = emailparentController.text;
+    var password = passwordController.text;
+    var extraemail = extraemailController.text;
 
-    // Prepare data to send
     Map<String, dynamic> data = {
-      "id": 8, // Assuming this is the user's ID
-      "f_name": firstname,
-      "l_name": lastname,
-      'name': '$firstname $lastname', // Combining first and last name
+      "f_name": fname,
+      "l_name": lname,
+      "password": password,
+      "nick_name": nickname,
       "email": email,
       "phone": phone,
       "parent_phone": parentphone,
       "parent_email": emailparent,
+      "extra_email": extraemail,
     };
 
     try {
@@ -73,11 +81,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Consumer<ProfileProvider>(
       builder: (context, profileProvider, _) {
         return DefaultTabController(
-          initialIndex: 1,
+          initialIndex: 0,
           length: 2,
           child: Scaffold(
             appBar: buildAppBar(context, 'edit profile'),
@@ -86,14 +95,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage('assets/images/moaz.jpeg'),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage:
+                              AssetImage('assets/images/moaz.jpeg'),
+                        ),
+                      ],
+                    ),
                   ),
                   TabBar(
                     labelPadding: EdgeInsets
@@ -113,24 +126,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: TabBarView(
                       children: [
                         RequesterContent(
-                          fnameconrtoller: fnameController,
-                          lnamecontoller: lnameController,
+                          nicknamecontoller: nicknameController,
                           emailController: emailController,
                           phonecontroller: phoneController,
+                          fnameconrtoller: fnameController,
+                          lnameconrtoller: lnameController,
+                          passwordconrtoller: passwordController,
                         ),
                         ParentContent(
-                          nameController: nameController,
                           emailparentController: emailparentController,
                           phoneparentController: phoneparentController,
+                          extraemailController: extraemailController,
                         ),
                       ],
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      // Get the data from the controllers
-                      postData(context);
+                    onPressed: () async {
+                      // Post the data
+                      await postData(context);
+
+                      // Navigate back to the profile screen
                       Navigator.pop(context);
+
+                      // Reload the profile screen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(
+                                  isLoggedIn: false,
+                                )),
+                      );
                     },
                     child: const Text('Save'),
                   ),
@@ -167,47 +193,65 @@ class RequesterContent extends StatelessWidget {
     super.key,
     required this.emailController,
     required this.fnameconrtoller,
-    required this.lnamecontoller,
+    required this.lnameconrtoller,
+    required this.nicknamecontoller,
     required this.phonecontroller,
+    required this.passwordconrtoller,
   });
   final TextEditingController emailController;
   final TextEditingController fnameconrtoller;
-  final TextEditingController lnamecontoller;
+
+  final TextEditingController lnameconrtoller;
+  final TextEditingController nicknamecontoller;
   final TextEditingController phonecontroller;
+  final TextEditingController passwordconrtoller;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: SingleChildScrollView(
-          child: Column(
-        children: [
-          TextField(
-            controller: fnameconrtoller,
-            decoration: const InputDecoration(
-              labelText: 'first name',
+        child: Column(
+          children: [
+            TextField(
+              controller: fnameconrtoller,
+              decoration: const InputDecoration(
+                labelText: 'fisrt name',
+              ),
             ),
-          ),
-          TextField(
-            controller: lnamecontoller,
-            decoration: const InputDecoration(
-              labelText: 'last name',
+            TextField(
+              controller: lnameconrtoller,
+              decoration: const InputDecoration(
+                labelText: 'last name',
+              ),
             ),
-          ),
-          TextField(
-            controller: phonecontroller,
-            decoration: const InputDecoration(
-              labelText: 'phone',
+            TextField(
+              controller: nicknamecontoller,
+              decoration: const InputDecoration(
+                labelText: 'nickname',
+              ),
             ),
-          ),
-          TextField(
-            controller: emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
+            TextField(
+              controller: phonecontroller,
+              decoration: const InputDecoration(
+                labelText: 'phone',
+              ),
             ),
-          ),
-        ],
-      )),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+            TextField(
+              controller: passwordconrtoller,
+              decoration: const InputDecoration(
+                labelText: 'password',
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -215,13 +259,13 @@ class RequesterContent extends StatelessWidget {
 class ParentContent extends StatelessWidget {
   const ParentContent({
     super.key,
-    required this.nameController,
     required this.emailparentController,
     required this.phoneparentController,
+    required this.extraemailController,
   });
-  final TextEditingController nameController;
   final TextEditingController emailparentController;
   final TextEditingController phoneparentController;
+  final TextEditingController extraemailController;
 
   @override
   Widget build(BuildContext context) {
@@ -230,12 +274,6 @@ class ParentContent extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'name',
-              ),
-            ),
             TextField(
               controller: emailparentController,
               decoration: const InputDecoration(
@@ -246,6 +284,12 @@ class ParentContent extends StatelessWidget {
               controller: phoneparentController,
               decoration: const InputDecoration(
                 labelText: 'phone',
+              ),
+            ),
+            TextField(
+              controller: extraemailController,
+              decoration: const InputDecoration(
+                labelText: 'Extra email',
               ),
             ),
           ],
