@@ -6,7 +6,9 @@ import 'package:flutter_application_1/View/screens/courses/quiz_score_screen.dar
 import 'dart:async';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
+import 'package:flutter_application_1/controller/quiz_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class StartQuiz extends StatefulWidget {
   const StartQuiz({super.key, required this.quiz});
@@ -23,7 +25,7 @@ class _StartQuizState extends State<StartQuiz> {
   int currentQuestionIndex = 0;
   List<String?> selectedAnswers = [];
   Set<QuestionsQuiz> correctAnswers = {};
-  Set<QuestionsQuiz> wrongAnswers = {};
+  Set<int> wrongAnswers = {};
 
   @override
   void initState() {
@@ -186,8 +188,8 @@ class _StartQuizState extends State<StartQuiz> {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
                                 currentQuestion.mcqQuizList[0].answer) {
-                              if (wrongAnswers.contains(currentQuestion)) {
-                                wrongAnswers.remove(currentQuestion);
+                              if (wrongAnswers.contains(currentQuestion.questionId)) {
+                                wrongAnswers.remove(currentQuestion.questionId);
                               }
                               correctAnswers.add(currentQuestion);
                               log('correct added');
@@ -196,7 +198,7 @@ class _StartQuizState extends State<StartQuiz> {
                               if (correctAnswers.contains(currentQuestion)) {
                                 correctAnswers.remove(currentQuestion);
                               }
-                              wrongAnswers.add(currentQuestion);
+                              wrongAnswers.add(currentQuestion.questionId);
                               log('wrong added');
                               nextQuestion();
                             }
@@ -209,7 +211,7 @@ class _StartQuizState extends State<StartQuiz> {
                                 currentQuestion.mcqQuizList[0].answer) {
                               correctAnswers.add(currentQuestion);
                             } else {
-                              wrongAnswers.add(currentQuestion);
+                              wrongAnswers.add(currentQuestion.questionId);
                             }
                           }
                           if (selectedAnswers.contains(null)) {
@@ -234,7 +236,13 @@ class _StartQuizState extends State<StartQuiz> {
                                           Navigator.of(context).pushReplacement(
                                               MaterialPageRoute(
                                                   builder: (ctx) =>
-                                                      const QuizScoreScreen()));
+                                                      QuizScoreScreen(
+                                                        quiz: widget.quiz,
+                                                        correctAnswers:
+                                                            correctAnswers,
+                                                        wrongAnswers:
+                                                            wrongAnswers,
+                                                      )));
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor:
@@ -255,9 +263,22 @@ class _StartQuizState extends State<StartQuiz> {
                               },
                             );
                           } else {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (ctx) => const QuizScoreScreen()));
+                            Provider.of<QuizzesProvider>(context, listen: false)
+                                .postQuizData(
+                                    context,
+                                    quizId : widget.quiz.id,
+                                    rightQuestion:correctAnswers.length ,
+                                    timer:  _secondsElapsed/60.ceil(),
+                                    score: correctAnswers.length,
+                                    mistakes: wrongAnswers.toList(),
+                                    );
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                                    builder: (ctx) => QuizScoreScreen(
+                                          quiz: widget.quiz,
+                                          correctAnswers: correctAnswers,
+                                          wrongAnswers: wrongAnswers,
+                                        )));
                           }
                         }
                       },

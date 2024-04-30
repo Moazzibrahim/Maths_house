@@ -94,7 +94,7 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                                             onPressed: () {
                                               log('QQQQ ID: ${e.id}');
                                               Navigator.of(context).pop();
-                                              Navigator.of(context).pushReplacement(
+                                              Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (ctx) =>
                                                           QuestionAnswerScreen(
