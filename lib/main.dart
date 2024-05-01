@@ -14,6 +14,7 @@ import 'package:flutter_application_1/controller/history_controllers/exam_histor
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
 import 'package:flutter_application_1/controller/history_controllers/quiz_history_controller.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
+import 'package:flutter_application_1/controller/profile/country_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
 import 'package:flutter_application_1/controller/quiz_provider.dart';
@@ -39,20 +40,51 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => TimerProvider(),
         ),
-        ChangeNotifierProvider(create: (_) => ChapterProvider()),
-        ChangeNotifierProvider(create: (_) => LiveProvider()),
-        ChangeNotifierProvider(create: (_) => ExamProvider()),
-        ChangeNotifierProvider(create: (_) => StartExamProvider()),
-        ChangeNotifierProvider(create: (_) => ExamMcqProvider()),
-        ChangeNotifierProvider(create: (_) => QuestionsProvider()),
-        ChangeNotifierProvider(create: (_) => DiagnosticFilterationProvider()),
-        ChangeNotifierProvider(create: (_) => QuestionHistoryProvider()),
-        ChangeNotifierProvider(create: (_) => DiagExamProvider()),
-        ChangeNotifierProvider(create: (_) => ExamHistoryProvider()),
-        ChangeNotifierProvider(create: (_) => DiaExamHistoryProvider()),
-        ChangeNotifierProvider(create: (_) => QuizHistoryProvider()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
-        ChangeNotifierProvider(create: (_) => QuizzesProvider()),
+        ChangeNotifierProvider(
+          create: (_) => ChapterProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LiveProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ExamProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => StartExamProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ExamMcqProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => QuestionsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DiagnosticFilterationProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => QuestionHistoryProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DiagExamProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ExamHistoryProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DiaExamHistoryProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => QuizHistoryProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => QuizzesProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SignupProvider(),
+        ),
       ],
       child: const ScreenUtilInit(
         minTextAdapt: true,

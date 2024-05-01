@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/forget_passwrod_screen.dart';
-import 'package:flutter_application_1/View/screens/auth_screens/register_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/sign_up_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const RegisterScreen()));
+                          builder: (ctx) => const SignUpScreen()));
                     },
                     child: const Text(
                       'Sign up',

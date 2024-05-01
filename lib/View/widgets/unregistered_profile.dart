@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
-import 'package:flutter_application_1/View/screens/auth_screens/register_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/sign_up_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
 class UnregisteredProfile extends StatelessWidget {
@@ -62,7 +62,7 @@ class UnregisteredProfile extends StatelessWidget {
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const RegisterScreen()));
+                          builder: (ctx) => const SignUpScreen()));
                     },
                     child: const Text(
                       'Sign Up',
