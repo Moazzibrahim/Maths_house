@@ -53,15 +53,15 @@ class _CustomPackageState extends State<CustomPackage> {
               children: [
                 Text(
                   widget.text1,
-                  style: TextStyle(color: faceBookColor, fontSize: 20),
+                  style: const TextStyle(color: faceBookColor, fontSize: 20),
                 ),
                 Text(
                   widget.text2,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                 ),
                 Text(
                   widget.text3,
-                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
                 ),
               ],
             ),
