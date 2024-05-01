@@ -16,13 +16,14 @@ class ProfileScreen extends StatefulWidget {
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
-}
+} 
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     Provider.of<ProfileProvider>(context, listen: false)
         .getprofileData(context)
+        
         .catchError((e) {
       print(e);
     });

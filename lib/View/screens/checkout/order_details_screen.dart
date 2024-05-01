@@ -78,17 +78,17 @@ class OrderDetails extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-                        height: 15,
+                        height: 12,
                       ),
                       Row(
                         children: [
                           Text(
-                            "date:",
+                            "payment method:",
                             style: TextStyle(color: Colors.grey),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(left: 145),
-                            child: Text("2/4/2024",
+                            padding: EdgeInsets.only(left: 80),
+                            child: Text("visa",
                                 style: TextStyle(color: Colors.grey)),
                           ),
                         ],
