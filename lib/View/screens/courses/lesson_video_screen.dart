@@ -19,7 +19,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      initialIndex: 1,
+      initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.lesson.name),

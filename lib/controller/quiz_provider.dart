@@ -38,4 +38,37 @@ class QuizzesProvider with ChangeNotifier {
     log('error: $e');
   }
   }
+
+  Future<void> postQuizData(BuildContext context,{required quizId,required score,required timer,required rightQuestion,required mistakes})async{
+    try{
+      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    final body = jsonEncode({
+      'quizze_id': quizId,
+      'score': score,
+      'timer': timer,
+      'right_question': rightQuestion,
+      'mistakes': mistakes,
+    });
+
+    final response = await http.post(
+      Uri.parse(
+          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_quiz_grade'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: body,
+    );
+    if(response.statusCode == 200){
+      log(response.body);
+      log('data posted succesfully');
+    }else{
+      log('failed with reponseStatus: ${response.statusCode}');
+    }
+    }catch(e){
+      log('Error in post: $e');
+    }
+  }
 }

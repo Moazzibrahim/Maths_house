@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/history_screens/parallel_question_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
@@ -132,7 +131,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                                     });
                                     Navigator.of(context).pop();
                                     Navigator.of(context)
-                                        .push(MaterialPageRoute(
+                                        .pushReplacement(MaterialPageRoute(
                                       builder: (ctx) => ParallelQuestionScreen(
                                         selectedParallel: selectedParallel,
                                         id: widget.id,

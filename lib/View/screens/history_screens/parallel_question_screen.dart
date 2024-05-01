@@ -186,7 +186,7 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                                       onPressed: () {
                                         log('Q ID : ${parallelProvider.allParallelQuestions[0].id}');
                                         Navigator.of(context).pop();
-                                        Navigator.of(context).push(
+                                        Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
                                                 builder: (ctx) =>
                                                     QuestionAnswerScreen(

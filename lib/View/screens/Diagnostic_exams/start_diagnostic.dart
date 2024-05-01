@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, unused_local_variable, unused_element
+// ignore_for_file: avoid_print, unused_local_variable, unused_element, unnecessary_brace_in_string_interps
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -171,44 +171,67 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       });
     }
 
+    String _convertIndexToLetter(int index) {
+      switch (index) {
+        case 1:
+          return 'A';
+        case 2:
+          return 'B';
+        case 3:
+          return 'C';
+        case 4:
+          return 'D';
+        default:
+          return 'Invalid index';
+      }
+    }
+
     void submitAnswers() {
       int correctAnswerCount = 0;
       List<Map<String, dynamic>> wrongAnswerQuestions = [];
       List<int> wrongQuestionIds = [];
-      int totalQuestions = 0;
+      int totalQuestions = allDiagnostics.length;
       DateTime endTime = DateTime.now();
       Duration elapsedTime = endTime.difference(startTime);
       print(
           'Time taken: ${elapsedTime.inMinutes} minutes and ${elapsedTime.inSeconds % 60} seconds');
 
-      for (int i = 0; i < allDiagnostics.length; i++) {
+      for (int i = 0; i < totalQuestions; i++) {
         final Map<String, dynamic> questionData = allDiagnostics[i];
         final List<Map<String, dynamic>>? mcqData =
             questionData['mcq'] as List<Map<String, dynamic>>?;
-        final String? correctAnswer = mcqData?.firstWhere(
-            (mcq) => mcq['mcq_answers'] == 'A',
-            orElse: () => {})['mcq_ans'];
+        final List<String?> selectedAnswers = (questionData['mcq'] as List)
+            .map((mcq) => mcq['mcq_ans']?.toString())
+            .toList();
+        final List<String?> correctAnswers = (mcqData ?? [])
+            .map((mcq) => mcq['mcq_answers']?.toString())
+            .toList();
+        // Extract correct answers for the current question
 
-        print('Correct answer for Question ${i + 1}: $correctAnswer');
-        totalQuestions = allDiagnostics.length;
+        print('Correct answer for Question ${i + 1}: $correctAnswers');
 
-        final String selectedAnswer = selectedAnswers[i] ?? '';
+        final selectedAnswerIndex = selectedAnswers[i] != null
+            ? mcqData?.indexWhere(
+                    (mcq) => mcq['mcq_ans'] == selectedAnswers[i]) ??
+                -1
+            : -1;
+
+        final selectedAnswer = selectedAnswerIndex != -1
+            ? _convertIndexToLetter(
+                selectedAnswerIndex + 1) // Add 1 to adjust for starting from 1
+            : 'Invalid index';
+
         print('Question ${i + 1}:');
-        print('Selected Answers: $selectedAnswers');
-        print('Correct answer: $correctAnswer');
+        print('Selected Answer: $selectedAnswer');
+        print('Correct answer: ${correctAnswers[i]}');
 
-        final String selectedAnswerIndex = mcqData?.firstWhere(
-                (mcq) => mcq['mcq_ans'] == selectedAnswer,
-                orElse: () => {})['mcq_answers'] ??
-            '';
-
-        if (selectedAnswerIndex == correctAnswer) {
+        if (selectedAnswer == correctAnswers[i]) {
           correctAnswerCount++;
         } else {
           wrongAnswerQuestions.add({
             'question': questionData,
             'selectedAnswer': selectedAnswer,
-            'correctAnswer': correctAnswer,
+            'correctAnswer': correctAnswers[i],
           });
           final int questionId = questionData['id'] ?? -1;
           wrongQuestionIds.add(questionId);
@@ -234,7 +257,7 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
             builder: (context) => DiagnosticResultScreen(
               wrongAnswerQuestions: wrongAnswerCount,
               correctAnswerCount: correctAnswerCount,
-              totalQuestions: allDiagnostics.length,
+              totalQuestions: totalQuestions,
             ),
           ),
         );
@@ -293,9 +316,11 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
                           (questionData['mcq'] as List).length,
                           (index) {
                             final mcq = questionData['mcq'][index];
-                            final mcqAns = mcq['mcq_ans'] as String;
+                            final mcqAns =
+                                mcq['mcq_ans']; // Change type to dynamic
                             return RadioListTile(
-                              title: Text(mcq['mcq_ans'] ?? ''),
+                              title: Text(mcq['mcq_ans']?.toString() ??
+                                  ''), // Ensure mcq_ans is converted to String
                               value: mcqAns,
                               groupValue:
                                   selectedAnswers[_currentQuestionIndex],
@@ -304,8 +329,7 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
                                   selectedAnswers[_currentQuestionIndex] =
                                       value;
                                   print("Selected Answer: $value");
-                                  print(
-                                      "${selectedAnswers[_currentQuestionIndex]}");
+                                  print("${selectedAnswers}");
                                 });
                               },
                             );

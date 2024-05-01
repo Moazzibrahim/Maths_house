@@ -1,12 +1,14 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ExamResultScreen extends StatefulWidget {
   final int? wrongAnswerQuestions;
@@ -178,12 +180,23 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
 
   Future<Map<String, dynamic>> fetchExamResults() async {
     // Replace 'api_endpoint_url' with the actual URL of your API endpoint
-    final response = await http.get(Uri.parse(
-        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'));
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    final response = await http.get(
+      Uri.parse(
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
     if (response.statusCode == 200) {
       // Parse the JSON response body
       Map<String, dynamic> data = json.decode(response.body);
+      print(data);
       return data;
     } else {
       // If the request fails, throw an error
