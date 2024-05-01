@@ -52,7 +52,7 @@ class _ExamBodyState extends State<ExamBody> {
   List<QuestionWithAnswers>? questionsWithAnswers;
   late DateTime startTime;
   DateTime? endTime;
-  Duration? elapsedTime;
+  Duration elapsedTime = Duration.zero;
   List<int> wrongQuestionIds = [];
 
   @override
@@ -78,6 +78,8 @@ class _ExamBodyState extends State<ExamBody> {
   @override
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
+    final startExamProvider =
+        Provider.of<StartExamProvider>(context, listen: false);
 
     if (questionsWithAnswers == null) {
       return const Center(
@@ -87,6 +89,27 @@ class _ExamBodyState extends State<ExamBody> {
       return const Center(
         child: Text("No questions available"),
       );
+    }
+
+    Future<void> fetchAndNavigateToExamResultScreen(
+        Map<String, dynamic> postData) async {
+      try {
+        final Map<String, dynamic>? examResults =
+            await fetchExamResults(postData);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ExamResultScreen(
+              examresults: examResults, // Pass the fetched exam results data
+              // Pass other required arguments if needed
+            ),
+          ),
+        );
+      } catch (e) {
+        print('Error fetching exam results: $e');
+        // Handle error, e.g., show error dialog
+      }
     }
 
     return Column(
@@ -204,17 +227,25 @@ class _ExamBodyState extends State<ExamBody> {
                     _isSubmitting = true;
                   });
                   timerProvider.stopTimer();
+
                   Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ExamResultScreen(
-                          correctAnswerCount: correctAnswerCount,
-                          totalQuestions: totalQuestions,
-                          wrongAnswerQuestions: wrongAnswerCount,
-                        ),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => ExamResultScreen(
+                    //       correctAnswerCount: correctAnswerCount,
+                    //       totalQuestions: totalQuestions,
+                    //       wrongAnswerQuestions: wrongAnswerCount,
+                    //     ),
+                    //   ),
+                    // );
+                    final examId = startExamProvider.examId;
+                    fetchAndNavigateToExamResultScreen({
+                      'exam_id': examId,
+                      'right_question': correctAnswerCount,
+                      'timer': elapsedTime.inMinutes,
+                      'mistakes': wrongQuestionIds,
+                    });
                   }); // Stop timer
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -222,11 +253,18 @@ class _ExamBodyState extends State<ExamBody> {
                     ),
                   );
                   submitAnswers(questionsWithAnswers!);
-                  // Call postExamResults with correct parameters
-                  postExamResults(
-                    correctAnswerCount,
-                    elapsedTime, // Pass wrongQuestionIds here
-                  );
+                  // postExamResults(
+                  //   correctAnswerCount,
+                  //   elapsedTime, // Pass wrongQuestionIds here
+                  // );
+                  final examId = startExamProvider.examId;
+                  wrongQuestionIds = submitAnswers(questionsWithAnswers!);
+                  fetchExamResults({
+                    'exam_id': examId,
+                    'right_question': correctAnswerCount,
+                    'timer': elapsedTime.inMinutes,
+                    'mistakes': wrongQuestionIds,
+                  });
                 },
                 child: const Text(
                   'Submit',
@@ -325,6 +363,50 @@ class _ExamBodyState extends State<ExamBody> {
     }
   }
 
+  Future<Map<String, dynamic>?>? fetchExamResults(
+      Map<String, dynamic> postData) async {
+    const baseUrl =
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade';
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token; // Replace with your auth token
+
+    // Construct the query parameters
+    String queryParams = '';
+    postData.forEach((key, value) {
+      queryParams += '$key=$value&';
+    });
+    final Uri uri = Uri.parse('$baseUrl?$queryParams');
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Decode the response body
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        // Process the data as needed
+        print('Exam results retrieved successfully:');
+        print(data);
+        return data;
+      } else {
+        print('Failed to retrieve exam results: ${response.statusCode}');
+        // Print response body for more details
+        print('Response body: ${response.body}');
+        throw Exception('Failed to fetch exam results');
+      }
+    } catch (e) {
+      print('Error retrieving exam results: $e');
+    }
+    return null;
+  }
+
   List<Map<String, dynamic>> wrongAnswerQuestions = [];
   int correctAnswerCount = 0;
   int wrongAnswerCount = 0;
@@ -382,20 +464,5 @@ class _ExamBodyState extends State<ExamBody> {
       print(wrongQuestionIds);
     }
     return wrongQuestionIds;
-  }
-
-  Future<Map<String, dynamic>> fetchExamResults() async {
-    // Replace 'api_endpoint_url' with the actual URL of your API endpoint
-    final response = await http.get(Uri.parse(
-        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'));
-
-    if (response.statusCode == 200) {
-      // Parse the JSON response body
-      Map<String, dynamic> data = json.decode(response.body);
-      return data;
-    } else {
-      // If the request fails, throw an error
-      throw Exception('Failed to fetch exam results');
-    }
   }
 }

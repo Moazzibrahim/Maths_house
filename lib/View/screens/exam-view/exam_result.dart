@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -14,12 +14,15 @@ class ExamResultScreen extends StatefulWidget {
   final int? wrongAnswerQuestions;
   final int? correctAnswerCount;
   final int? totalQuestions;
+  final Map<String, dynamic>? examresults;
 
-  const ExamResultScreen(
-      {super.key,
-      this.correctAnswerCount,
-      this.wrongAnswerQuestions,
-      this.totalQuestions});
+  const ExamResultScreen({
+    super.key,
+    this.correctAnswerCount,
+    this.wrongAnswerQuestions,
+    this.totalQuestions,
+    this.examresults,
+  });
 
   @override
   State<ExamResultScreen> createState() => _DiagnosticResultScreenState();
@@ -34,7 +37,8 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
     super.initState();
     fetchExamResults().then((data) {
       setState(() {
-        examResultData = data;
+        examResultData =
+            data; // Assuming you want the discount from the first item in the price array
       });
     }).catchError((error) {
       print('Error fetching exam results: $error');
@@ -43,6 +47,22 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int? totalQuestions = widget.totalQuestions;
+    int? correctAnswerCount = widget.correctAnswerCount;
+    int? wrongAnswerQuestions = widget.wrongAnswerQuestions;
+
+    // Accessing data from examresults map
+    int? grade = widget.examresults?['grade'];
+    int? totalScore = widget.examresults?['total_score'];
+    String? chapterName = widget.examresults?['chapters'][0]['api_lesson']
+        ['api_chapter']['chapter_name'];
+    int? duration = widget.examresults?['chapters'][0]['api_lesson']
+        ['api_chapter']['price'][0]['duration'];
+    int? price = widget.examresults?['chapters'][0]['api_lesson']['api_chapter']
+        ['price'][0]['price'];
+    int? discount = widget.examresults?['chapters'][0]['api_lesson']
+        ['api_chapter']['price'][0]['discount'];
+
     return Scaffold(
       appBar: buildAppBar(context, "Result"),
       body: Padding(
@@ -50,25 +70,23 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInfoRow("total score", "${examResultData['total_score']}"),
+            _buildInfoRow("total score", totalScore.toString()),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("grade", "${examResultData['grade']}"),
+            _buildInfoRow("grade", grade.toString()),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Total Questions", widget.totalQuestions.toString()),
+            _buildInfoRow("Total Questions", totalQuestions.toString()),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow(
-                "Correct Questions", widget.correctAnswerCount.toString()),
+            _buildInfoRow("Correct Questions", correctAnswerCount.toString()),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow(
-                "Wrong Questions", widget.wrongAnswerQuestions.toString()),
+            _buildInfoRow("Wrong Questions", wrongAnswerQuestions.toString()),
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
@@ -82,8 +100,8 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
             ),
             if (showRecommendation) ...[
               const SizedBox(height: 10),
-              const Text("Chapter 1",
-                  style: TextStyle(fontSize: 16, color: Colors.black)),
+              Text("$chapterName",
+                  style: const TextStyle(fontSize: 16, color: Colors.black)),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
