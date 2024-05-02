@@ -52,14 +52,15 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
     int? wrongAnswerQuestions = widget.wrongAnswerQuestions;
 
     // Accessing data from examresults map
-    int? grade = widget.examresults?['grade'];
-    int? totalScore = widget.examresults?['total_score'];
+    int? grade = widget.examresults?['grade'] as int?;
+    int totalScore = widget.examresults?['total_score'] as int? ?? 0;
     String? chapterName = widget.examresults?['chapters'][0]['api_lesson']
         ['api_chapter']['chapter_name'];
-    int? duration = widget.examresults?['chapters'][0]['api_lesson']
+    String? duration = widget.examresults?['chapters'][0]['api_lesson']
         ['api_chapter']['price'][0]['duration'];
-    int? price = widget.examresults?['chapters'][0]['api_lesson']['api_chapter']
-        ['price'][0]['price'];
+    double? price = widget.examresults?['chapters'][0]['api_lesson']
+            ['api_chapter']['price'][0]['price']
+        ?.toDouble();
     int? discount = widget.examresults?['chapters'][0]['api_lesson']
         ['api_chapter']['price'][0]['discount'];
 
@@ -78,7 +79,7 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Total Questions", totalQuestions.toString()),
+            _buildInfoRow("Total Questions", "$totalQuestions"),
             const SizedBox(
               height: 15,
             ),
@@ -117,11 +118,17 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
                         ),
                       ),
                     );
+                    fetchExamResults();
                     Future.delayed(const Duration(seconds: 2), () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CheckoutScreen()),
+                            builder: (context) => CheckoutScreen(
+                                  chapterName: chapterName,
+                                  discount: discount,
+                                  duration: duration,
+                                  price: price,
+                                )),
                       );
                     });
                   }),

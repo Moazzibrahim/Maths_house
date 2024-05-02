@@ -98,10 +98,15 @@ class _ExamBodyState extends State<ExamBody> {
             await fetchExamResults(postData);
 
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ExamResultScreen(
-              examresults: examResults, // Pass the fetched exam results data
+              examresults: examResults,
+              correctAnswerCount: correctAnswerCount,
+              totalQuestions: totalQuestions,
+              wrongAnswerQuestions:
+                  wrongAnswerCount, // Pass the fetched exam results data
               // Pass other required arguments if needed
             ),
           ),
@@ -253,10 +258,6 @@ class _ExamBodyState extends State<ExamBody> {
                     ),
                   );
                   submitAnswers(questionsWithAnswers!);
-                  // postExamResults(
-                  //   correctAnswerCount,
-                  //   elapsedTime, // Pass wrongQuestionIds here
-                  // );
                   final examId = startExamProvider.examId;
                   wrongQuestionIds = submitAnswers(questionsWithAnswers!);
                   fetchExamResults({
@@ -310,57 +311,6 @@ class _ExamBodyState extends State<ExamBody> {
         );
       },
     );
-  }
-
-  void postExamResults(int correctAnswerCount, Duration? elapsedTime) async {
-    const url =
-        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade';
-    final startExamProvider =
-        Provider.of<StartExamProvider>(context, listen: false);
-    final examId = startExamProvider.examId;
-
-    // Check if elapsedTime is null, if so, initialize it to Duration.zero
-    elapsedTime ??= Duration.zero;
-    // Calculate elapsed time in minutes and seconds as a combined string
-    final String elapsed =
-        '${elapsedTime.inMinutes}:${(elapsedTime.inSeconds % 60).toString().padLeft(2, '0')}';
-    final int elapsedMinutes = elapsedTime.inMinutes;
-    final int elapsedSeconds = elapsedTime.inSeconds % 60;
-    wrongQuestionIds = submitAnswers(questionsWithAnswers!);
-
-    final Map<String, dynamic> postData = {
-      'exam_id': examId,
-      'right_question': correctAnswerCount,
-      'timer': elapsedMinutes,
-      'mistakes': wrongQuestionIds, // Include wrongQuestionIds directly
-    };
-
-    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token; // Replace with your auth token
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode(postData),
-      );
-
-      if (response.statusCode == 200) {
-        print('Exam results posted successfully.');
-        print("exam id: $examId");
-        print(response.body);
-      } else {
-        print('Failed to post exam results: ${response.statusCode}');
-        // Print response body for more details
-        print('Response body: ${response.body}');
-      }
-    } catch (e) {
-      print('Error posting exam results: $e');
-    }
   }
 
   Future<Map<String, dynamic>?>? fetchExamResults(
