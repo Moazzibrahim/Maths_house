@@ -132,18 +132,18 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
                       );
                     });
                   }),
-                  _buildCustomButton("Buy All", () {
-                    // Action for the second elevated button
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.black,
-                        content: Text(
-                          "Done",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    );
-                  }),
+                  // _buildCustomButton("Buy All", () {
+                  //   // Action for the second elevated button
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       backgroundColor: Colors.black,
+                  //       content: Text(
+                  //         "Done",
+                  //         style: TextStyle(color: Colors.white),
+                  //       ),
+                  //     ),
+                  //   );
+                  // }),
                 ],
               ),
               const SizedBox(height: 15),

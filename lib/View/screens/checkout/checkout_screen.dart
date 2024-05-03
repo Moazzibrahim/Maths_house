@@ -125,22 +125,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           SizedBox(width: 13.w),
                           const Text("Price",
                               style: TextStyle(color: faceBookColor)),
-                          SizedBox(width: 13.w),
-                          const Text("Duration",
-                              style: TextStyle(color: faceBookColor)),
                         ],
                       ),
                       SizedBox(height: 10.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("$chapterName",
+                          Text("chapter 23",
                               style: const TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          Text("$price",
-                              style: const TextStyle(color: Colors.grey)),
-                          SizedBox(width: 13.w),
-                          Text("$duration",
+                          Text("100",
                               style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
@@ -148,7 +142,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("Chapter 2:",
+                          const Text("Chapter 2",
                               style: TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
                           const Text("22.92\$",
@@ -171,6 +165,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               style: TextStyle(
                                 color: faceBookColor,
                                 decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 7,
+                            ),
+                            Text(
+                              "40% off",
+                              style: TextStyle(
+                                color: faceBookColor,
                               ),
                             ),
                           ],
