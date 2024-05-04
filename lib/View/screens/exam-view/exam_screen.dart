@@ -232,7 +232,6 @@ class _ExamBodyState extends State<ExamBody> {
                     _isSubmitting = true;
                   });
                   timerProvider.stopTimer();
-
                   Future.delayed(const Duration(seconds: 1), () {
                     // Navigator.push(
                     //   context,

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_prov
 import 'package:provider/provider.dart';
 
 class DiagnosticExamScreen extends StatelessWidget {
-  const DiagnosticExamScreen({Key? key}) : super(key: key);
+  const DiagnosticExamScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,10 @@ class DiagnosticExamScreen extends StatelessWidget {
               );
             } else {
               // Data loaded, display questions
-              return const DiagnosticQuestionsList();
+              return DiagnosticQuestionsList(
+                exid: provider.exid,
+                score: provider.score,
+              );
             }
           },
         ),
@@ -34,18 +39,20 @@ class DiagnosticExamScreen extends StatelessWidget {
   }
 }
 
-class DiagnosticQuestionsList extends StatefulWidget {
-  const DiagnosticQuestionsList({Key? key}) : super(key: key);
+// ignore: must_be_immutable
+class DiagnosticQuestionsList extends StatefulWidget with ChangeNotifier {
+  final int exid;
+  final int score;
+  DiagnosticQuestionsList({super.key, required this.exid, required this.score});
 
   @override
+  // ignore: library_private_types_in_public_api
   _DiagnosticQuestionsListState createState() =>
       _DiagnosticQuestionsListState();
 }
 
 class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
   int currentIndex = 0;
-  int correctCount = 0;
-  int wrongCount = 0;
   late Timer _timer;
   int _seconds = 0;
 
@@ -96,7 +103,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Go to Question'),
+          title: const Text('Go to Question'),
           content: SingleChildScrollView(
             child: Column(
               children: List.generate(allDiagnostics.length, (index) {
@@ -130,13 +137,34 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     );
   }
 
+  void storeExamResults(
+      int correctCount,
+      int wrongCount,
+      int seconds,
+      List<int> wrongQuestionIds,
+      int totalQuestions,
+      int score,
+      int passscore) {
+    // Store the exam results as needed, e.g., in a database or shared preferences
+    print('Correct Answers: $correctCount');
+    print('Wrong Answers: $wrongCount');
+    print('Time taken: $seconds minutes');
+    print('Total Questions: $totalQuestions');
+    print('Wrong Question IDs: $wrongQuestionIds');
+    print('exid: ${widget.exid}');
+    print('score: ${widget.score}');
+  }
+
+  int correctCount = 0;
+  int wrongCount = 0;
+
   void _submitExam() {
     _timer.cancel(); // Stop the timer
     // Calculate correct and wrong answer counts
     final provider = Provider.of<DiagExamProvider>(context, listen: false);
-    int correctCount = 0;
-    int wrongCount = 0;
     int unansweredIndex = -1;
+    List<int> wrongQuestionIds = [];
+
     for (int i = 0; i < provider.alldiagnostics.length; i++) {
       final currentQuestion = provider.alldiagnostics[i];
       var selectedAnswer = currentQuestion['selectedAnswer'];
@@ -163,6 +191,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
         correctCount++;
       } else {
         wrongCount++;
+        wrongQuestionIds
+            .add(currentQuestion['id']); // Add the ID of wrong question
       }
       print('Question ${i + 1}:');
       print('Selected Answer: $selectedAnswer');
@@ -205,8 +235,20 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
       );
     } else {
       // All questions answered, show result
-      print('Correct Answers: $correctCount');
-      print('Wrong Answers: $wrongCount');
+      int minutes = _seconds ~/ 60;
+      // ignore: unused_local_variable
+      int seconds = _seconds % 60;
+      storeExamResults(
+        correctCount,
+        wrongCount,
+        minutes,
+        wrongQuestionIds,
+        Provider.of<DiagExamProvider>(context, listen: false)
+            .alldiagnostics
+            .length,
+        Provider.of<DiagExamProvider>(context, listen: false).score,
+        Provider.of<DiagExamProvider>(context, listen: false).passscore,
+      );
     }
   }
 
@@ -217,6 +259,10 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     final currentQuestion = allDiagnostics[currentIndex];
     final minutes = _seconds ~/ 60;
     final seconds = _seconds % 60;
+    final int score =
+        Provider.of<DiagExamProvider>(context, listen: false).score;
+    final int passscore =
+        Provider.of<DiagExamProvider>(context, listen: false).passscore;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -329,8 +375,17 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const DiagnosticResultScreen()));
+                              builder: (context) => DiagnosticResultScreen(
+                                    wrongCount: wrongCount,
+                                    correctCount: correctCount,
+                                    totalQuestions:
+                                        Provider.of<DiagExamProvider>(context,
+                                                listen: false)
+                                            .alldiagnostics
+                                            .length,
+                                    score: score,
+                                    passscore: passscore,
+                                  )));
                     },
                   );
                 },
@@ -346,3 +401,54 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     );
   }
 }
+
+
+    // void postDiagExamResults(int correctAnswerCount, Duration? elapsedTime,
+    //     List<int> wrongQuestionIds) async {
+    //   const url =
+    //       'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam_grade';
+    //   final startExamProvider =
+    //       Provider.of<DiagExamProvider>(context, listen: false);
+    //   final examId = startExamProvider.exid;
+
+    //   // Check if elapsedTime is null, if so, initialize it to Duration.zero
+    //   elapsedTime ??= Duration.zero;
+    //   // Calculate elapsed time in minutes and seconds as a combined string
+    //   final String elapsed =
+    //       '${elapsedTime.inMinutes}:${(elapsedTime.inSeconds % 60).toString().padLeft(2, '0')}';
+    //   final int elapsedMinutes = elapsedTime.inMinutes;
+    //   final int elapsedSeconds = elapsedTime.inSeconds % 60;
+
+    //   final Map<String, dynamic> postData = {
+    //     'exam_id': examId,
+    //     'right_question': correctAnswerCount,
+    //     'timer': elapsedMinutes,
+    //     'mistakes': wrongQuestionIds,
+    //   };
+
+    //   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    //   final token = tokenProvider.token; // Replace with your auth token
+
+    //   try {
+    //     final response = await http.post(
+    //       Uri.parse(url),
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json',
+    //         'Authorization': 'Bearer $token',
+    //       },
+    //       body: json.encode(postData),
+    //     );
+
+    //     if (response.statusCode == 200) {
+    //       print(' Diag Exam results posted successfully.');
+    //       print("exam id: $examId");
+    //     } else {
+    //       print('Failed to post exam results: ${response.statusCode}');
+    //       // Print response body for more details
+    //       print('Response body: ${response.body}');
+    //     }
+    //   } catch (e) {
+    //     print('Error posting exam results: $e');
+    //   }
+    // }

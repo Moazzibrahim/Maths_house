@@ -39,20 +39,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    fetchExamResults(context).then((data) {
-      if (data.isNotEmpty) {
-        setState(() {
-          chapterName = data['chapterName'];
-          duration = data['duration'];
-          price = data['price'];
-          discount = data['discount'];
-        });
-      } else {
-        print('Exam results are empty or invalid');
-      }
-    }).catchError((error) {
-      print('Error fetching exam results: $error');
-    });
+    // fetchExamResults(context).then((data) {
+    //   if (data.isNotEmpty) {
+    //     setState(() {
+    //       chapterName = data['chapterName'];
+    //       duration = data['duration'];
+    //       price = data['price'];
+    //       discount = data['discount'];
+    //     });
+    //   } else {
+    //     print('Exam results are empty or invalid');
+    //   }
+    // }).catchError((error) {
+    //   print('Error fetching exam results: $error');
+    // });
   }
 
   Future<Map<String, dynamic>> fetchExamResults(BuildContext context) async {
@@ -131,11 +131,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("chapter 23",
-                              style: const TextStyle(color: Colors.grey)),
+                          const Text("chapter 23",
+                              style: TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          Text("100",
-                              style: const TextStyle(color: Colors.grey)),
+                          const Text("100",
+                              style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                       SizedBox(height: 10.h),
@@ -170,7 +170,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const SizedBox(
                               width: 7,
                             ),
-                            Text(
+                            const Text(
                               "40% off",
                               style: TextStyle(
                                 color: faceBookColor,

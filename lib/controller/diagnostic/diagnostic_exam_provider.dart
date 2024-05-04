@@ -10,6 +10,8 @@ class DiagExamProvider with ChangeNotifier {
   List<Map<String, dynamic>> alldiagnostics = [];
   int exid = 0;
   int currentIndex = 0;
+  int passscore = 0;
+  int score = 0;
 
   Future<void> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -40,6 +42,10 @@ class DiagExamProvider with ChangeNotifier {
           final List<dynamic> questions = data['exam']['question_with_ans'];
           exid = data['exam']['id'];
           print(exid);
+          final passscore = data['exam']['pass_score'];
+          print(passscore);
+          score = data['exam']['score'];
+          print(score);
           alldiagnostics.clear(); // Clear previous data
           for (var question in questions) {
             print('Question: $question');
@@ -53,8 +59,9 @@ class DiagExamProvider with ChangeNotifier {
                   ? (question['mcq'] as List).map((mcq) {
                       print('MCQ: $mcq');
                       return {
-                        'mcq_ans': mcq['mcq_ans'] ?? '',// options
-                        'mcq_answers': mcq['mcq_answers'] ?? '',// correct answer
+                        'mcq_ans': mcq['mcq_ans'] ?? '', // options
+                        'mcq_answers':
+                            mcq['mcq_answers'] ?? '', // correct answer
                       };
                     }).toList()
                   : [],
