@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/Diagnostic_exams/start_diagnostic.dart';
+import 'package:flutter_application_1/View/screens/Diagnostic_exams/training.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_filteration_provider.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +80,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const StartDiagnostic(),
+            builder: (context) =>  DiagnosticExamScreen(),
           ),
         );
       } else {

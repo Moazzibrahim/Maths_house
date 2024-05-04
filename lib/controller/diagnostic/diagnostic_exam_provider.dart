@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 class DiagExamProvider with ChangeNotifier {
   List<Map<String, dynamic>> alldiagnostics = [];
   int exid = 0;
+  int currentIndex = 0;
 
   Future<void> fetchDataFromApi(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -52,12 +53,13 @@ class DiagExamProvider with ChangeNotifier {
                   ? (question['mcq'] as List).map((mcq) {
                       print('MCQ: $mcq');
                       return {
-                        'mcq_ans': mcq['mcq_ans'] ?? '',
-                        'mcq_answers': mcq['mcq_answers'] ?? '',
+                        'mcq_ans': mcq['mcq_ans'] ?? '',// options
+                        'mcq_answers': mcq['mcq_answers'] ?? '',// correct answer
                       };
                     }).toList()
                   : [],
               'g_ans': question['g_ans'] ?? '',
+              'selectedAnswer': null, // Add selected answer field
             };
             alldiagnostics.add(questionMap);
             print('Alldiagnostics: $alldiagnostics');
@@ -71,5 +73,35 @@ class DiagExamProvider with ChangeNotifier {
     } catch (e) {
       throw Exception('Error fetching data: $e');
     }
+  }
+
+  void selectAnswer(String? answer) {
+    alldiagnostics[currentIndex]['selectedAnswer'] = answer;
+  }
+
+  void goToNextQuestion() {
+    if (currentIndex < alldiagnostics.length - 1) {
+      currentIndex++;
+    }
+  }
+
+  void goToPreviousQuestion() {
+    if (currentIndex > 0) {
+      currentIndex--;
+    }
+  }
+
+  int getUnansweredQuestionIndex() {
+    for (int i = 0; i < alldiagnostics.length; i++) {
+      if (alldiagnostics[i]['selectedAnswer'] == null) {
+        return i;
+      }
+    }
+    return -1; // All questions answered
+  }
+
+  void navigateToQuestion(int index) {
+    currentIndex = index;
+    notifyListeners();
   }
 }

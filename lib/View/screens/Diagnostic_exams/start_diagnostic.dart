@@ -164,28 +164,6 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       }
     }
 
-    void onChanged(String value, int index) {
-      setState(() {
-        selectedAnswers[_currentQuestionIndex] =
-            value; // Update selected answer
-      });
-    }
-
-    String _convertIndexToLetter(int index) {
-      switch (index) {
-        case 1:
-          return 'A';
-        case 2:
-          return 'B';
-        case 3:
-          return 'C';
-        case 4:
-          return 'D';
-        default:
-          return 'Invalid index';
-      }
-    }
-
     void submitAnswers() {
       int correctAnswerCount = 0;
       List<Map<String, dynamic>> wrongAnswerQuestions = [];
@@ -195,6 +173,9 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
       Duration elapsedTime = endTime.difference(startTime);
       print(
           'Time taken: ${elapsedTime.inMinutes} minutes and ${elapsedTime.inSeconds % 60} seconds');
+
+      // Map to store answer value to index mapping (outside the loop)
+      final Map<String, int> answerIndexMap = {};
 
       for (int i = 0; i < totalQuestions; i++) {
         final Map<String, dynamic> questionData = allDiagnostics[i];
@@ -206,36 +187,54 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
         final List<String?> correctAnswers = (mcqData ?? [])
             .map((mcq) => mcq['mcq_answers']?.toString())
             .toList();
-        // Extract correct answers for the current question
 
-        print('Correct answer for Question ${i + 1}: $correctAnswers');
+        print('MCQ: $mcqData');
+        print('Selected Answer: ${selectedAnswers[i]}');
+        print('Correct answer for Question ${i + 1}: ${correctAnswers[0]}');
 
-        final selectedAnswerIndex = selectedAnswers[i] != null
-            ? mcqData?.indexWhere(
-                    (mcq) => mcq['mcq_ans'] == selectedAnswers[i]) ??
-                -1
-            : -1;
+        if (selectedAnswers[i] != null && correctAnswers.isNotEmpty) {
+          // Build answer index map (only once per question)
+          if (answerIndexMap.isEmpty) {
+            for (int j = 0; j < (mcqData?.length ?? 0); j++) {
+              final String currentMcqAns =
+                  mcqData![j]['mcq_ans']?.toString() ?? '';
+              answerIndexMap[currentMcqAns] = j;
+            }
+          }
 
-        final selectedAnswer = selectedAnswerIndex != -1
-            ? _convertIndexToLetter(
-                selectedAnswerIndex + 1) // Add 1 to adjust for starting from 1
-            : 'Invalid index';
+          final String selectedAnswer = selectedAnswers[i]!;
 
-        print('Question ${i + 1}:');
-        print('Selected Answer: $selectedAnswer');
-        print('Correct answer: ${correctAnswers[i]}');
+          // Handle cases where selected answer is not found in the map
+          if (!answerIndexMap.containsKey(selectedAnswer)) {
+            print(
+                'Invalid selected answer value for question: ${questionData['id']}');
+            continue; // Skip to the next question if selected answer is invalid
+          }
 
-        if (selectedAnswer == correctAnswers[i]) {
-          correctAnswerCount++;
+          final int selectedAnswerIndex = answerIndexMap[selectedAnswer]!;
+
+          // Convert selected answer index to character (A, B, C, or D)
+          final String selectedAnswerChar =
+              String.fromCharCode(65 + selectedAnswerIndex);
+
+          if (selectedAnswerChar == correctAnswers[0]) {
+            correctAnswerCount++;
+          } else {
+            wrongAnswerQuestions.add({
+              'question': questionData,
+              'selectedAnswer': selectedAnswers[i],
+              'correctAnswer': correctAnswers[0],
+            });
+            wrongQuestionIds.add(questionData['id'] ?? -1);
+          }
         } else {
-          wrongAnswerQuestions.add({
-            'question': questionData,
-            'selectedAnswer': selectedAnswer,
-            'correctAnswer': correctAnswers[i],
-          });
-          final int questionId = questionData['id'] ?? -1;
-          wrongQuestionIds.add(questionId);
+          // Handle cases where no answer is selected or correct answer is missing
+          print(
+              'No answer selected or missing correct answer for question: ${questionData['id']}');
         }
+
+        // Clear answer index map for the next question
+        answerIndexMap.clear();
       }
 
       int wrongAnswerCount = wrongAnswerQuestions.length;
@@ -319,17 +318,17 @@ class _DiagnosticBodyState extends State<DiagnosticBody> {
                             final mcqAns =
                                 mcq['mcq_ans']; // Change type to dynamic
                             return RadioListTile(
-                              title: Text(mcq['mcq_ans']?.toString() ??
-                                  ''), // Ensure mcq_ans is converted to String
-                              value: mcqAns,
+                              title: Text(mcq['mcq_ans']?.toString() ?? ''),
+                              value:
+                                  mcqAns, // Ensure mcqAns has the correct type
                               groupValue:
                                   selectedAnswers[_currentQuestionIndex],
                               onChanged: (value) {
                                 setState(() {
                                   selectedAnswers[_currentQuestionIndex] =
                                       value;
-                                  print("Selected Answer: $value");
-                                  print("${selectedAnswers}");
+                                  print(
+                                      "Selected Answer: $value"); // Optional for debugging
                                 });
                               },
                             );

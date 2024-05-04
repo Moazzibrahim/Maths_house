@@ -1,11 +1,29 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/payment_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({Key? key});
+  final double? price;
+  final String? duration;
+  final int? discount;
+  final String? chapterName;
+  final Map<String, dynamic>? examresults;
+  const CheckoutScreen({
+    super.key,
+    this.price,
+    this.duration,
+    this.discount,
+    this.chapterName,
+    this.examresults,
+  });
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -13,10 +31,75 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String couponCode = "";
+  String? chapterName;
+  String? duration;
+  double? price;
+  int? discount;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchExamResults(context).then((data) {
+      if (data.isNotEmpty) {
+        setState(() {
+          chapterName = data['chapterName'];
+          duration = data['duration'];
+          price = data['price'];
+          discount = data['discount'];
+        });
+      } else {
+        print('Exam results are empty or invalid');
+      }
+    }).catchError((error) {
+      print('Error fetching exam results: $error');
+    });
+  }
+
+  Future<Map<String, dynamic>> fetchExamResults(BuildContext context) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    final response = await http.get(
+      Uri.parse(
+          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Parse the JSON response body
+      Map<String, dynamic> data = json.decode(response.body);
+      // Check if the necessary data exists in the response
+      if (data.containsKey('chapters') && data['chapters'].isNotEmpty) {
+        // Assuming the first chapter contains the desired data
+        Map<String, dynamic> firstChapter = data['chapters'][0];
+        Map<String, dynamic>? apiLesson = firstChapter['api_lesson'];
+        Map<String, dynamic>? apiChapter = apiLesson?['api_chapter'];
+        List<dynamic>? priceList = apiChapter?['price'];
+        // Check if all required fields are present
+        if (apiChapter != null && priceList != null && priceList.isNotEmpty) {
+          return {
+            'chapterName': apiChapter['chapter_name'],
+            'duration': priceList[0]['duration'],
+            'price': priceList[0]['price'].toDouble(),
+            'discount': priceList[0]['discount'],
+          };
+        }
+      }
+      // If the necessary data is not present, return an empty map
+      return {};
+    } else {
+      // If the request fails, return an empty map
+      // If the request fails, print the response body and throw an error
+      print('Failed to fetch exam results. Response body: ${response.body}');
+      throw Exception('Failed to fetch exam results');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Initialize ScreenUtil
     ScreenUtil.init(context);
 
     return Scaffold(
@@ -40,27 +123,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           const Text("product",
                               style: TextStyle(color: faceBookColor)),
                           SizedBox(width: 13.w),
-                          const Text("Price", style: TextStyle(color: faceBookColor))
+                          const Text("Price",
+                              style: TextStyle(color: faceBookColor)),
                         ],
                       ),
                       SizedBox(height: 10.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("Chapter 1:",
-                              style: TextStyle(color: Colors.grey)),
+                          Text("chapter 23",
+                              style: const TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          const Text("18.92\$", style: TextStyle(color: Colors.grey)),
+                          Text("100",
+                              style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
                       SizedBox(height: 10.h),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("Chapter 2:",
+                          const Text("Chapter 2",
                               style: TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          const Text("22.92\$", style: TextStyle(color: Colors.grey)),
+                          const Text("22.92\$",
+                              style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                       SizedBox(height: 15.h),
@@ -81,6 +167,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 decoration: TextDecoration.lineThrough,
                               ),
                             ),
+                            const SizedBox(
+                              width: 7,
+                            ),
+                            Text(
+                              "40% off",
+                              style: TextStyle(
+                                color: faceBookColor,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -92,9 +187,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    "Do you have a discount code?",
-                  ),
+                  Text("Do you have a discount code?"),
                 ],
               ),
               SizedBox(height: 14.h),
@@ -141,8 +234,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) =>  PaymentScreen()),
+                    MaterialPageRoute(builder: (context) => PaymentScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
