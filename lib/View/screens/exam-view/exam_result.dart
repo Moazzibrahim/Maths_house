@@ -35,14 +35,14 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
   @override
   void initState() {
     super.initState();
-    fetchExamResults().then((data) {
-      setState(() {
-        examResultData =
-            data; // Assuming you want the discount from the first item in the price array
-      });
-    }).catchError((error) {
-      print('Error fetching exam results: $error');
-    });
+    // fetchExamResults().then((data) {
+    //   setState(() {
+    //     examResultData =
+    //         data; // Assuming you want the discount from the first item in the price array
+    //   });
+    // }).catchError((error) {
+    //   print('Error fetching exam results: $error');
+    // });
   }
 
   @override
