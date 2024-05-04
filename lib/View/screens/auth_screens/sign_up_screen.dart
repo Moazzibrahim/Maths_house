@@ -1,11 +1,8 @@
 // ignore_for_file: avoid_print
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/Model/sign_up/country_model.dart';
-import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/View/widgets/textfield_widget.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -30,13 +27,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController confPasswordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController nicknameController = TextEditingController();
-  // TextEditingController gradeController = TextEditingController();
-  // TextEditingController cityidController = TextEditingController();
 
-  String? selectedGrade; // To store the selected grade
-  String? selectedCountry; // To store the selected country
-  String? selectedCity; // To store the selected city
+  String? selectedGrade;
+  String? selectedCountry;
+  String? selectedCity;
   int indexOfCity = 0;
+  int cityid = 0;
 
   Future<void> signuppost(BuildContext context) async {
     var fname = fnameController.text;
@@ -46,8 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var phone = phoneController.text;
     var password = passwordController.text;
     var confpassword = confPasswordController.text;
-    // var grade = gradeController.text;
-    // var cityid = cityidController.text;
+
     try {
       Map<String, dynamic> data = {
         "f_name": fname,
@@ -56,16 +51,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "nick_name": nickname,
         "email": email,
         "phone": phone,
-        //"city_id": cityid,
-        //"grade": grade,
+        "city_id": cityid,
         "conf_password": confpassword,
-        'selectedCountry': selectedCountry,
-        'selectedCity': selectedCity,
-        'selectedGrade': selectedGrade,
+        "grade": selectedGrade,
       };
 
       final response = await http.post(
         Uri.parse('https://login.mathshouse.net/api/stu_sign_up_add'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: jsonEncode(data),
       );
 
@@ -75,6 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // Handle successful response if needed
       } else {
         print('Failed to post data: ${response.statusCode}');
+        print(response.body);
         // Handle failure, maybe inform the user
       }
     } catch (e) {
@@ -173,16 +170,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: 'Nickname',
                     isvisText: true,
                   ),
-
-                  // Dropdown button for selecting country
                   Row(
                     children: [
                       const SizedBox(
                         width: 5,
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width *
-                            0.5, // Adjust the width as needed
+                        width: MediaQuery.of(context).size.width * 0.5,
                         child: DropdownButton<String>(
                           isExpanded: true,
                           value: selectedCountry,
@@ -205,27 +199,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }).toList(),
                         ),
                       ),
-                      const SizedBox(width: 10), // Add some extra spacing
+                      const SizedBox(width: 10),
                       Container(
-                        width: MediaQuery.of(context).size.width *
-                            0.4, // Adjust the width as needed
+                        width: MediaQuery.of(context).size.width * 0.4,
                         child: DropdownButton<String>(
                           isExpanded: true,
                           value: selectedCity,
                           hint: const Text('Select City'),
-                          onChanged: (String? newValue) {
+                          onChanged: (String? newValue) async {
                             setState(() {
                               selectedCity = newValue!;
                             });
+
+                            City selectedCityObject =
+                                signupProvider.allcities.firstWhere(
+                              (city) => city.name == newValue,
+                              orElse: () =>
+                                  City(id: -1, countryId: '', name: ''),
+                            );
+
+                            // Check if a city was found
+                            if (selectedCityObject.id != -1) {
+                              setState(() {
+                                cityid = selectedCityObject.id;
+                              });
+                            }
                           },
                           items: signupProvider.allcities
                               .map<DropdownMenuItem<String>>((city) {
-                            // int x = signupProvider.allcities.indexOf(city);
-                            // log('city index: $x');
                             return DropdownMenuItem<String>(
                               value: city.name,
                               child: Text(
-                                maxLines: 1,
                                 city.name,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -236,7 +240,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   const SizedBox(height: 10),
-
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       hintText: 'Select Grade',
@@ -252,25 +255,91 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         selectedGrade = newValue;
                       });
                     },
-                    items: List.generate(
-                      13,
-                      (index) => DropdownMenuItem(
-                        value: (index + 1).toString(),
-                        child: Text('Grade ${index + 1}'),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'grade 1',
+                        child: Text('Grade 1'),
                       ),
-                    ),
+                      DropdownMenuItem(
+                        value: 'grade 2',
+                        child: Text('Grade 2'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 3',
+                        child: Text('Grade 3'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 4',
+                        child: Text('Grade 4'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 5',
+                        child: Text('Grade 5'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 6',
+                        child: Text('Grade 6'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 7',
+                        child: Text('Grade 7'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 8',
+                        child: Text('Grade 8'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 9',
+                        child: Text('Grade 9'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 10',
+                        child: Text('Grade 10'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 11',
+                        child: Text('Grade 11'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'grade 12',
+                        child: Text('Grade 12'),
+                      ),
+                      // Continue adding DropdownMenuItem for each grade up to 13
+                      DropdownMenuItem(
+                        value: 'grade 13',
+                        child: Text('Grade 13'),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      signuppost(context);
+                    onPressed: () async {
+                      await signuppost(context);
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UnregisteredHomescreen()),
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Sign Up Success'),
+                            content:
+                                const Text('You have successfully signed up.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginPage()),
+                                  );
+                                },
+                                child: const Text('Login'),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -341,7 +410,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          print(signuppost(context));
                           Navigator.of(context).pop();
                         },
                         child: Text(

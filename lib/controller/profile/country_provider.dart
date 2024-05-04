@@ -1,6 +1,4 @@
-// Function to fetch data from API
 // ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';

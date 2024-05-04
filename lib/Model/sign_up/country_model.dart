@@ -1,4 +1,4 @@
-// Model for Country
+
 class Country {
   final int id;
   final String name;
