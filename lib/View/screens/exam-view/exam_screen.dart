@@ -125,12 +125,20 @@ class _ExamBodyState extends State<ExamBody> {
           color: faceBookColor,
           child: Consumer<TimerProvider>(
             builder: (context, timer, child) {
-              return Text(
-                "Timer: ${timer.secondsSpent ~/ 60}:${(timer.secondsSpent % 60).toString().padLeft(2, '0')}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                ),
+              return Row(
+                children: [
+                  const Icon(Icons.timer, color: Colors.white),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    " ${timer.secondsSpent ~/ 60}:${(timer.secondsSpent % 60).toString().padLeft(2, '0')}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ],
               );
             },
           ),
@@ -211,6 +219,7 @@ class _ExamBodyState extends State<ExamBody> {
                 style: const TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
             ),
