@@ -156,6 +156,16 @@ class _StartQuizState extends State<StartQuiz> {
                   ),
                   GestureDetector(
                       onTap: () {
+                        if (selectedAnswers[currentQuestionIndex] != null) {
+                            if (selectedAnswers[currentQuestionIndex] ==
+                                currentQuestion.mcqQuizList[0].answer) {
+                              correctAnswers.add(currentQuestion);
+                              log('correct added : ${correctAnswers.length}');
+                            } else {
+                              wrongAnswers.add(currentQuestion.questionId);
+                              log('wrong added : ${wrongAnswers.length}');
+                            }
+                          }
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -183,8 +193,7 @@ class _StartQuizState extends State<StartQuiz> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        if (currentQuestionIndex !=
-                            widget.quiz.questionQuizList.length - 1) {
+                        if (currentQuestionIndex != widget.quiz.questionQuizList.length - 1) {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
                                 currentQuestion.mcqQuizList[0].answer) {
@@ -192,14 +201,14 @@ class _StartQuizState extends State<StartQuiz> {
                                 wrongAnswers.remove(currentQuestion.questionId);
                               }
                               correctAnswers.add(currentQuestion);
-                              log('correct added');
+                              log('correct added : ${correctAnswers.length}');
                               nextQuestion();
                             } else {
                               if (correctAnswers.contains(currentQuestion)) {
                                 correctAnswers.remove(currentQuestion);
                               }
                               wrongAnswers.add(currentQuestion.questionId);
-                              log('wrong added');
+                              log('wrong added : ${wrongAnswers.length}');
                               nextQuestion();
                             }
                           } else {
@@ -210,8 +219,10 @@ class _StartQuizState extends State<StartQuiz> {
                             if (selectedAnswers[currentQuestionIndex] ==
                                 currentQuestion.mcqQuizList[0].answer) {
                               correctAnswers.add(currentQuestion);
+                              log('correct added : ${correctAnswers.length}');
                             } else {
                               wrongAnswers.add(currentQuestion.questionId);
+                              log('wrong added : ${wrongAnswers.length}');
                             }
                           }
                           if (selectedAnswers.contains(null)) {
@@ -233,6 +244,7 @@ class _StartQuizState extends State<StartQuiz> {
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
+                                          Navigator.pop(context);
                                           Navigator.of(context).pushReplacement(
                                               MaterialPageRoute(
                                                   builder: (ctx) =>

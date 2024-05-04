@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class ExamHistoryProvider with ChangeNotifier{
-  List<ExamHistory>allExamHistory =[];
+  List<ExamHistory> allExamHistory =[];
+  List<ExamViewMistake> allmistakes = [];
   Future<void> getExamHistoryData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -29,6 +30,34 @@ class ExamHistoryProvider with ChangeNotifier{
             .map((e) => ExamHistory.fromJson(e))
             .toList();
         allExamHistory = q;
+        notifyListeners();
+      }
+    } catch (e) {
+      log('Error: $e');
+    }
+  }
+
+  Future<void> getExamViewMistakesData(BuildContext context,int id) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_mistakes/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        ExamViewMistakesList examMistakesList =
+            ExamViewMistakesList.fromJson(responseData);
+          List<ExamViewMistake> am = examMistakesList.examViewMistakeList
+            .map((e) => ExamViewMistake.fromJson(e))
+            .toList();
+        allmistakes = am;
         notifyListeners();
       }
     } catch (e) {
