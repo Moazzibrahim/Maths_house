@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 
 class DiagnosticResultScreen extends StatefulWidget {
-  final int? wrongCount;
-  final int? correctCount;
-  final int? totalQuestions;
+  final int wrongCount;
+  final int correctCount;
+  final int totalQuestions;
   final int? score;
   final int? passscore;
 
   const DiagnosticResultScreen(
       {super.key,
-      this.wrongCount,
-      this.correctCount,
-      this.totalQuestions,
+      required this.wrongCount,
+      required this.correctCount,
+      required this.totalQuestions,
       this.score,
       this.passscore});
 
@@ -29,7 +28,26 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, "Result"),
+      appBar: AppBar(
+        title: const Center(
+          child: Text(
+            "Result",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: faceBookColor,
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RegisteredHomeScreen()));
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
