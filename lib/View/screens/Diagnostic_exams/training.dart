@@ -55,6 +55,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
   int currentIndex = 0;
   late Timer _timer;
   int _seconds = 0;
+  List<int> missedQuestions = [];
 
   @override
   void initState() {
@@ -158,12 +159,16 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
   int correctCount = 0;
   int wrongCount = 0;
 
-  void _submitExam() {
+  void _submitExam(BuildContext context) {
     _timer.cancel(); // Stop the timer
     // Calculate correct and wrong answer counts
     final provider = Provider.of<DiagExamProvider>(context, listen: false);
     int unansweredIndex = -1;
     List<int> wrongQuestionIds = [];
+    final int score =
+        Provider.of<DiagExamProvider>(context, listen: false).score;
+    final int passscore =
+        Provider.of<DiagExamProvider>(context, listen: false).passscore;
 
     for (int i = 0; i < provider.alldiagnostics.length; i++) {
       final currentQuestion = provider.alldiagnostics[i];
@@ -185,6 +190,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
 
       if (selectedAnswer == null) {
         unansweredIndex = i;
+        missedQuestions.add(i);
         break;
       }
       if (selectedAnswer == correctAnswer) {
@@ -204,30 +210,99 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Unanswered Question'),
+            title: const Text('Unanswered Questions'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Question ${unansweredIndex + 1} has not been answered.'),
-              ],
+              children: List.generate(
+                missedQuestions.length,
+                (index) {
+                  final int unansweredIndex = missedQuestions[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        Text('Question ${unansweredIndex + 1} is missed '),
+                        const SizedBox(width: 7),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: faceBookColor,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context); // Close the dialog
+                            setState(() {
+                              currentIndex =
+                                  unansweredIndex; // Navigate to the unanswered question
+                            });
+                          },
+                          child: const Text(
+                            'View',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
             actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                  setState(() {
-                    currentIndex =
-                        unansweredIndex; // Navigate to the unanswered question
-                  });
-                },
-                child: const Text('Go to Question'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: const Text('OK'),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                  ),
+                  onPressed: () {
+                    int minutes = _seconds ~/ 60;
+                    // ignore: unused_local_variable
+                    int seconds = _seconds % 60;
+                    storeExamResults(
+                      correctCount,
+                      wrongCount,
+                      minutes,
+                      wrongQuestionIds,
+                      Provider.of<DiagExamProvider>(context, listen: false)
+                          .alldiagnostics
+                          .length,
+                      Provider.of<DiagExamProvider>(context, listen: false)
+                          .score,
+                      Provider.of<DiagExamProvider>(context, listen: false)
+                          .passscore,
+                    );
+                    Future.delayed(
+                      const Duration(seconds: 1),
+                      () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Your answers are submitted'),
+                          ),
+                        );
+                      },
+                    );
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DiagnosticResultScreen(
+                            wrongCount: wrongCount,
+                            correctCount: correctCount,
+                            totalQuestions: Provider.of<DiagExamProvider>(
+                                    context,
+                                    listen: false)
+                                .alldiagnostics
+                                .length,
+                            score: score,
+                            passscore: passscore,
+                          ),
+                        ),
+                      );
+                    }); // Close the dialog
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ],
           );
@@ -249,6 +324,29 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
         Provider.of<DiagExamProvider>(context, listen: false).score,
         Provider.of<DiagExamProvider>(context, listen: false).passscore,
       );
+      Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Your answers are submitted')),
+          );
+        },
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DiagnosticResultScreen(
+                      wrongCount: wrongCount,
+                      correctCount: correctCount,
+                      totalQuestions:
+                          Provider.of<DiagExamProvider>(context, listen: false)
+                              .alldiagnostics
+                              .length,
+                      score: score,
+                      passscore: passscore,
+                    )));
+      });
     }
   }
 
@@ -259,10 +357,6 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     final currentQuestion = allDiagnostics[currentIndex];
     final minutes = _seconds ~/ 60;
     final seconds = _seconds % 60;
-    final int score =
-        Provider.of<DiagExamProvider>(context, listen: false).score;
-    final int passscore =
-        Provider.of<DiagExamProvider>(context, listen: false).passscore;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -364,30 +458,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 allDiagnostics.length == 1)
               ElevatedButton(
                 onPressed: () async {
-                  _submitExam();
-                  await Future.delayed(
-                    const Duration(seconds: 2),
-                    () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Your answers are submitted')),
-                      );
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DiagnosticResultScreen(
-                                    wrongCount: wrongCount,
-                                    correctCount: correctCount,
-                                    totalQuestions:
-                                        Provider.of<DiagExamProvider>(context,
-                                                listen: false)
-                                            .alldiagnostics
-                                            .length,
-                                    score: score,
-                                    passscore: passscore,
-                                  )));
-                    },
-                  );
+                  _submitExam(context);
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 child: const Text(
