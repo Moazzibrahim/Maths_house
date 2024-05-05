@@ -5,6 +5,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/package/package_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ExamPackageDetails extends StatefulWidget {
   const ExamPackageDetails({Key? key}) : super(key: key);
@@ -66,18 +67,18 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 140,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12.w,
+                    horizontal: 140.w,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Pay Now',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
