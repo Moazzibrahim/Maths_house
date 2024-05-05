@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam_package_details.dart';
 import 'package:flutter_application_1/View/screens/live_package_details.dart';
+import 'package:flutter_application_1/View/screens/question_package_details.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/constants/widgets.dart';
 
 class PackageScreen extends StatelessWidget {
   const PackageScreen({
@@ -14,27 +16,7 @@ class PackageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-    centerTitle: true,
-    title: const Text(
-      'Packages',
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ),
-    leading: Container(
-      margin: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-          color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
-      child: IconButton(
-        onPressed: () {
-          
-        },
-        icon: Icon(
-          Icons.arrow_back,
-          color: Colors.redAccent[700],
-        ),
-      ),
-    ),
-  ),
+      appBar: buildAppBar(context, 'package'),
       body: !isLoggedIn
           ? Padding(
               padding: const EdgeInsets.all(12),
@@ -80,7 +62,7 @@ class PackageScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const ExamPackageDetails()),
+                                      const QuestionPackageScreen()),
                             );
                             // Button onPressed action
                           },
