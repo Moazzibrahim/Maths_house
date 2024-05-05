@@ -5,15 +5,19 @@ import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 
 class DiagnosticResultScreen extends StatefulWidget {
-  final int? wrongAnswerQuestions;
-  final int? correctAnswerCount;
+  final int? wrongCount;
+  final int? correctCount;
   final int? totalQuestions;
+  final int? score;
+  final int? passscore;
 
   const DiagnosticResultScreen(
       {super.key,
-      this.wrongAnswerQuestions,
-      this.correctAnswerCount,
-      this.totalQuestions});
+      this.wrongCount,
+      this.correctCount,
+      this.totalQuestions,
+      this.score,
+      this.passscore});
 
   @override
   State<DiagnosticResultScreen> createState() => _DiagnosticResultScreenState();
@@ -31,11 +35,11 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInfoRow("Quizzes", "ADf"),
+            _buildInfoRow("total score", "${widget.score}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Score", "5"),
+            _buildInfoRow("grade", "5"),
             const SizedBox(
               height: 15,
             ),
@@ -43,11 +47,11 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Correct Questions", "${widget.correctAnswerCount}"),
+            _buildInfoRow("Correct Questions", "${widget.correctCount}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Wrong Questions", "${widget.wrongAnswerQuestions}"),
+            _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),

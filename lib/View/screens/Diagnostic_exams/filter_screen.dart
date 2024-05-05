@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, avoid_print
+// ignore_for_file: use_super_parameters, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -80,7 +80,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>  DiagnosticExamScreen(),
+            builder: (context) => const DiagnosticExamScreen(),
           ),
         );
       } else {
