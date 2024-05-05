@@ -36,14 +36,7 @@ class PackageScreen extends StatelessWidget {
                         const Expanded(
                           child: Text(
                             'Question:',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const Expanded(
-                          child: Text(
-                            style: TextStyle(),
-                            maxLines: 1,
-                            '#Package:33',
+                            style: TextStyle(fontSize: 20),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -61,8 +54,9 @@ class PackageScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const QuestionPackageScreen()),
+                                  builder: (context) => QuestionPackageScreen(
+                                        key: Key('value'),
+                                      )),
                             );
                             // Button onPressed action
                           },
@@ -90,15 +84,8 @@ class PackageScreen extends StatelessWidget {
                       children: [
                         const Expanded(
                           child: Text(
-                            'exams:',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const Expanded(
-                          child: Text(
-                            style: TextStyle(),
-                            maxLines: 1,
-                            '#Package: 1',
+                            'Exams:',
+                            style: TextStyle(fontSize: 20),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -145,15 +132,8 @@ class PackageScreen extends StatelessWidget {
                       children: [
                         const Expanded(
                           child: Text(
-                            'live:',
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const Expanded(
-                          child: Text(
-                            style: TextStyle(),
-                            maxLines: 1,
-                            '#Package: 9',
+                            'Live:',
+                            style: TextStyle(fontSize: 20),
                             textAlign: TextAlign.center,
                           ),
                         ),
