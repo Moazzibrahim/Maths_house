@@ -241,7 +241,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   backgroundColor: faceBookColor,
                   padding: EdgeInsets.symmetric(
                     vertical: 12.h,
-                    horizontal: 130.w,
+                    horizontal: 120.w,
                   ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.w)),
