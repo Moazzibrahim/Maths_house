@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OrderDetails extends StatelessWidget {
   const OrderDetails({super.key});
@@ -123,16 +124,16 @@ class OrderDetails extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 140,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 12.h,
+                    horizontal: 130.w,
                   ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12))),
-              child: const Text(
+              child: Text(
                 'Back home',
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
