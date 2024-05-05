@@ -2,31 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
+import 'package:flutter_application_1/controller/diagnostic/get_course_provider.dart';
+import 'package:provider/provider.dart';
 
-class DiagnosticResultScreen extends StatefulWidget {
+class DiagnosticResultScreen extends StatelessWidget {
   final int wrongCount;
   final int correctCount;
   final int totalQuestions;
   final int? score;
   final int? passscore;
+  final int? seconds;
+  final List<int> wrongQuestionIds;
 
-  const DiagnosticResultScreen(
-      {super.key,
-      required this.wrongCount,
-      required this.correctCount,
-      required this.totalQuestions,
-      this.score,
-      this.passscore});
-
-  @override
-  State<DiagnosticResultScreen> createState() => _DiagnosticResultScreenState();
-}
-
-class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
-  bool showRecommendation = false;
+  const DiagnosticResultScreen({
+    super.key,
+    required this.wrongCount,
+    required this.correctCount,
+    required this.totalQuestions,
+    this.score,
+    this.passscore,
+    this.seconds,
+    required this.wrongQuestionIds,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<GetCourseProvider>(
+      builder: (context, provider, _) {
+        return FutureBuilder<Map<String, dynamic>>(
+          future: provider.fetchDataFromApi({
+            'timer_count': seconds, // Change this to the appropriate value
+            'correct_count': correctCount,
+            'wrong_count': wrongCount,
+            'wrong_question_ids':
+                wrongQuestionIds, // Change this to the appropriate value
+          }, context),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              // Process the fetched data and update the UI accordingly
+              // Example: Extract data from snapshot.data and display it
+              return _buildResultScreen(context);
+            } else {
+              return const Center(child: Text('No data available'));
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildResultScreen(BuildContext context) {
+    bool showRecommendation = false;
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -42,9 +73,11 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
           ),
           onPressed: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RegisteredHomeScreen()));
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RegisteredHomeScreen(),
+              ),
+            );
           },
         ),
       ),
@@ -53,38 +86,41 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInfoRow("total score", "${widget.score}"),
+            _buildInfoRow("total score", "${score ?? ''}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("grade", "5"),
+            _buildInfoRow("grade", "5"), // Change this to the appropriate value
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Total Questions", " ${widget.totalQuestions}"),
+            _buildInfoRow("Total Questions", " $totalQuestions"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Correct Questions", "${widget.correctCount}"),
+            _buildInfoRow("Correct Questions", "$correctCount"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
+            _buildInfoRow("Wrong Questions", "$wrongCount"),
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
               onPressed: () {
-                setState(() {
-                  showRecommendation = !showRecommendation;
-                });
+                // Toggle showRecommendation state
+                showRecommendation = !showRecommendation;
               },
-              child: const Text("Recommended",
-                  style: TextStyle(color: Colors.white)),
+              child: const Text(
+                "Recommended",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             if (showRecommendation) ...[
               const SizedBox(height: 10),
-              const Text("Chapter 1",
-                  style: TextStyle(fontSize: 16, color: Colors.black)),
+              const Text(
+                "Chapter 1",
+                style: TextStyle(fontSize: 16, color: Colors.black),
+              ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -104,7 +140,8 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CheckoutScreen()),
+                          builder: (context) => const CheckoutScreen(),
+                        ),
                       );
                     });
                   }),
@@ -133,8 +170,10 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                     ),
                   );
                 },
-                child:
-                    const Text("Home", style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  "Home",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ],

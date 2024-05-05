@@ -187,10 +187,46 @@ class _PaymentScreenState extends State<PaymentScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const OrderDetails()),
-                  );
+                  if (_selectedOption != null && _image != null) {
+                    //submitPayment(_selectedOption!, _image!);
+                    // Show an alert dialog with "Successful Payment" text
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const AlertDialog(
+                          // title: Text("Payment Successful"),
+                          content: Text("successful payment"),
+                        );
+                      },
+                    );
+                    // Delay navigation to the order details screen by 2 seconds
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const OrderDetails()),
+                      );
+                    });
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Error"),
+                          content: const Text(
+                              "Please select a payment method and upload a receipt."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
@@ -199,7 +235,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     horizontal: 130.w,
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.w)),
+                    borderRadius: BorderRadius.circular(12.w),
+                  ),
                 ),
                 child: Text(
                   'submit',

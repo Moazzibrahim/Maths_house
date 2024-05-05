@@ -293,6 +293,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                                 .length,
                             score: score,
                             passscore: passscore,
+                            seconds: seconds,
+                            wrongQuestionIds: wrongQuestionIds,
                           ),
                         ),
                       );
@@ -345,6 +347,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                               .length,
                       score: score,
                       passscore: passscore,
+                      seconds: seconds,
+                      wrongQuestionIds: wrongQuestionIds,
                     )));
       });
     }

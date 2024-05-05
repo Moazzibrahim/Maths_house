@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 
 class OrderDetails extends StatelessWidget {
   const OrderDetails({super.key});
@@ -9,7 +8,20 @@ class OrderDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, "order details"),
+      appBar: AppBar(
+        title: const Text("order details"),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RegisteredHomeScreen()));
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: faceBookColor,
+            )),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
