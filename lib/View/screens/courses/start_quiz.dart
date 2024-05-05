@@ -20,6 +20,7 @@ class StartQuiz extends StatefulWidget {
 
 class _StartQuizState extends State<StartQuiz> {
   late Timer _timer;
+  TextEditingController ansText = TextEditingController(); 
   int indexOfUnsolvedQuestion = 0;
   int _secondsElapsed = 0;
   int currentQuestionIndex = 0;
@@ -135,8 +136,12 @@ class _StartQuizState extends State<StartQuiz> {
                   currentQuestion.question,
                   style: const TextStyle(fontSize: 20),
                 ),
-                for (int i = 0; i < currentQuestion.mcqQuizList.length; i++)
-                  buildRadioListTile(currentQuestion, i),
+                if(currentQuestion.mcqQuizList.isNotEmpty)
+                  for (int i = 0; i < currentQuestion.mcqQuizList.length; i++)
+                    buildRadioListTile(currentQuestion, i)
+                  else TextFormField(
+                    controller: ansText,
+                  )
               ],
             ),
             Positioned(
@@ -158,7 +163,7 @@ class _StartQuizState extends State<StartQuiz> {
                       onTap: () {
                         if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
-                                currentQuestion.mcqQuizList[0].answer) {
+                                currentQuestion.mcqQuizList[0].answer || ansText.text == currentQuestion.gridList[0].correctAnswer) {
                               correctAnswers.add(currentQuestion);
                               log('correct added : ${correctAnswers.length}');
                             } else {
@@ -196,7 +201,7 @@ class _StartQuizState extends State<StartQuiz> {
                         if (currentQuestionIndex != widget.quiz.questionQuizList.length - 1) {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
-                                currentQuestion.mcqQuizList[0].answer) {
+                                currentQuestion.mcqQuizList[0].answer || ansText.text == currentQuestion.gridList[0].correctAnswer) {
                               if (wrongAnswers.contains(currentQuestion.questionId)) {
                                 wrongAnswers.remove(currentQuestion.questionId);
                               }
@@ -217,7 +222,7 @@ class _StartQuizState extends State<StartQuiz> {
                         } else {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
-                                currentQuestion.mcqQuizList[0].answer) {
+                                currentQuestion.mcqQuizList[0].answer || ansText.text == currentQuestion.gridList[0].correctAnswer) {
                               correctAnswers.add(currentQuestion);
                               log('correct added : ${correctAnswers.length}');
                             } else {
