@@ -3,15 +3,15 @@ import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 
-class ContainerSelectionPage extends StatefulWidget {
-  const ContainerSelectionPage({super.key});
+class QuestionPackageScreen extends StatefulWidget {
+  const QuestionPackageScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _ContainerSelectionPageState createState() => _ContainerSelectionPageState();
+  _QuestionPackageScreenState createState() => _QuestionPackageScreenState();
 }
 
-class _ContainerSelectionPageState extends State<ContainerSelectionPage> {
+class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
   List<bool> isSelected = [false, false, false];
 
   void selectContainer(int index) {

@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/sign_up/country_model.dart';
 import 'package:http/http.dart' as http;
 
-
 class SignupProvider with ChangeNotifier {
   List<Country> allcountries = [];
-  String?
-      selectedCountry;   Future<void> fetchCountry() async {
+  String? selectedCountry;
+  Future<void> fetchCountry() async {
     try {
       final response = await http
           .get(Uri.parse('https://login.mathshouse.net/api/stu_sign_up_page'));
