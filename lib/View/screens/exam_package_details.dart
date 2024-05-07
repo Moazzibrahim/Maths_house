@@ -63,9 +63,9 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                       MaterialPageRoute(
                           builder: (context) => CheckoutScreen(
                                 chapterName: packageProvider
-                                    .allquestionpackage[selectedIndex].name,
+                                    .allexamspackage[selectedIndex].name,
                                 price: packageProvider
-                                    .allquestionpackage[selectedIndex].price,
+                                    .allexamspackage[selectedIndex].price,
                               )),
                     );
                   }

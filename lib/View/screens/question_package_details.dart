@@ -31,7 +31,7 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
     return Consumer<PackageProvider>(
       builder: (context, packageProvider, _) {
         return Scaffold(
-          appBar: buildAppBar(context, 'Package details'),
+          appBar: buildAppBar(context, 'Question Package details'),
           body: Column(
             children: [
               Expanded(

@@ -34,7 +34,7 @@ class _livePackageDetailsState extends State<LivePackageDetails> {
     return Consumer<PackageProvider>(
       builder: (context, packageProvider, _) {
         return Scaffold(
-          appBar: buildAppBar(context, 'Package details'),
+          appBar: buildAppBar(context, 'Live Package details'),
           body: Column(
             children: [
               Expanded(
