@@ -61,7 +61,12 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CheckoutScreen()),
+                          builder: (context) => CheckoutScreen(
+                                chapterName: packageProvider
+                                    .allquestionpackage[selectedIndex].name,
+                                price: packageProvider
+                                    .allquestionpackage[selectedIndex].price,
+                              )),
                     );
                   }
                 },
