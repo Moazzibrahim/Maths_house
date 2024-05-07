@@ -54,7 +54,7 @@ class PackageScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => QuestionPackageScreen(
+                                  builder: (context) => const QuestionPackageScreen(
                                         key: Key('value'),
                                       )),
                             );
@@ -152,7 +152,7 @@ class PackageScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const livePackageDetails()),
+                                      const LivePackageDetails()),
                             );
                             // Button onPressed action
                           },

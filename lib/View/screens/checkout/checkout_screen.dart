@@ -131,22 +131,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("chapter 23",
-                              style: TextStyle(color: Colors.grey)),
+                          Text("${widget.chapterName}",
+                              style: const TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          const Text("100",
-                              style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                      SizedBox(height: 10.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Text("Chapter 2",
-                              style: TextStyle(color: Colors.grey)),
-                          SizedBox(width: 13.w),
-                          const Text("22.92\$",
-                              style: TextStyle(color: Colors.grey)),
+                          Text("${widget.price}",
+                              style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
                       SizedBox(height: 15.h),
@@ -157,8 +146,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const Text("Total: ",
                                 style: TextStyle(color: Colors.grey)),
                             SizedBox(width: 8.w),
-                            const Text("37.85\$",
-                                style: TextStyle(color: Colors.grey)),
+                            Text("${widget.price}",
+                                style: const TextStyle(color: Colors.grey)),
                             SizedBox(width: 24.w),
                             const Text(
                               "43\$",

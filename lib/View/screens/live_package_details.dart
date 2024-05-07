@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, camel_case_types, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/widgets/custom_package.dart';
@@ -7,15 +9,14 @@ import 'package:flutter_application_1/controller/package/package_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
-class livePackageDetails extends StatefulWidget {
-  const livePackageDetails({Key? key}) : super(key: key);
+class LivePackageDetails extends StatefulWidget {
+  const LivePackageDetails({super.key});
 
   @override
   _livePackageDetailsState createState() => _livePackageDetailsState();
 }
 
-class _livePackageDetailsState extends State<livePackageDetails> {
+class _livePackageDetailsState extends State<LivePackageDetails> {
   int selectedIndex = -1;
 
   @override
@@ -62,21 +63,26 @@ class _livePackageDetailsState extends State<livePackageDetails> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CheckoutScreen()),
+                          builder: (context) => CheckoutScreen(
+                                chapterName: packageProvider
+                                    .alllivepackage[selectedIndex].name,
+                                price: packageProvider
+                                    .alllivepackage[selectedIndex].price,
+                              )),
                     );
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
-                  padding:  EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     vertical: 12.w,
-                    horizontal: 130.h,
+                    horizontal: 120.h,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child:  Text(
+                child: Text(
                   'Pay Now',
                   style: TextStyle(
                     fontSize: 17.sp,
