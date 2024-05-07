@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/history_screens/dia_exam_history_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
+import 'package:flutter_application_1/View/screens/history_screens/payment_history.dart';
 import 'package:flutter_application_1/View/screens/history_screens/question_history_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/quizes_history_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_courses_custom.dart';
@@ -40,6 +41,12 @@ class HistoryScreen extends StatelessWidget {
                     builder: (ctx) => const QuizesHistoryScreen()));
               },
               child: const CustomUnregisteredWidgets(text: 'Quizes')),
+          GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const Paymenthistoryscreen()));
+              },
+              child: const CustomUnregisteredWidgets(text: 'payment')),
         ]),
       ),
     );
