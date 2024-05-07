@@ -88,7 +88,7 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
             ],
