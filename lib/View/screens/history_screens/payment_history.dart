@@ -51,7 +51,6 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                 DataCell(Text('skrill')),
               ],
             ),
-
             // Add more rows as needed
           ],
         ),
