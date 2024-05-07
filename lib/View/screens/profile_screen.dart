@@ -1,7 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
 import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/edit_profile_screen.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
@@ -16,14 +19,13 @@ class ProfileScreen extends StatefulWidget {
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
-} 
+}
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     Provider.of<ProfileProvider>(context, listen: false)
         .getprofileData(context)
-        
         .catchError((e) {
       print(e);
     });
@@ -51,7 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: gridHomeColor,
                     borderRadius: BorderRadius.circular(12)),
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const RegisteredHomeScreen()));
+                    },
                     icon: Icon(
                       Icons.arrow_back,
                       color: Colors.redAccent[700],

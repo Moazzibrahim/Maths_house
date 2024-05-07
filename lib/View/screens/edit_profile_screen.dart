@@ -1,10 +1,11 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/profile_screen.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -144,6 +145,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor),
                     onPressed: () async {
                       // Post the data
                       await postData(context);
@@ -160,7 +163,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 )),
                       );
                     },
-                    child: const Text('Save'),
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),

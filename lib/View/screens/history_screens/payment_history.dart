@@ -20,7 +20,8 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
             DataColumn(label: Text('#')),
             DataColumn(label: Text('wallet')),
             DataColumn(label: Text('data')),
-            DataColumn(label: Text('category')),
+            DataColumn(label: Text('service')),
+            DataColumn(label: Text("payment method"))
           ],
           rows: const [
             DataRow(
@@ -29,6 +30,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                 DataCell(Text('200')),
                 DataCell(Text('26/4/2024')),
                 DataCell(Text('exam')),
+                DataCell(Text('vodafone cash')),
               ],
             ),
             DataRow(
@@ -37,6 +39,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                 DataCell(Text('300')),
                 DataCell(Text('26/4/2024')),
                 DataCell(Text('course 1')),
+                DataCell(Text('vodafone cash')),
               ],
             ),
             DataRow(
@@ -45,8 +48,10 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                 DataCell(Text('50')),
                 DataCell(Text('25/4/2024')),
                 DataCell(Text('live package')),
+                DataCell(Text('skrill')),
               ],
             ),
+
             // Add more rows as needed
           ],
         ),
