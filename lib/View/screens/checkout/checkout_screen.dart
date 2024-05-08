@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/payment_screen.dart';
+import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -221,10 +222,55 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               SizedBox(height: 17.h),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PaymentScreen()),
-                  );
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          content:
+                              const Text("Using wallet or payment methods?"),
+                          actions: [
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: faceBookColor),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const WalletScreen()));
+                                    },
+                                    child: const Text(
+                                      "wallet",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: faceBookColor),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PaymentScreen()));
+                                    },
+                                    child: const Text(
+                                      "Payment methods",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                              ],
+                            )
+                          ],
+                        );
+                      });
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => PaymentScreen()),
+                  // );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
