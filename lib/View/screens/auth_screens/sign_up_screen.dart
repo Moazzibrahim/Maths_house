@@ -1,4 +1,5 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/sign_up/country_model.dart';
@@ -42,6 +43,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var phone = phoneController.text;
     var password = passwordController.text;
     var confpassword = confPasswordController.text;
+
+    // Check if password and confirm password match
+    if (password != confpassword) {
+      // Show error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Password and Confirm Password do not match"),
+        duration: Duration(seconds: 2),
+      ));
+      return; // Stop further execution
+    }
 
     try {
       Map<String, dynamic> data = {
@@ -111,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Expanded(
                         child: CustomTextField(
                           controller: fnameController,
-                          hintText: 'First Name',
+                          hintText: 'First Name*',
                           isvisText: true,
                         ),
                       ),
@@ -119,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Expanded(
                         child: CustomTextField(
                           controller: lnameController,
-                          hintText: 'Last Name',
+                          hintText: 'Last Name*',
                           isvisText: true,
                         ),
                       ),
@@ -127,12 +138,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   CustomTextField(
                     controller: emailController,
-                    hintText: 'Email',
+                    hintText: 'Email*',
                     isvisText: true,
                   ),
                   CustomTextField(
                     controller: passwordController,
-                    hintText: 'Password',
+                    hintText: 'Password*',
                     passIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -147,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   CustomTextField(
                     controller: confPasswordController,
-                    hintText: 'Confirm Password',
+                    hintText: 'Confirm Password*',
                     passIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -160,14 +171,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     isvisText: !isvisText,
                   ),
+                  if (passwordController.text != confPasswordController.text)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        'Password does not match',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
                   CustomTextField(
                     controller: phoneController,
-                    hintText: 'Phone Number',
+                    hintText: 'Phone Number*',
                     isvisText: true,
                   ),
                   CustomTextField(
                     controller: nicknameController,
-                    hintText: 'Nickname',
+                    hintText: 'Nickname*',
                     isvisText: true,
                   ),
                   Row(
@@ -175,12 +197,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const SizedBox(
                         width: 5,
                       ),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * 0.5,
                         child: DropdownButton<String>(
                           isExpanded: true,
                           value: selectedCountry,
-                          hint: const Text('Select Country'),
+                          hint: const Text('Select Country*'),
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedCountry = newValue;
@@ -200,12 +222,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: DropdownButton<String>(
                           isExpanded: true,
                           value: selectedCity,
-                          hint: const Text('Select City'),
+                          hint: const Text('Select City*'),
                           onChanged: (String? newValue) async {
                             setState(() {
                               selectedCity = newValue!;
@@ -242,7 +264,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
-                      hintText: 'Select Grade',
+                      hintText: 'Select Grade*',
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 10),
                       border: OutlineInputBorder(
@@ -316,8 +338,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await signuppost(context);
+                      // Check if any field is empty
+                      if (fnameController.text.isEmpty ||
+                          lnameController.text.isEmpty ||
+                          emailController.text.isEmpty ||
+                          passwordController.text.isEmpty ||
+                          confPasswordController.text.isEmpty ||
+                          phoneController.text.isEmpty ||
+                          nicknameController.text.isEmpty ||
+                          selectedCountry == null ||
+                          selectedCity == null ||
+                          selectedGrade == null) {
+                        // Show error message for each empty field
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("All fields are required"),
+                          duration: Duration(seconds: 2),
+                        ));
+                        return; // Stop further execution
+                      }
 
+                      // Check if password and confirm password match
+                      if (passwordController.text !=
+                          confPasswordController.text) {
+                        // Show error message to the user
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                              "Password and Confirm Password do not match"),
+                          duration: Duration(seconds: 2),
+                        ));
+                        return; // Stop further execution
+                      }
+                      // All fields are filled and passwords match, proceed with signup
+                      await signuppost(context);
+                      // Show dialog only when password matches confirm password
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -331,8 +386,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()),
+                                      builder: (context) => const LoginPage(),
+                                    ),
                                   );
                                 },
                                 child: const Text('Login'),
