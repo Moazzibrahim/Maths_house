@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/filter_screen.dart';
 import 'package:flutter_application_1/View/screens/courses/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
@@ -117,9 +116,8 @@ class RegisteredHomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx)=> const HistoryScreen())
-                      );
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const HistoryScreen()));
                     },
                     child: GridContainer(
                       text: 'History',
