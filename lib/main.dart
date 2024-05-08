@@ -1,4 +1,4 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/splash_screen.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
@@ -16,6 +16,7 @@ import 'package:flutter_application_1/controller/history_controllers/question_hi
 import 'package:flutter_application_1/controller/history_controllers/quiz_history_controller.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:flutter_application_1/controller/package/package_provider.dart';
+import 'package:flutter_application_1/controller/payment_method_provider.dart';
 import 'package:flutter_application_1/controller/profile/country_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
@@ -92,6 +93,9 @@ class MathHouse extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => PackageProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PaymentProvider(),
         ),
       ],
       child: const ScreenUtilInit(
