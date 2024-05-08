@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
 import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/edit_profile_screen.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
@@ -41,30 +40,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           initialIndex: 0,
           child: Scaffold(
             appBar: AppBar(
-              centerTitle: true,
-              title: const Text(
-                'My Profile',
+              title: const Center(
+                  child: Text(
+                "My profile",
                 style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.white,
-              leading: Container(
-                margin: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                    color: gridHomeColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const RegisteredHomeScreen()));
-                    },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.redAccent[700],
-                    )),
-              ),
+              )),
+              automaticallyImplyLeading: false,
             ),
             body: !widget.isLoggedIn
                 ? Padding(
