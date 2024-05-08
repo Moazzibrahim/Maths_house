@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, avoid_print
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({super.key});
+
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
@@ -50,6 +54,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Consumer<PaymentProvider>(builder: (context, paymentProvider, _) {
       return Scaffold(
@@ -69,7 +74,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 const SizedBox(height: 20),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: paymentProvider.allPaymentMethods.length,
                   itemBuilder: (context, index) {
                     final paymentMethod =
@@ -77,7 +82,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     return ListTile(
                       title: Text(
                         paymentMethod.payment,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                         ),
                       ),
