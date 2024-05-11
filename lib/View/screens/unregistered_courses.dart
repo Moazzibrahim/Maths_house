@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/american_courses_screen.dart';
 import 'package:flutter_application_1/View/screens/igcse_courses_screen.dart';
 import 'package:flutter_application_1/View/screens/national_courses_screen.dart';
