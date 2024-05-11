@@ -73,9 +73,8 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx)=> const UnregisteredCourses())
-                        );
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => const UnregisteredCourses()));
                       },
                       child: CustomSmallCard(
                         icon: Icons.book_rounded,
@@ -84,29 +83,164 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                         iconColor: Colors.red,
                       ),
                     ),
-                    CustomSmallCard(
-                      icon: Icons.assignment,
-                      color: Colors.yellow[100],
-                      text: 'Exams',
-                      iconColor: Colors.yellow[700],
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text(
+                                  "You need to login firstly",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginPage()));
+                                      },
+                                      child: const Text("Login"))
+                                ],
+                              );
+                            });
+                      },
+                      child: CustomSmallCard(
+                        icon: Icons.assignment,
+                        color: Colors.yellow[100],
+                        text: 'Exams',
+                        iconColor: Colors.yellow[700],
+                      ),
                     ),
-                    CustomSmallCard(
-                      icon: Icons.assessment,
-                      color: Colors.blue[200],
-                      text: 'Diagnostic',
-                      iconColor: Colors.blue[700],
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text(
+                                  "You need to login firstly",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginPage()));
+                                      },
+                                      child: const Text("Login"))
+                                ],
+                              );
+                            });
+                      },
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: const Text(
+                                    "You need to login firstly",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginPage()));
+                                        },
+                                        child: const Text("Login"))
+                                  ],
+                                );
+                              });
+                        },
+                        child: CustomSmallCard(
+                          icon: Icons.assessment,
+                          color: Colors.blue[200],
+                          text: 'Diagnostic',
+                          iconColor: Colors.blue[700],
+                        ),
+                      ),
                     ),
-                    CustomSmallCard(
-                      icon: Icons.question_mark,
-                      color: Colors.green[200],
-                      text: 'Questions',
-                      iconColor: Colors.green[700],
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text(
+                                  "You need to login firstly",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginPage()));
+                                      },
+                                      child: const Text("Login"))
+                                ],
+                              );
+                            });
+                      },
+                      child: CustomSmallCard(
+                        icon: Icons.question_mark,
+                        color: Colors.green[200],
+                        text: 'Questions',
+                        iconColor: Colors.green[700],
+                      ),
                     ),
-                    CustomSmallCard(
-                      icon: Icons.live_tv,
-                      color: Colors.purple[200],
-                      text: 'Live',
-                      iconColor: Colors.purple,
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text(
+                                  "You need to login firstly",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const LoginPage()));
+                                      },
+                                      child: const Text("Login"))
+                                ],
+                              );
+                            });
+                      },
+                      child: CustomSmallCard(
+                        icon: Icons.live_tv,
+                        color: Colors.purple[200],
+                        text: 'Live',
+                        iconColor: Colors.purple,
+                      ),
                     ),
                   ],
                 ),
@@ -123,10 +257,10 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                     child: const Text(
                       'See All',
                       style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: faceBookColor,
-                          ),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: faceBookColor,
+                      ),
                     ),
                   )
                 ],

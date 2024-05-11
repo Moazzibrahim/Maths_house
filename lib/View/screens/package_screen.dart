@@ -4,7 +4,6 @@ import 'package:flutter_application_1/View/screens/live_package_details.dart';
 import 'package:flutter_application_1/View/screens/question_package_details.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 
 class PackageScreen extends StatelessWidget {
   const PackageScreen({
@@ -16,7 +15,14 @@ class PackageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, 'package'),
+      appBar: AppBar(
+        title: const Center(
+            child: Text(
+          "package",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        )),
+        automaticallyImplyLeading: false,
+      ),
       body: !isLoggedIn
           ? Padding(
               padding: const EdgeInsets.all(12),
@@ -54,7 +60,8 @@ class PackageScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const QuestionPackageScreen(
+                                  builder: (context) =>
+                                      const QuestionPackageScreen(
                                         key: Key('value'),
                                       )),
                             );
