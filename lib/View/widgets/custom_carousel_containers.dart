@@ -31,8 +31,8 @@ class CarouselContainer extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.sp),
           ),
           SizedBox(
-            width: 90.w,
-            height: 90.h,
+            width: 100.w,
+            height: 100.h,
             child: Image.asset(
               image,
               fit: BoxFit.cover, // Ensure the image covers the entire space

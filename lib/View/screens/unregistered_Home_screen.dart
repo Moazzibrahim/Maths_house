@@ -35,7 +35,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
     const CarouselContainer(
       color: Color.fromRGBO(2, 153, 234, 1),
       text: 'Get the best Maths experience!',
-      image: 'assets/images/7605117.jpg',
+      image: 'assets/images/Deconstructed-rafiki.png',
     ),
   ];
 
