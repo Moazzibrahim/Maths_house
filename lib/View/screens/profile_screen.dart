@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
 import 'package:flutter_application_1/Model/profile_name.dart';
@@ -54,16 +52,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage:
-                                  AssetImage('assets/images/moaz.jpeg'),
-                            ),
-                          ],
-                        ),
+                        if (profileProvider.userData != null &&
+                            profileProvider.userData!.image.isNotEmpty)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    profileProvider.userData!.image),
+                              ),
+                            ],
+                          ),
+
+                        const SizedBox(), // Empty SizedBox if no image available
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

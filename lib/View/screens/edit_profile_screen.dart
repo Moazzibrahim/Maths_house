@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -30,6 +33,59 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController emailparentController = TextEditingController();
   TextEditingController phoneparentController = TextEditingController();
+
+  File? _image;
+
+  // Function to open image picker and update the avatar
+  Future<void> getImageFromGallery() async {
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future<void> postImage(BuildContext context) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+
+    try {
+      // Check if an image is selected
+      if (_image != null) {
+        var stream = http.ByteStream(_image!.openRead());
+        var length = await _image!.length();
+        var uri = Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/update_stu_image');
+        var request = http.MultipartRequest("POST", uri);
+        var multipartFile = http.MultipartFile('file', stream, length,
+            filename: path.basename(_image!.path));
+
+        // Add the file to the request
+        request.files.add(multipartFile);
+        // Add authorization token
+        request.headers.addAll({
+          'Authorization': 'Bearer $token',
+        });
+        // Send the request
+        var response = await request.send();
+        if (response.statusCode == 200) {
+          print('Image uploaded successfully');
+        } else {
+          print('Failed to upload image: ${response.reasonPhrase}');
+        }
+      } else {
+        print('No image selected');
+      }
+    } catch (e) {
+      print('Error: $e');
+      // Handle error, inform the user
+    }
+  }
 
   Future<void> postData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -98,15 +154,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircleAvatar(
                           radius: 50,
                           backgroundImage:
-                              AssetImage('assets/images/moaz.jpeg'),
+                              NetworkImage(profileProvider.userData!.image),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        InkWell(
+                          child: const Icon(Icons.edit),
+                          onTap: () {
+                            getImageFromGallery();
+                          },
                         ),
                       ],
                     ),
@@ -150,6 +215,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     onPressed: () async {
                       // Post the data
                       await postData(context);
+                      await postImage(context);
 
                       // Navigate back to the profile screen
                       Navigator.pop(context);
