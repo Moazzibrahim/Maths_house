@@ -15,20 +15,10 @@ class CarouselContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate responsive width and height for the container
-    double containerWidth = screenWidth * 0.8; // 80% of screen width
-    double containerHeight = containerWidth * 0.5; // Aspect ratio of 2:1
-
-    // Calculate responsive width and height for the image
-    double imageWidth = containerWidth * 0.5; // 60% of container width
-    double imageHeight = containerHeight * 0.7; // 70% of container height
-
     return Container(
       padding: const EdgeInsets.all(8),
-      width: containerWidth,
+      width: 300.w,
+      height: 150.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: color,
@@ -41,8 +31,8 @@ class CarouselContainer extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.sp),
           ),
           SizedBox(
-            width: imageWidth,
-            height: imageHeight,
+            width: 90.w,
+            height: 90.h,
             child: Image.asset(
               image,
               fit: BoxFit.cover, // Ensure the image covers the entire space
