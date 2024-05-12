@@ -52,7 +52,7 @@ class RegisteredHomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              'Welcome ${userData.fName}',
+                              'Welcome ${userData.nickname}',
                               style: const TextStyle(
                                 color: faceBookColor,
                                 fontSize: 20,
