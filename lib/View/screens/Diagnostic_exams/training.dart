@@ -436,6 +436,9 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
+            const SizedBox(
+              width: 3,
+            ),
             ElevatedButton(
               onPressed:
                   _showQuestionsDialog, // Show the dialog to navigate to any question
@@ -446,6 +449,9 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 'Go to Question',
                 style: TextStyle(color: Colors.white),
               ),
+            ),
+            const SizedBox(
+              width: 3,
             ),
             if (currentIndex < allDiagnostics.length - 1)
               ElevatedButton(
@@ -464,10 +470,14 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 onPressed: () async {
                   _submitExam(context);
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: faceBookColor,
+                ),
                 child: const Text(
                   'Submit',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
           ],

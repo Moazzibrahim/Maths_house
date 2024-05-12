@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/profile_screen.dart';
@@ -13,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as path;
 
 class EditProfileScreen extends StatefulWidget {
@@ -27,14 +27,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController lnameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController extraemailController = TextEditingController();
-
   TextEditingController nicknameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController emailparentController = TextEditingController();
   TextEditingController phoneparentController = TextEditingController();
-
   File? _image;
+  bool _imageSelected = false;
 
   // Function to open image picker and update the avatar
   Future<void> getImageFromGallery() async {
@@ -44,8 +43,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        _imageSelected = true;
       } else {
         print('No image selected.');
+        _imageSelected = false;
       }
     });
   }
@@ -62,19 +63,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         var uri = Uri.parse(
             'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/update_stu_image');
         var request = http.MultipartRequest("POST", uri);
-        var multipartFile = http.MultipartFile('file', stream, length,
+        var multipartFile = http.MultipartFile('image', stream, length,
             filename: path.basename(_image!.path));
 
         // Add the file to the request
         request.files.add(multipartFile);
         // Add authorization token
-        request.headers.addAll({
-          'Authorization': 'Bearer $token',
-        });
+        request.headers.addAll({'Authorization': 'Bearer $token'});
         // Send the request
         var response = await request.send();
         if (response.statusCode == 200) {
           print('Image uploaded successfully');
+          // Update the state to reflect the new image
+          setState(() {
+            // Update the _image variable with the new image
+            _image =
+                File(_image!.path); // Update the _image with the new file path
+          });
         } else {
           print('Failed to upload image: ${response.reasonPhrase}');
         }
@@ -161,16 +166,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage:
-                              NetworkImage(profileProvider.userData!.image),
+                          backgroundImage: _image != null
+                              ? FileImage(_image!) as ImageProvider<Object>?
+                              : NetworkImage(profileProvider.userData!.image),
                         ),
                         const SizedBox(
                           width: 5,
                         ),
                         InkWell(
                           child: const Icon(Icons.edit),
-                          onTap: () {
-                            getImageFromGallery();
+                          onTap: () async {
+                            await getImageFromGallery();
+                            if (_imageSelected) {
+                              postImage(context); // Post the selected image
+                            }
                           },
                         ),
                       ],
@@ -214,19 +223,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         backgroundColor: faceBookColor),
                     onPressed: () async {
                       // Post the data
-                      await postData(context);
-                      await postImage(context);
-
-                      // Navigate back to the profile screen
-                      Navigator.pop(context);
-
+                      postData(context);
+                      // Navigate back to the profile screen only if the widget is still mounted
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
                       // Reload the profile screen
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(
-                                  isLoggedIn: false,
-                                )),
+                          builder: (context) => const ProfileScreen(
+                            isLoggedIn: false,
+                          ),
+                        ),
                       );
                     },
                     child: const Text(

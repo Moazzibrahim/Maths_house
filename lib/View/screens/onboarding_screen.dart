@@ -59,7 +59,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               children: onboarrdingPages,
             ),
             Positioned(
-                bottom: 140.h,
+                bottom: 123.h,
                 left: 0,
                 right: 0,
                 child: Column(
