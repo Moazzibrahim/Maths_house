@@ -27,6 +27,17 @@ class TokenModel with ChangeNotifier {
 //   }
 // }
 class LoginModel with ChangeNotifier {
+  late int _id; // Define the _id variable
+  int get id => _id; // Define a getter for id
+
+  // Constructor and other methods...
+
+  // Method to set id
+  void setId(int id) {
+    _id = id;
+    notifyListeners();
+  }
+
   Future<String> loginUser(
       BuildContext context, String email, String password) async {
     // API endpoint to authenticate user
@@ -51,16 +62,22 @@ class LoginModel with ChangeNotifier {
         // If authentication is successful, extract token from response
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         String token = responseData['token'];
+        int id = responseData['user']['id'];
 
         // Use provider to set the token
         Provider.of<TokenModel>(context, listen: false).setToken(token);
+        Provider.of<LoginModel>(context, listen: false).setId(id);
         log("status code: ${response.statusCode}");
         log("Token: $token");
+        log("id: $id");
         log("$responseData");
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const TabsScreen(isLoggedIn: false,)),
+          MaterialPageRoute(
+              builder: (context) => const TabsScreen(
+                    isLoggedIn: false,
+                  )),
         );
 
         // Return success message

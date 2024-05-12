@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -21,6 +19,7 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   String? _selectedOption;
   File? _image;
+  TextEditingController _textFieldController = TextEditingController();
 
   Future<void> _uploadFromGallery() async {
     final picker = ImagePicker();
@@ -106,6 +105,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       },
                     );
                   },
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _textFieldController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter your paid amount',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Column(
