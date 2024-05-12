@@ -17,8 +17,8 @@ class CarouselContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
-      width: 300.w,
-      height: 150.h,
+      width: 305.w,
+      height: 155.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: color,
@@ -31,8 +31,8 @@ class CarouselContainer extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.sp),
           ),
           SizedBox(
-            width: 100.w,
-            height: 100.h,
+            width: 95.w,
+            height: 95.h,
             child: Image.asset(
               image,
               fit: BoxFit.cover, // Ensure the image covers the entire space

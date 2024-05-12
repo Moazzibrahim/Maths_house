@@ -30,6 +30,7 @@ class QuizzesProvider with ChangeNotifier {
           .map((e) => QuizzesModel.fromJson(e))
           .toList();
           allQuizzesModel = ql;
+          log('${allQuizzesModel.map((e) => e.id)}');
           notifyListeners();
     }else{
       log('error, Staatuscode: ${response.statusCode}');
