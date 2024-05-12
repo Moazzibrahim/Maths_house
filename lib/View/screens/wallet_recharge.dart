@@ -1,6 +1,9 @@
-import 'dart:io';
+// ignore_for_file: unused_local_variable, use_build_context_synchronously, avoid_print
 
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -9,18 +12,19 @@ import 'package:flutter_application_1/controller/payment_method_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class WalletRechargeScreen extends StatefulWidget {
-  const WalletRechargeScreen({super.key});
+  const WalletRechargeScreen({Key? key}) : super(key: key);
 
   @override
   _WalletRechargeScreenState createState() => _WalletRechargeScreenState();
 }
 
 class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
-  String? _selectedOption;
+  int? _selectedOptionId; // Variable to store the selected payment method ID
   File? _image;
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
 
   Future<void> _uploadFromGallery() async {
     final picker = ImagePicker();
@@ -41,6 +45,105 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
       setState(() {
         _image = File(pickedFile.path);
       });
+    }
+  }
+
+  Future<void> submitPayment(
+      int selectedOptionId, File imageFile, String wallet) async {
+    try {
+      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+      final token = tokenProvider.token;
+      final paymentMethodProvider =
+          Provider.of<PaymentProvider>(context, listen: false);
+      final paymentMethodId = paymentMethodProvider.selectedPaymentMethodId;
+      final loginModel = Provider.of<LoginModel>(context, listen: false);
+      final studentId = loginModel.id;
+
+      wallet = _textFieldController.text;
+
+      // Prepare the request
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/proccess_student_wallet'));
+      request.headers['Authorization'] = 'Bearer $token';
+      request.fields['student_id'] = studentId.toString();
+      request.fields['wallet'] = wallet;
+      request.fields['payment_method_id'] = selectedOptionId.toString();
+
+      // Attach the image
+      var imageUri = Uri.parse('file://${imageFile.path}');
+      var multipartFile =
+          await http.MultipartFile.fromPath('image', imageUri.path);
+      request.files.add(multipartFile);
+
+      // Send the request
+      var response = await request.send();
+
+      // Handle the response
+      if (response.statusCode == 200) {
+        // Show an alert dialog with "Successful Payment" text
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AlertDialog(
+              content: Text("Your operation is pending"),
+            );
+          },
+        );
+        // Delay navigation to the order details screen by 2 seconds
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const OrderDetails()),
+          );
+        });
+      } else {
+        // Handle the error response
+        var responseBody = await response.stream.bytesToString();
+        var statusCode = response.statusCode;
+        print('Error Response Status Code: $statusCode');
+        var error = jsonDecode(responseBody);
+        print("$error");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Error"),
+              content: const Text("Failed to make payment"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions
+      print("Error: $e");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: const Text(
+                "An unexpected error occurred. Please try again later."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -86,22 +189,24 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
                           fontSize: 16,
                         ),
                       ),
-                      leading: Radio<String>(
+                      leading: Radio<int>(
                         activeColor: faceBookColor,
-                        value: paymentMethod.payment,
-                        groupValue: _selectedOption,
-                        onChanged: (String? value) {
+                        value: paymentMethod.id, // Use int value
+                        groupValue:
+                            _selectedOptionId ?? 0, // Use selectedOptionId
+                        onChanged: (int? value) {
                           setState(() {
-                            _selectedOption = value;
+                            _selectedOptionId =
+                                value; // Update selectedOptionId
                           });
                         },
                       ),
-                      tileColor: _selectedOption == paymentMethod.payment
+                      tileColor: _selectedOptionId == paymentMethod.id
                           ? gridHomeColor
                           : null,
                       onTap: () {
                         setState(() {
-                          _selectedOption = paymentMethod.payment;
+                          _selectedOptionId = paymentMethod.id;
                         });
                       },
                     );
@@ -157,34 +262,20 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    if (_selectedOption != null && _image != null) {
-                      //submitPayment(_selectedOption!, _image!);
-                      // Show an alert dialog with "Successful Payment" text
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const AlertDialog(
-                            // title: Text("Payment Successful"),
-                            content: Text("successful payment"),
-                          );
-                        },
-                      );
-                      // Delay navigation to the order details screen by 2 seconds
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OrderDetails()),
-                        );
-                      });
+                    // Before sending the request, check if _selectedOptionId is not null
+                    if (_selectedOptionId != null) {
+                      // Call the submitPayment method with the selected option
+                      submitPayment(_selectedOptionId!, _image!,
+                          _textFieldController.text);
                     } else {
+                      // Display an error message to the user
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text("Error"),
-                            content: const Text(
-                                "Please select a payment method and upload a receipt."),
+                            content:
+                                const Text("Please select a payment method."),
                             actions: [
                               TextButton(
                                 onPressed: () {

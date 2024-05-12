@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:provider/provider.dart';
 
 class PaymentProvider with ChangeNotifier {
   List<PaymentMethod> allPaymentMethods = [];
+  int? selectedPaymentMethodId; // Property to store the selected payment method ID
 
   Future<void> fetchPaymentMethods(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -24,10 +27,17 @@ class PaymentProvider with ChangeNotifier {
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        print(responseData);
         PaymentMethodList paymentMethodList =
             PaymentMethodList.fromJson(responseData);
         allPaymentMethods = paymentMethodList.paymentMethodList;
+
+        // Accessing id of each payment method
+        for (var paymentMethod in allPaymentMethods) {
+          int id = paymentMethod.id;
+          // Do whatever you want with the id here
+          print('Payment method ID: $id');
+        }
+        
         notifyListeners();
       } else {
         throw Exception('Failed to load data');
