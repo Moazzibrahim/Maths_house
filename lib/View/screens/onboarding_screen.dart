@@ -59,7 +59,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               children: onboarrdingPages,
             ),
             Positioned(
-                bottom: 155.h,
+                bottom: 123.h,
                 left: 0,
                 right: 0,
                 child: Column(
@@ -82,6 +82,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           await prefs.setBool('isNewUser', false);
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (ctx) =>
                                   const TabsScreen(isLoggedIn: true)));

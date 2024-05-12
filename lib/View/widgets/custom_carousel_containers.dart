@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CarouselContainer extends StatelessWidget {
   const CarouselContainer({
-    Key? key,
+    super.key,
     required this.color,
     required this.text,
     required this.image,
-  }) : super(key: key);
+  });
 
   final Color color;
   final String text;
@@ -14,20 +15,10 @@ class CarouselContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate responsive width and height for the container
-    double containerWidth = screenWidth * 0.8; // 80% of screen width
-    double containerHeight = containerWidth * 0.5; // Aspect ratio of 2:1
-
-    // Calculate responsive width and height for the image
-    double imageWidth = containerWidth * 0.6; // 60% of container width
-    double imageHeight = containerHeight * 0.8; // 80% of container height
-
     return Container(
       padding: const EdgeInsets.all(8),
-      width: containerWidth,
+      width: 300.w,
+      height: 150.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: color,
@@ -37,11 +28,11 @@ class CarouselContainer extends StatelessWidget {
         children: [
           Text(
             text,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17.sp),
           ),
           SizedBox(
-            width: imageWidth,
-            height: imageHeight,
+            width: 100.w,
+            height: 100.h,
             child: Image.asset(
               image,
               fit: BoxFit.cover, // Ensure the image covers the entire space

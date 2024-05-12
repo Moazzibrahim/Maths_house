@@ -282,7 +282,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                             backgroundColor: faceBookColor,
                             padding: const EdgeInsets.symmetric(
                               vertical: 12,
-                              horizontal: 140,
+                              horizontal: 120,
                             ),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18))),
