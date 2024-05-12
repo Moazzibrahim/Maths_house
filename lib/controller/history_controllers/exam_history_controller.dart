@@ -32,6 +32,8 @@ class ExamHistoryProvider with ChangeNotifier{
             .toList();
         allExamHistory = q;
         notifyListeners();
+      }else{
+        log('StatusCode: ${response.statusCode}');
       }
     } catch (e) {
       log('Error: $e');
