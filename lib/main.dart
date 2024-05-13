@@ -21,6 +21,7 @@ import 'package:flutter_application_1/controller/profile/country_provider.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
 import 'package:flutter_application_1/controller/quiz_provider.dart';
+import 'package:flutter_application_1/controller/wallet_history_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -96,6 +97,9 @@ class MathHouse extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => PaymentProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => WalletProvider(),
         ),
       ],
       child: const ScreenUtilInit(
