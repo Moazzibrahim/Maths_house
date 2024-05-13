@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_answer_screen.dart';
@@ -80,6 +82,7 @@ class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
                             DataCell(
                               ElevatedButton(
                                 onPressed: () async{
+                                  log('${e.id}');
                                   await Provider.of<ExamHistoryProvider>(
                                           context,
                                           listen: false)

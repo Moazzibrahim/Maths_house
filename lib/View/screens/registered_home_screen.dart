@@ -11,7 +11,7 @@ import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class RegisteredHomeScreen extends StatelessWidget {
-  const RegisteredHomeScreen({Key? key});
+  const RegisteredHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

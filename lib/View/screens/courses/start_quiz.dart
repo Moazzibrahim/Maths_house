@@ -20,7 +20,7 @@ class StartQuiz extends StatefulWidget {
 
 class _StartQuizState extends State<StartQuiz> {
   late Timer _timer;
-  TextEditingController ansText = TextEditingController(); 
+  TextEditingController ansText = TextEditingController();
   int indexOfUnsolvedQuestion = 0;
   int _secondsElapsed = 0;
   int currentQuestionIndex = 0;
@@ -136,10 +136,11 @@ class _StartQuizState extends State<StartQuiz> {
                   currentQuestion.question,
                   style: const TextStyle(fontSize: 20),
                 ),
-                if(currentQuestion.mcqQuizList.isNotEmpty)
+                if (currentQuestion.mcqQuizList.isNotEmpty)
                   for (int i = 0; i < currentQuestion.mcqQuizList.length; i++)
                     buildRadioListTile(currentQuestion, i)
-                  else TextFormField(
+                else
+                  TextFormField(
                     controller: ansText,
                   )
               ],
@@ -162,15 +163,15 @@ class _StartQuizState extends State<StartQuiz> {
                   GestureDetector(
                       onTap: () {
                         if (selectedAnswers[currentQuestionIndex] != null) {
-                            if (selectedAnswers[currentQuestionIndex] ==
-                                currentQuestion.mcqQuizList[0].answer || ansText.text == currentQuestion.gridList[0].correctAnswer) {
-                              correctAnswers.add(currentQuestion);
-                              log('correct added : ${correctAnswers.length}');
-                            } else {
-                              wrongAnswers.add(currentQuestion.questionId);
-                              log('wrong added : ${wrongAnswers.length}');
-                            }
+                          if (selectedAnswers[currentQuestionIndex] ==
+                              currentQuestion.mcqQuizList[0].answer) {
+                            correctAnswers.add(currentQuestion);
+                            log('correct added : ${correctAnswers.length}');
+                          } else {
+                            wrongAnswers.add(currentQuestion.questionId);
+                            log('wrong added : ${wrongAnswers.length}');
                           }
+                        }
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -178,31 +179,50 @@ class _StartQuizState extends State<StartQuiz> {
                               title: const Text('Go to Question'),
                               children: List.generate(
                                 widget.quiz.questionQuizList.length,
-                                (index) => SimpleDialogOption(
-                                  onPressed: () {
-                                    setState(() {
-                                      currentQuestionIndex = index;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Question ${index + 1}"),
+                                (index) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Question ${index + 1}'),
+                                      ElevatedButton(onPressed: (){
+                                        setState(() {
+                                        currentQuestionIndex = index;
+                                      });
+                                      Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.redAccent[700],
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+                                      ),
+                                      child: const Text('View Question'))
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
                           },
                         );
                       },
-                      child: Text('Question ${currentQuestionIndex + 1}')),
+                      child: Text(
+                        'Question ${currentQuestionIndex + 1}',
+                        style: TextStyle(
+                            fontSize: 14.sp, color: Colors.redAccent[700]),
+                      ),
+                      ),
                   SizedBox(
                     width: 45.w,
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        if (currentQuestionIndex != widget.quiz.questionQuizList.length - 1) {
+                        if (currentQuestionIndex !=
+                            widget.quiz.questionQuizList.length - 1) {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
-                                currentQuestion.mcqQuizList[0].answer || ansText.text == currentQuestion.gridList[0].correctAnswer) {
-                              if (wrongAnswers.contains(currentQuestion.questionId)) {
+                                currentQuestion.mcqQuizList[0].answer) {
+                              if (wrongAnswers
+                                  .contains(currentQuestion.questionId)) {
                                 wrongAnswers.remove(currentQuestion.questionId);
                               }
                               correctAnswers.add(currentQuestion);
@@ -222,7 +242,7 @@ class _StartQuizState extends State<StartQuiz> {
                         } else {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
-                                currentQuestion.mcqQuizList[0].answer || ansText.text == currentQuestion.gridList[0].correctAnswer) {
+                                currentQuestion.mcqQuizList[0].answer) {
                               correctAnswers.add(currentQuestion);
                               log('correct added : ${correctAnswers.length}');
                             } else {
@@ -265,7 +285,8 @@ class _StartQuizState extends State<StartQuiz> {
                                             backgroundColor:
                                                 Colors.redAccent[700],
                                             foregroundColor: Colors.white),
-                                        child: const Text('Yes')),
+                                        child: const Text('Yes')
+                                        ),
                                     ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(context);
@@ -274,7 +295,8 @@ class _StartQuizState extends State<StartQuiz> {
                                             backgroundColor:
                                                 Colors.redAccent[700],
                                             foregroundColor: Colors.white),
-                                        child: const Text('No')),
+                                        child: const Text('No'),
+                                        ),
                                   ],
                                 );
                               },
@@ -282,13 +304,13 @@ class _StartQuizState extends State<StartQuiz> {
                           } else {
                             Provider.of<QuizzesProvider>(context, listen: false)
                                 .postQuizData(
-                                    context,
-                                    quizId : widget.quiz.id,
-                                    rightQuestion:correctAnswers.length ,
-                                    timer:  _secondsElapsed/60.ceil(),
-                                    score: correctAnswers.length,
-                                    mistakes: wrongAnswers.toList(),
-                                    );
+                              context,
+                              quizId: widget.quiz.id,
+                              rightQuestion: correctAnswers.length,
+                              timer: _secondsElapsed / 60.ceil(),
+                              score: correctAnswers.length,
+                              mistakes: wrongAnswers.toList(),
+                            );
                             Navigator.of(context)
                                 .pushReplacement(MaterialPageRoute(
                                     builder: (ctx) => QuizScoreScreen(
