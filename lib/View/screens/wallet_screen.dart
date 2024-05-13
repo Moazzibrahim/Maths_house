@@ -119,11 +119,12 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
                       child: DataTable(
                         columns: const [
                           DataColumn(label: Text('#')),
                           DataColumn(label: Text('wallet')),
-                          DataColumn(label: Text('data')),
+                          DataColumn(label: Text('date')),
                           DataColumn(label: Text('state')),
                         ],
                         rows: walletProvider.walletHistoryList
@@ -134,7 +135,13 @@ class _WalletScreenState extends State<WalletScreen> {
                                     DataCell(Text('${entry.key + 1}')),
                                     DataCell(
                                         Text(entry.value.wallet.toString())),
-                                    DataCell(Text(entry.value.date)),
+                                    // Horizontally scrollable date cell
+                                    DataCell(
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Text(entry.value.date),
+                                      ),
+                                    ),
                                     DataCell(Text(entry.value.state)),
                                   ],
                                 ))
