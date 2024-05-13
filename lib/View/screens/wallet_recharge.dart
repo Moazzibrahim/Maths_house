@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, use_build_context_synchronously, avoid_print
+// ignore_for_file: unused_local_variable, use_build_context_synchronously, avoid_print, library_private_types_in_public_api
 
 import 'dart:convert';
 import 'dart:io';
@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class WalletRechargeScreen extends StatefulWidget {
-  const WalletRechargeScreen({Key? key}) : super(key: key);
+  const WalletRechargeScreen({super.key});
 
   @override
   _WalletRechargeScreenState createState() => _WalletRechargeScreenState();
@@ -58,9 +58,7 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
       final paymentMethodId = paymentMethodProvider.selectedPaymentMethodId;
       final loginModel = Provider.of<LoginModel>(context, listen: false);
       final studentId = loginModel.id;
-
       wallet = _textFieldController.text;
-
       // Prepare the request
       var request = http.MultipartRequest(
           'POST',
