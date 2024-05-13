@@ -145,30 +145,30 @@ class _LoginPageState extends State<LoginPage> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 15.h),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: 6.h, horizontal: 25.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Expanded(child: Divider(color: Colors.black)),
-                    SizedBox(width: 10.w),
-                    const Text('Or Login With'),
-                    SizedBox(width: 10.w),
-                    const Expanded(child: Divider(color: Colors.black)),
-                  ],
-                ),
-              ),
-              SizedBox(height: 15.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/images/google.png'),
-                  SizedBox(width: 50.w),
-                  Image.asset('assets/images/apple.png'),
-                ],
-              ),
+              // SizedBox(height: 15.h),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(
+              //       vertical: 6.h, horizontal: 25.w),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       const Expanded(child: Divider(color: Colors.black)),
+              //       SizedBox(width: 10.w),
+              //       const Text('Or Login With'),
+              //       SizedBox(width: 10.w),
+              //       const Expanded(child: Divider(color: Colors.black)),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(height: 15.h),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Image.asset('assets/images/google.png'),
+              //     SizedBox(width: 50.w),
+              //     Image.asset('assets/images/apple.png'),
+              //   ],
+              // ),
               SizedBox(height: 10.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

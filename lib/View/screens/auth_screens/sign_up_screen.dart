@@ -334,7 +334,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ],
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 18,
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -357,7 +357,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ));
                         return; // Stop further execution
                       }
-
                       // Check if password and confirm password match
                       if (passwordController.text !=
                           confPasswordController.text) {
@@ -416,47 +415,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
+                  // const Padding(
+                  //   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 25),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       Expanded(
+                  //         child: Divider(
+                  //           color: Colors.black,
+                  //         ),
+                  //       ),
+                  //       SizedBox(
+                  //         width: 10,
+                  //       ),
+                  //       Text('Or Login With'),
+                  //       SizedBox(
+                  //         width: 10,
+                  //       ),
+                  //       Expanded(
+                  //         child: Divider(
+                  //           color: Colors.black,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   const SizedBox(
-                    height: 10,
+                    height: 7,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 25),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text('Or Login With'),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/google.png'),
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      Image.asset('assets/images/apple.png'),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Image.asset('assets/images/google.png'),
+                  //     const SizedBox(
+                  //       width: 50,
+                  //     ),
+                  //     Image.asset('assets/images/apple.png'),
+                  //   ],
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
