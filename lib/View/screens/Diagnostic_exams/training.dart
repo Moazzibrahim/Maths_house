@@ -295,6 +295,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                             passscore: passscore,
                             seconds: seconds,
                             wrongQuestionIds: wrongQuestionIds,
+                            exid: provider.exid,
                           ),
                         ),
                       );
@@ -349,6 +350,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                       passscore: passscore,
                       seconds: seconds,
                       wrongQuestionIds: wrongQuestionIds,
+                      exid: provider.exid,
                     )));
       });
     }
@@ -486,54 +488,3 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     );
   }
 }
-
-
-    // void postDiagExamResults(int correctAnswerCount, Duration? elapsedTime,
-    //     List<int> wrongQuestionIds) async {
-    //   const url =
-    //       'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam_grade';
-    //   final startExamProvider =
-    //       Provider.of<DiagExamProvider>(context, listen: false);
-    //   final examId = startExamProvider.exid;
-
-    //   // Check if elapsedTime is null, if so, initialize it to Duration.zero
-    //   elapsedTime ??= Duration.zero;
-    //   // Calculate elapsed time in minutes and seconds as a combined string
-    //   final String elapsed =
-    //       '${elapsedTime.inMinutes}:${(elapsedTime.inSeconds % 60).toString().padLeft(2, '0')}';
-    //   final int elapsedMinutes = elapsedTime.inMinutes;
-    //   final int elapsedSeconds = elapsedTime.inSeconds % 60;
-
-    //   final Map<String, dynamic> postData = {
-    //     'exam_id': examId,
-    //     'right_question': correctAnswerCount,
-    //     'timer': elapsedMinutes,
-    //     'mistakes': wrongQuestionIds,
-    //   };
-
-    //   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    //   final token = tokenProvider.token; // Replace with your auth token
-
-    //   try {
-    //     final response = await http.post(
-    //       Uri.parse(url),
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'Accept': 'application/json',
-    //         'Authorization': 'Bearer $token',
-    //       },
-    //       body: json.encode(postData),
-    //     );
-
-    //     if (response.statusCode == 200) {
-    //       print(' Diag Exam results posted successfully.');
-    //       print("exam id: $examId");
-    //     } else {
-    //       print('Failed to post exam results: ${response.statusCode}');
-    //       // Print response body for more details
-    //       print('Response body: ${response.body}');
-    //     }
-    //   } catch (e) {
-    //     print('Error posting exam results: $e');
-    //   }
-    // }
