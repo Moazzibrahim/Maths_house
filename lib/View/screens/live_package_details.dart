@@ -64,6 +64,10 @@ class _livePackageDetailsState extends State<LivePackageDetails> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CheckoutScreen(
+                                id: packageProvider
+                                    .alllivepackage[selectedIndex].id,
+                                type: packageProvider
+                                    .alllivepackage[selectedIndex].type,
                                 chapterName: packageProvider
                                     .alllivepackage[selectedIndex].name,
                                 price: packageProvider

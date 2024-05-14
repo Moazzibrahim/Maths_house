@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -16,6 +14,9 @@ class CheckoutScreen extends StatefulWidget {
   final String? duration;
   final int? discount;
   final String? chapterName;
+  final int? id;
+  final String? type;
+
   final Map<String, dynamic>? examresults;
   const CheckoutScreen({
     super.key,
@@ -24,6 +25,8 @@ class CheckoutScreen extends StatefulWidget {
     this.discount,
     this.chapterName,
     this.examresults,
+    this.id,
+    this.type,
   });
 
   @override
@@ -36,67 +39,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String? duration;
   double? price;
   int? discount;
+  int? id;
+  String? type;
 
   @override
   void initState() {
     super.initState();
-    // fetchExamResults(context).then((data) {
-    //   if (data.isNotEmpty) {
-    //     setState(() {
-    //       chapterName = data['chapterName'];
-    //       duration = data['duration'];
-    //       price = data['price'];
-    //       discount = data['discount'];
-    //     });
-    //   } else {
-    //     print('Exam results are empty or invalid');
-    //   }
-    // }).catchError((error) {
-    //   print('Error fetching exam results: $error');
-    // });
-  }
-
-  Future<Map<String, dynamic>> fetchExamResults(BuildContext context) async {
-    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token;
-    final response = await http.get(
-      Uri.parse(
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Parse the JSON response body
-      Map<String, dynamic> data = json.decode(response.body);
-      // Check if the necessary data exists in the response
-      if (data.containsKey('chapters') && data['chapters'].isNotEmpty) {
-        // Assuming the first chapter contains the desired data
-        Map<String, dynamic> firstChapter = data['chapters'][0];
-        Map<String, dynamic>? apiLesson = firstChapter['api_lesson'];
-        Map<String, dynamic>? apiChapter = apiLesson?['api_chapter'];
-        List<dynamic>? priceList = apiChapter?['price'];
-        // Check if all required fields are present
-        if (apiChapter != null && priceList != null && priceList.isNotEmpty) {
-          return {
-            'chapterName': apiChapter['chapter_name'],
-            'duration': priceList[0]['duration'],
-            'price': priceList[0]['price'].toDouble(),
-            'discount': priceList[0]['discount'],
-          };
-        }
-      }
-      // If the necessary data is not present, return an empty map
-      return {};
-    } else {
-      // If the request fails, return an empty map
-      // If the request fails, print the response body and throw an error
-      print('Failed to fetch exam results. Response body: ${response.body}');
-      throw Exception('Failed to fetch exam results');
-    }
   }
 
   @override
@@ -223,54 +171,105 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ElevatedButton(
                 onPressed: () {
                   showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          content:
-                              const Text("Using wallet or payment methods?"),
-                          actions: [
-                            Row(
-                              children: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: faceBookColor),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const WalletScreen()));
-                                    },
-                                    child: const Text(
-                                      "wallet",
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                                const SizedBox(
-                                  width: 6,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: const Text("Using wallet or payment methods?"),
+                        actions: [
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: faceBookColor,
                                 ),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: faceBookColor),
-                                    onPressed: () {
+                                onPressed: () async {
+                                  try {
+                                    final tokenProvider =
+                                        Provider.of<TokenModel>(context,
+                                            listen: false);
+                                    final token = tokenProvider.token;
+
+                                    final response = await http.post(
+                                      Uri.parse(
+                                          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_payment_wallet'),
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'Authorization': 'Bearer $token',
+                                      },
+                                      body: json.encode({
+                                        'id': widget.id,
+                                        'type': widget.type,
+                                        'price': widget.price,
+                                      }),
+                                    );
+
+                                    if (response.statusCode == 200) {
+                                      // Handle success response
+                                      print('Data sent successfully');
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PaymentScreen()));
-                                    },
-                                    child: const Text(
-                                      "Payment methods",
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                              ],
-                            )
-                          ],
-                        );
-                      });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => PaymentScreen()),
-                  // );
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => WalletScreen(),
+                                        ),
+                                      );
+                                    } else {
+                                      // Handle failure response
+                                      print(
+                                          'Failed to send data. Status code: ${response.statusCode}');
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text('Payment Failed'),
+                                          content: Text(
+                                              'Failed to process payment. Please try again later.'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text('OK'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  } catch (error) {
+                                    // Handle any exceptions
+                                    print('Error: $error');
+                                  }
+                                },
+                                child: const Text(
+                                  "wallet",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: faceBookColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PaymentScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  "Payment methods",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      );
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: faceBookColor,
@@ -279,7 +278,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     horizontal: 120.w,
                   ),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.w)),
+                    borderRadius: BorderRadius.circular(12.w),
+                  ),
                 ),
                 child: Text(
                   'Checkout',

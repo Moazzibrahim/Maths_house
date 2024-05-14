@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/widgets/custom_package.dart';
@@ -62,6 +64,10 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CheckoutScreen(
+                                id: packageProvider
+                                    .allexamspackage[selectedIndex].id,
+                                type: packageProvider
+                                    .allexamspackage[selectedIndex].type,
                                 chapterName: packageProvider
                                     .allexamspackage[selectedIndex].name,
                                 price: packageProvider
@@ -89,7 +95,7 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
             ],

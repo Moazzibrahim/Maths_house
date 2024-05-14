@@ -5,6 +5,8 @@ class ExamPackage {
   final int number;
   final double price;
   final int duration;
+  final String type;
+
   ExamPackage({
     required this.id,
     required this.name,
@@ -12,6 +14,7 @@ class ExamPackage {
     required this.number,
     required this.price,
     required this.duration,
+    required this.type,
   });
 
   factory ExamPackage.fromJson(Map<String, dynamic> json) {
@@ -22,6 +25,7 @@ class ExamPackage {
       number: json['number'],
       price: json['price'].toDouble(),
       duration: json['duration'],
+      type: json['type'],
     );
   }
 }
@@ -45,6 +49,8 @@ class QuestionPackage {
   final int number;
   final double price;
   final int duration;
+  final String type;
+
   QuestionPackage({
     required this.id,
     required this.name,
@@ -52,6 +58,7 @@ class QuestionPackage {
     required this.number,
     required this.price,
     required this.duration,
+    required this.type,
   });
 
   factory QuestionPackage.fromJson(Map<String, dynamic> json) {
@@ -62,6 +69,7 @@ class QuestionPackage {
       number: json['number'],
       price: json['price'].toDouble(),
       duration: json['duration'],
+      type: json['type'],
     );
   }
 }
@@ -81,6 +89,8 @@ class LivePackage {
   final String module;
   final int number;
   final double price;
+  final String type;
+
   final int duration;
   LivePackage({
     required this.id,
@@ -89,6 +99,7 @@ class LivePackage {
     required this.number,
     required this.price,
     required this.duration,
+    required this.type,
   });
 
   factory LivePackage.fromJson(Map<String, dynamic> json) {
@@ -99,6 +110,7 @@ class LivePackage {
       number: json['number'],
       price: json['price'].toDouble(),
       duration: json['duration'],
+      type: json['type'],
     );
   }
 }

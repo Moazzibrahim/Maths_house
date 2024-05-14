@@ -61,6 +61,10 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CheckoutScreen(
+                                id: packageProvider
+                                    .allquestionpackage[selectedIndex].id,
+                                type: packageProvider
+                                    .allquestionpackage[selectedIndex].type,
                                 chapterName: packageProvider
                                     .allquestionpackage[selectedIndex].name,
                                 price: packageProvider
