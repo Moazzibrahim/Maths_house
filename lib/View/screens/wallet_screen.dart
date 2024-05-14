@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/wallet_recharge.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -154,6 +152,28 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
             ],
           ),
+          // Home button at the bottom
+          // floatingActionButton: FloatingActionButton.extended(
+          //   backgroundColor: gridHomeColor,
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => TabsScreen(
+          //           isLoggedIn: false,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          //   label: Text(
+          //     'Home',
+          //     style: TextStyle(color: faceBookColor),
+          //   ),
+          //   icon: Icon(
+          //     Icons.home,
+          //     color: faceBookColor,
+          //   ),
+          // ),
         );
       },
     );
