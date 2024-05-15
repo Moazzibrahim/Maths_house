@@ -82,7 +82,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                         columns: const [
                           DataColumn(label: Text('#')),
                           DataColumn(label: Text('Price')),
-                          DataColumn(label: Text('Module')),
+                          DataColumn(label: Text('type')),
                           DataColumn(label: Text('created_at')),
                           DataColumn(label: Text('Payment Method')),
                         ],
