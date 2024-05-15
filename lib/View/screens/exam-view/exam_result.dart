@@ -61,7 +61,7 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
     double? price = widget.examresults?['chapters'][0]['api_lesson']
             ['api_chapter']['price'][0]['price']
         ?.toDouble();
-    int? discount = widget.examresults?['chapters'][0]['api_lesson']
+    double? discount = widget.examresults?['chapters'][0]['api_lesson']
         ['api_chapter']['price'][0]['discount'];
 
     return Scaffold(

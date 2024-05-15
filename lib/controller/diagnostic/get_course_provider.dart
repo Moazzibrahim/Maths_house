@@ -52,8 +52,11 @@ class GetCourseProvider with ChangeNotifier {
           List<dynamic> prices = recommendation['price'];
           for (var price in prices) {
             String duration = price['duration'];
-            int priceValue = price['price'];
-            int discount = price['discount'];
+            String priceString = price['price'].toString();
+            String discountString = price['discount'].toString();
+
+            double priceValue = double.tryParse(priceString) ?? 0.0;
+            double discount = double.tryParse(discountString) ?? 0.0;
             print(
                 'Duration: $duration, Price: $priceValue, Discount: $discount');
           }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -12,7 +14,7 @@ import 'package:provider/provider.dart';
 class CheckoutScreen extends StatefulWidget {
   final double? price;
   final String? duration;
-  final int? discount;
+  final double? discount;
   final String? chapterName;
   final int? id;
   final String? type;
@@ -98,9 +100,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             Text("${widget.price}",
                                 style: const TextStyle(color: Colors.grey)),
                             SizedBox(width: 24.w),
-                            const Text(
-                              "43\$",
-                              style: TextStyle(
+                            Text(
+                              "${widget.discount}",
+                              style: const TextStyle(
                                 color: faceBookColor,
                                 decoration: TextDecoration.lineThrough,
                               ),
@@ -210,7 +212,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => WalletScreen(),
+                                          builder: (context) =>
+                                              const WalletScreen(),
                                         ),
                                       );
                                     } else {
@@ -220,14 +223,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
-                                          title: Text('Payment Failed'),
-                                          content: Text(
+                                          title: const Text('Payment Failed'),
+                                          content: const Text(
                                               'Failed to process payment. Please try again later.'),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(context),
-                                              child: Text('OK'),
+                                              child: const Text('OK'),
                                             ),
                                           ],
                                         ),

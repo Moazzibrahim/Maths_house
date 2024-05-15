@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_string_interpolations
+// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_string_interpolations, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
@@ -34,6 +34,7 @@ class DiagnosticResultScreen extends StatefulWidget {
 }
 
 class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
+  bool showRecommendation = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<GetCourseProvider>(
@@ -56,7 +57,25 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
               String chapterName = snapshot.data!['recommandition'] != null
                   ? snapshot.data!['recommandition'][0]['chapter_name'] ?? ''
                   : '';
-              return _buildResultScreen(context, grade, chapterName);
+              int chid = snapshot.data!['recommandition'] != null
+                  ? snapshot.data!['recommandition'][0]['id'] ?? 0
+                  : 0;
+              String type = snapshot.data!['recommandition'] != null
+                  ? snapshot.data!['recommandition'][0]['type'] ?? ''
+                  : '';
+              double price = snapshot.data!['recommandition'] != null
+                  ? (snapshot.data!['recommandition'][0]['price'][0]['price'] ??
+                          0)
+                      .toDouble()
+                  : 0.0;
+              double discount = snapshot.data!['recommandition'] != null
+                  ? (snapshot.data!['recommandition'][0]['price'][0]
+                              ['discount'] ??
+                          0)
+                      .toDouble()
+                  : 0.0;
+              return _buildResultScreen(
+                  context, grade, chid, chapterName, price, discount, type);
             } else {
               return const Center(child: Text('No data available'));
             }
@@ -66,10 +85,8 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
     );
   }
 
-  Widget _buildResultScreen(
-      BuildContext context, int? grade, String chapterName) {
-    bool showRecommendation = false;
-
+  Widget _buildResultScreen(BuildContext context, int? grade, int chid,
+      String chapterName, double price, double discount, String type) {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -154,7 +171,13 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CheckoutScreen(),
+                          builder: (context) => CheckoutScreen(
+                            chapterName: chapterName,
+                            price: price,
+                            id: chid,
+                            type: type,
+                            discount: discount,
+                          ),
                         ),
                       );
                     });
