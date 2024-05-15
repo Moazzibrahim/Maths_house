@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -5,37 +7,44 @@ import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/controller/diagnostic/get_course_provider.dart';
 import 'package:provider/provider.dart';
 
-class DiagnosticResultScreen extends StatelessWidget {
-  final int wrongCount;
+class DiagnosticResultScreen extends StatefulWidget {
+  final int? wrongCount;
   final int correctCount;
-  final int totalQuestions;
-  final int? score;
+  final int? totalQuestions;
   final int? passscore;
-  final int? seconds;
+  final int seconds;
   final List<int> wrongQuestionIds;
+  final int? score;
+  final int exid;
 
   const DiagnosticResultScreen({
     super.key,
-    required this.wrongCount,
+    this.wrongCount,
     required this.correctCount,
-    required this.totalQuestions,
-    this.score,
+    this.totalQuestions,
     this.passscore,
-    this.seconds,
+    required this.seconds,
+    this.score,
+    required this.exid,
     required this.wrongQuestionIds,
   });
 
+  @override
+  State<DiagnosticResultScreen> createState() => _DiagnosticResultScreenState();
+}
+
+class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GetCourseProvider>(
       builder: (context, provider, _) {
         return FutureBuilder<Map<String, dynamic>>(
           future: provider.fetchDataFromApi({
-            'timer_count': seconds, // Change this to the appropriate value
-            'correct_count': correctCount,
-            'wrong_count': wrongCount,
-            'wrong_question_ids':
-                wrongQuestionIds, // Change this to the appropriate value
+            'timer': widget.seconds, // Change this to the appropriate value
+            'r_question': widget.correctCount,
+            'exam_id': widget.exid,
+            'mistakes':
+                '[${widget.wrongQuestionIds.join(',')}]', // Change this to the appropriate value
           }, context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -43,9 +52,11 @@ class DiagnosticResultScreen extends StatelessWidget {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
-              // Process the fetched data and update the UI accordingly
-              // Example: Extract data from snapshot.data and display it
-              return _buildResultScreen(context);
+              int? grade = snapshot.data!['score'] as int?;
+              String chapterName = snapshot.data!['recommandition'] != null
+                  ? snapshot.data!['recommandition'][0]['chapter_name'] ?? ''
+                  : '';
+              return _buildResultScreen(context, grade, chapterName);
             } else {
               return const Center(child: Text('No data available'));
             }
@@ -55,7 +66,8 @@ class DiagnosticResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildResultScreen(BuildContext context) {
+  Widget _buildResultScreen(
+      BuildContext context, int? grade, String chapterName) {
     bool showRecommendation = false;
 
     return Scaffold(
@@ -86,29 +98,31 @@ class DiagnosticResultScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInfoRow("total score", "${score ?? ''}"),
+            _buildInfoRow("total score", "${widget.score}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("grade", "5"), // Change this to the appropriate value
+            _buildInfoRow(
+                "grade", "${grade}"), // Change this to the appropriate value
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Total Questions", " $totalQuestions"),
+            _buildInfoRow("Total Questions", " ${widget.totalQuestions}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Correct Questions", "$correctCount"),
+            _buildInfoRow("Correct Questions", "${widget.correctCount}"),
             const SizedBox(
               height: 15,
             ),
-            _buildInfoRow("Wrong Questions", "$wrongCount"),
+            _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
             const SizedBox(height: 25),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
               onPressed: () {
-                // Toggle showRecommendation state
-                showRecommendation = !showRecommendation;
+                setState(() {
+                  showRecommendation = !showRecommendation;
+                });
               },
               child: const Text(
                 "Recommended",
@@ -117,9 +131,9 @@ class DiagnosticResultScreen extends StatelessWidget {
             ),
             if (showRecommendation) ...[
               const SizedBox(height: 10),
-              const Text(
-                "Chapter 1",
-                style: TextStyle(fontSize: 16, color: Colors.black),
+              Text(
+                "$chapterName",
+                style: const TextStyle(fontSize: 16, color: Colors.black),
               ),
               const SizedBox(height: 10),
               Row(

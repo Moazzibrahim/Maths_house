@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unnecessary_string_interpolations
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -36,15 +36,38 @@ class GetCourseProvider with ChangeNotifier {
         // Parse the response JSON
         Map<String, dynamic> responseData = jsonDecode(response.body);
         print(responseData);
+        int score = responseData['score'];
+        print('Score: $score');
+
+        // Accessing recommendation list
+        List<dynamic> recommendations = responseData['recommandition'];
+        for (var recommendation in recommendations) {
+          String chapterName = recommendation['chapter_name'];
+          print('Chapter Name: $chapterName');
+          int chapterId = recommendation['id'];
+          print('Chapter Id: $chapterId');
+          String type = recommendation['type'];
+          print("$type");
+          // Accessing duration, price, and discount
+          List<dynamic> prices = recommendation['price'];
+          for (var price in prices) {
+            String duration = price['duration'];
+            int priceValue = price['price'];
+            int discount = price['discount'];
+            print(
+                'Duration: $duration, Price: $priceValue, Discount: $discount');
+          }
+        }
+
         return responseData;
       } else {
         // Handle the error response
         print('Failed to fetch data: ${response.statusCode}');
-        return {}; // Return an empty map in case of error
+        throw Exception('Failed to fetch data: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching data: $e');
-      return {}; // Return an empty map in case of exception
+      throw Exception('Error fetching data: $e');
     }
   }
 }
