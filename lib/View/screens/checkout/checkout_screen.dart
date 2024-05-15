@@ -111,7 +111,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               width: 7,
                             ),
                             const Text(
-                              "40% off",
+                              "60% off",
                               style: TextStyle(
                                 color: faceBookColor,
                               ),

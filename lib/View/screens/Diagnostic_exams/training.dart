@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -387,8 +387,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // if (currentQuestion['q_url'] != null)
-            //   Image.network(currentQuestion['q_url'], height: 200),
+            if (currentQuestion['q_url'] != null)
+              Image.network(currentQuestion['q_url'], height: 200),
             const SizedBox(
               height: 10,
             ),
@@ -469,7 +469,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
             if (currentIndex == allDiagnostics.length - 1 ||
                 allDiagnostics.length == 1)
               ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
                   _submitExam(context);
                 },
                 style: ElevatedButton.styleFrom(
