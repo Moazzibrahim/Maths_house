@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -18,8 +16,8 @@ class CheckoutScreen extends StatefulWidget {
   final String? chapterName;
   final int? id;
   final String? type;
-
   final Map<String, dynamic>? examresults;
+
   const CheckoutScreen({
     super.key,
     this.price,
@@ -37,16 +35,19 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String couponCode = "";
-  String? chapterName;
-  String? duration;
-  double? price;
-  int? discount;
-  int? id;
-  String? type;
+  double? updatedPrice;
+  double? discountPercentage;
 
   @override
   void initState() {
     super.initState();
+    updatedPrice = widget.price;
+    if (widget.price != null && widget.discount != null && widget.price! > 0) {
+      discountPercentage =
+          ((widget.price! - updatedPrice!) / widget.price!) * 100;
+    } else {
+      discountPercentage = 0;
+    }
   }
 
   @override
@@ -85,7 +86,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Text("${widget.chapterName}",
                               style: const TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
-                          Text("${widget.price}",
+                          Text("$updatedPrice",
                               style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
@@ -97,22 +98,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             const Text("Total: ",
                                 style: TextStyle(color: Colors.grey)),
                             SizedBox(width: 8.w),
-                            Text("${widget.price}",
+                            Text("$updatedPrice",
                                 style: const TextStyle(color: Colors.grey)),
                             SizedBox(width: 24.w),
                             Text(
-                              "${widget.discount}",
+                              "${discountPercentage?.toStringAsFixed(0)}% off",
                               style: const TextStyle(
-                                color: faceBookColor,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 7,
-                            ),
-                            const Text(
-                              "60% off",
-                              style: TextStyle(
                                 color: faceBookColor,
                               ),
                             ),
@@ -155,9 +146,64 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       padding: EdgeInsets.all(4.w),
                       color: gridHomeColor,
                       child: TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Add your apply button functionality here using the couponCode variable
                           print("Applied coupon code: $couponCode");
+
+                          try {
+                            final tokenProvider =
+                                Provider.of<TokenModel>(context, listen: false);
+                            final token = tokenProvider.token;
+
+                            // Construct the URL
+                            final url =
+                                'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/checkOut_payment_method/$couponCode/${widget.type}/${widget.id}';
+
+                            final response = await http.get(
+                              Uri.parse(url),
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'Authorization': 'Bearer $token',
+                              },
+                            );
+
+                            if (response.statusCode == 200) {
+                              // Handle success response
+                              final responseData = json.decode(response.body);
+                              final newPrice = responseData['newPrice'];
+                              setState(() {
+                                updatedPrice = newPrice.toDouble();
+                                discountPercentage =
+                                    ((widget.price! - updatedPrice!) /
+                                            widget.price!) *
+                                        100;
+                              });
+                              print('Coupon applied successfully');
+                            } else {
+                              // Handle failure response
+                              print(
+                                  'Failed to apply coupon. Status code: ${response.statusCode}');
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title:
+                                      const Text('Coupon Application Failed'),
+                                  content: const Text(
+                                      'Failed to apply coupon. Please try again.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          } catch (error) {
+                            // Handle any exceptions
+                            print('Error: $error');
+                          }
                         },
                         child: Text(
                           "Apply",
@@ -202,11 +248,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       body: json.encode({
                                         'id': widget.id,
                                         'type': widget.type,
-                                        'price': widget.price,
+                                        'price': updatedPrice,
                                       }),
                                     );
 
                                     if (response.statusCode == 200) {
+                                      print(response.body);
                                       // Handle success response
                                       print('Data sent successfully');
                                       Navigator.push(
