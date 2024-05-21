@@ -26,7 +26,7 @@ class _ExamScreenState extends State<ExamScreen> {
         title: const Text("Exam"),
         leading: InkWell(
           child: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back,
             color: faceBookColor,
           ),
           onTap: () {

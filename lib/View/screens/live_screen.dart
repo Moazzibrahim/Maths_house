@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live_model.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/live_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,10 +31,11 @@ class _LiveScreenState extends State<LiveScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
+          color: faceBookColor,
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back),
         ),
       ),
       body: Padding(
@@ -85,7 +87,7 @@ class _LiveScreenState extends State<LiveScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Date: ${dateFormat.format(session.session.date)}"), // Format date here
+                  "Date: ${dateFormat.format(session.session.date)}"), // Format date here
               Text("From: ${session.session.from}"),
               Text("To: ${session.session.to}"),
               GestureDetector(
@@ -131,7 +133,7 @@ class _LiveScreenState extends State<LiveScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Date: ${dateFormat.format(session.session.date)}"), // Format date here
+                  "Date: ${dateFormat.format(session.session.date)}"), // Format date here
               Text("From: ${session.session.from}"),
               Text("To: ${session.session.to}"),
               GestureDetector(

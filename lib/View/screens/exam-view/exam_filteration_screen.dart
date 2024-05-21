@@ -111,7 +111,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
         title: const Text('Exam Filter'),
         leading: IconButton(
           icon: const Icon(
-            Icons.arrow_back_ios_new,
+            Icons.arrow_back,
             color: faceBookColor,
           ),
           onPressed: () {

@@ -45,7 +45,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             'r_question': widget.correctCount,
             'exam_id': widget.exid,
             'mistakes':
-                '[${widget.wrongQuestionIds.join(',')}]', // Change this to the appropriate value
+                widget.wrongQuestionIds, // Change this to the appropriate value
           }, context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
