@@ -158,30 +158,24 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
 
   int correctCount = 0;
   int wrongCount = 0;
-
-  void _submitExam(BuildContext context) {
-    _timer.cancel(); // Stop the timer
-    // Calculate correct and wrong answer counts
+  void _submitExam(BuildContext context) async {
+    _timer.cancel();
     final provider = Provider.of<DiagExamProvider>(context, listen: false);
     int unansweredIndex = -1;
     List<int> wrongQuestionIds = [];
-    final int score =
-        Provider.of<DiagExamProvider>(context, listen: false).score;
-    final int passscore =
-        Provider.of<DiagExamProvider>(context, listen: false).passscore;
+    final int score = provider.score;
+    final int passscore = provider.passscore;
 
-    for (int i = 0; i < provider.alldiagnostics.length; i++) {
-      final currentQuestion = provider.alldiagnostics[i];
+    // Using async operations to parallelize some of the checks
+    await Future.forEach(provider.alldiagnostics, (currentQuestion) async {
       var selectedAnswer = currentQuestion['selectedAnswer'];
       final correctAnswer = currentQuestion['mcq'][0]['mcq_answers'];
 
-      // Convert selected answer to letter if it's not already converted
       if (selectedAnswer != null && selectedAnswer is String) {
         final mcqOptions = currentQuestion['mcq'];
         for (int j = 0; j < mcqOptions.length; j++) {
           if (selectedAnswer == mcqOptions[j]['mcq_ans']) {
-            selectedAnswer = String.fromCharCode(
-                65 + j); // Convert index to letter (A, B, C, ...)
+            selectedAnswer = String.fromCharCode(65 + j);
             currentQuestion['selectedAnswer'] = selectedAnswer;
             break;
           }
@@ -189,23 +183,19 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
       }
 
       if (selectedAnswer == null) {
-        unansweredIndex = i;
-        missedQuestions.add(i);
-        break;
-      }
-      if (selectedAnswer == correctAnswer) {
+        if (unansweredIndex == -1) {
+          unansweredIndex = provider.alldiagnostics.indexOf(currentQuestion);
+        }
+        missedQuestions.add(provider.alldiagnostics.indexOf(currentQuestion));
+      } else if (selectedAnswer == correctAnswer) {
         correctCount++;
       } else {
         wrongCount++;
-        wrongQuestionIds
-            .add(currentQuestion['id']); // Add the ID of wrong question
+        wrongQuestionIds.add(currentQuestion['id']);
       }
-      print('Question ${i + 1}:');
-      print('Selected Answer: $selectedAnswer');
-      print('Correct Answer: $correctAnswer');
-    }
+    });
+
     if (unansweredIndex != -1) {
-      // Show an alert dialog for unanswered question
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -214,71 +204,49 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                missedQuestions.length,
-                (index) {
-                  final int unansweredIndex = missedQuestions[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      children: [
-                        Text('Question ${unansweredIndex + 1} is missed '),
-                        const SizedBox(width: 7),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: faceBookColor,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context); // Close the dialog
-                            setState(() {
-                              currentIndex =
-                                  unansweredIndex; // Navigate to the unanswered question
-                            });
-                          },
-                          child: const Text(
-                            'View',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+              children: List.generate(missedQuestions.length, (index) {
+                final int unansweredIndex = missedQuestions[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Text('Question ${unansweredIndex + 1} is missed '),
+                      const SizedBox(width: 7),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: faceBookColor),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            currentIndex = unansweredIndex;
+                          });
+                        },
+                        child: const Text('View',
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                );
+              }),
             ),
             actions: [
               Center(
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: faceBookColor,
-                  ),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                   onPressed: () {
                     int minutes = _seconds ~/ 60;
-                    // ignore: unused_local_variable
                     int seconds = _seconds % 60;
                     storeExamResults(
-                      correctCount,
-                      wrongCount,
-                      minutes,
-                      wrongQuestionIds,
-                      Provider.of<DiagExamProvider>(context, listen: false)
-                          .alldiagnostics
-                          .length,
-                      Provider.of<DiagExamProvider>(context, listen: false)
-                          .score,
-                      Provider.of<DiagExamProvider>(context, listen: false)
-                          .passscore,
-                    );
-                    Future.delayed(
-                      const Duration(seconds: 1),
-                      () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Your answers are submitted'),
-                          ),
-                        );
-                      },
-                    );
+                        correctCount,
+                        wrongCount,
+                        minutes,
+                        wrongQuestionIds,
+                        provider.alldiagnostics.length,
+                        score,
+                        passscore);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Your answers are submitted')));
                     Future.delayed(const Duration(seconds: 2), () {
                       Navigator.push(
                         context,
@@ -286,11 +254,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                           builder: (context) => DiagnosticResultScreen(
                             wrongCount: wrongCount,
                             correctCount: correctCount,
-                            totalQuestions: Provider.of<DiagExamProvider>(
-                                    context,
-                                    listen: false)
-                                .alldiagnostics
-                                .length,
+                            totalQuestions: provider.alldiagnostics.length,
                             score: score,
                             passscore: passscore,
                             seconds: seconds,
@@ -299,12 +263,10 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                           ),
                         ),
                       );
-                    }); // Close the dialog
+                    });
                   },
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child:
+                      const Text('OK', style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -312,46 +274,28 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
         },
       );
     } else {
-      // All questions answered, show result
       int minutes = _seconds ~/ 60;
-      // ignore: unused_local_variable
       int seconds = _seconds % 60;
-      storeExamResults(
-        correctCount,
-        wrongCount,
-        minutes,
-        wrongQuestionIds,
-        Provider.of<DiagExamProvider>(context, listen: false)
-            .alldiagnostics
-            .length,
-        Provider.of<DiagExamProvider>(context, listen: false).score,
-        Provider.of<DiagExamProvider>(context, listen: false).passscore,
-      );
-      Future.delayed(
-        const Duration(seconds: 1),
-        () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Your answers are submitted')),
-          );
-        },
-      );
+      storeExamResults(correctCount, wrongCount, minutes, wrongQuestionIds,
+          provider.alldiagnostics.length, score, passscore);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Your answers are submitted')));
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DiagnosticResultScreen(
-                      wrongCount: wrongCount,
-                      correctCount: correctCount,
-                      totalQuestions:
-                          Provider.of<DiagExamProvider>(context, listen: false)
-                              .alldiagnostics
-                              .length,
-                      score: score,
-                      passscore: passscore,
-                      seconds: seconds,
-                      wrongQuestionIds: wrongQuestionIds,
-                      exid: provider.exid,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => DiagnosticResultScreen(
+              wrongCount: wrongCount,
+              correctCount: correctCount,
+              totalQuestions: provider.alldiagnostics.length,
+              score: score,
+              passscore: passscore,
+              seconds: seconds,
+              wrongQuestionIds: wrongQuestionIds,
+              exid: provider.exid,
+            ),
+          ),
+        );
       });
     }
   }
@@ -364,127 +308,132 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     final minutes = _seconds ~/ 60;
     final seconds = _seconds % 60;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          color: faceBookColor,
-          child: Row(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            color: faceBookColor,
+            child: Row(
+              children: [
+                const Icon(Icons.timer, color: Colors.white),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  '$minutes:${seconds < 10 ? '0$seconds' : seconds}',
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.timer, color: Colors.white),
+              if (currentQuestion['q_url'] != null)
+                Image.network(currentQuestion['q_url'], height: 200),
               const SizedBox(
-                width: 5,
+                height: 10,
               ),
               Text(
-                '$minutes:${seconds < 10 ? '0$seconds' : seconds}',
-                style: const TextStyle(fontSize: 16, color: Colors.white),
+                'Question ${currentIndex + 1}: ${currentQuestion['question']}',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              if (currentQuestion['ans_type'] != 'MCQ')
+                TextFormField(
+                  decoration:
+                      const InputDecoration(labelText: 'Type your answer here'),
+                  onChanged: (value) {
+                    currentQuestion['selectedAnswer'] = value;
+                  },
+                ),
             ],
           ),
-        ),
-        const SizedBox(height: 20),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (currentQuestion['q_url'] != null)
-              Image.network(currentQuestion['q_url'], height: 200),
-            const SizedBox(
-              height: 10,
+          if (currentQuestion['ans_type'] == 'MCQ')
+            Column(
+              children: List.generate(currentQuestion['mcq'].length, (index) {
+                final mcq = currentQuestion['mcq'][index];
+                return RadioListTile<String>(
+                  title: Text(' ${mcq['mcq_ans']}'),
+                  value: mcq['mcq_ans'],
+                  groupValue: currentQuestion[
+                      'selectedAnswer'], // Set groupValue to null initially
+                  onChanged: (String? value) {
+                    setState(() {
+                      currentQuestion['selectedAnswer'] = value;
+                    });
+                  },
+                );
+              }),
             ),
-            Text(
-              'Question ${currentIndex + 1}: ${currentQuestion['question']}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            // if (currentQuestion['ans_type'] != 'MCQ')
-            //   TextFormField(
-            //     decoration:
-            //         const InputDecoration(labelText: 'Type your answer here'),
-            //     onChanged: (value) {
-            //       currentQuestion['selectedAnswer'] = value;
-            //     },
-            //   ),
-          ],
-        ),
-        // if (currentQuestion['ans_type'] == 'MCQ')
-        Column(
-          children: List.generate(currentQuestion['mcq'].length, (index) {
-            final mcq = currentQuestion['mcq'][index];
-            return RadioListTile<String>(
-              title: Text(' ${mcq['mcq_ans']}'),
-              value: mcq['mcq_ans'],
-              groupValue: currentQuestion[
-                  'selectedAnswer'], // Set groupValue to null initially
-              onChanged: (String? value) {
-                setState(() {
-                  currentQuestion['selectedAnswer'] = value;
-                });
-              },
-            );
-          }),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            if (currentIndex > 0)
-              ElevatedButton(
-                onPressed: _prevQuestion,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor,
-                ),
-                child: const Text(
-                  'Previous',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            const SizedBox(
-              width: 3,
-            ),
-            ElevatedButton(
-              onPressed:
-                  _showQuestionsDialog, // Show the dialog to navigate to any question
-              style: ElevatedButton.styleFrom(
-                backgroundColor: faceBookColor,
-              ),
-              child: const Text(
-                'Go to Question',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const SizedBox(
-              width: 3,
-            ),
-            if (currentIndex < allDiagnostics.length - 1)
-              ElevatedButton(
-                onPressed: _nextQuestion,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor,
-                ),
-                child: const Text(
-                  'Next',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            if (currentIndex == allDiagnostics.length - 1 ||
-                allDiagnostics.length == 1)
-              ElevatedButton(
-                onPressed: () {
-                  _submitExam(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor,
-                ),
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(
-                    color: Colors.white,
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              if (currentIndex > 0)
+                ElevatedButton(
+                  onPressed: _prevQuestion,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                  ),
+                  child: const Text(
+                    'Previous',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
+              // const SizedBox(
+              //   width: 3,
+              // ),
+              ElevatedButton(
+                onPressed:
+                    _showQuestionsDialog, // Show the dialog to navigate to any question
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                child: const Text(
+                  'Go to Question',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-          ],
-        ),
-      ],
+              // const SizedBox(
+              //   width: 2,
+              // ),
+              if (currentIndex < allDiagnostics.length - 1)
+                ElevatedButton(
+                  onPressed: _nextQuestion,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                  ),
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              if (currentIndex == allDiagnostics.length - 1 ||
+                  allDiagnostics.length == 1)
+                ElevatedButton(
+                  onPressed: () {
+                    _submitExam(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: faceBookColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5)),
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
