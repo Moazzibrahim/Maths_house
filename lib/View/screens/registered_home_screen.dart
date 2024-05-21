@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/courses/courses_screen.dart';
+import 'package:flutter_application_1/View/screens/my_courses/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
 import 'package:flutter_application_1/View/screens/live_screen.dart';
 import 'package:flutter_application_1/View/screens/questions_filter_screen.dart';

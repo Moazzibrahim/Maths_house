@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/courses/chapters_screen.dart';
+import 'package:flutter_application_1/View/screens/my_courses/chapters_screen.dart';
+import 'package:flutter_application_1/View/widgets/unregistered_courses_custom.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/courses_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -65,41 +66,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                                 course: course,
                               )));
                     },
-                    child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 7.w,
-                          vertical: 15.h,
-                        ),
-                        
-                        height: 130.h,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                              image: NetworkImage(course.courseUrl),
-                              fit: BoxFit.cover),
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          height: 130.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.black.withOpacity(0.4)
-                          ),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  course.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ),
-                        ),
+                    child: CustomUnregisteredWidgets(text: course.name,image: course.courseUrl,)
                   );
                 },
               );

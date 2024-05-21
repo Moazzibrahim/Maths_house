@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/courses/start_quiz.dart';
+import 'package:flutter_application_1/View/screens/my_courses/start_quiz.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/quiz_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

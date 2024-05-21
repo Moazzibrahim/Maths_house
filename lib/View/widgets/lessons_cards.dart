@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
-import 'package:flutter_application_1/View/screens/courses/lesson_video_screen.dart';
+import 'package:flutter_application_1/View/screens/my_courses/lesson_video_screen.dart';
 
 class LessonCards extends StatelessWidget {
   const LessonCards({super.key, required this.lesson});
