@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/otp_verification_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';

@@ -1,5 +1,4 @@
 // ignore_for_file: unused_local_variable, use_build_context_synchronously, avoid_print, library_private_types_in_public_api
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -33,6 +32,7 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        print('Image selected from gallery: ${_image!.path}');
       });
     }
   }
@@ -44,6 +44,7 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        print('Image taken from camera: ${_image!.path}');
       });
     }
   }
@@ -59,6 +60,7 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
       final loginModel = Provider.of<LoginModel>(context, listen: false);
       final studentId = loginModel.id;
       wallet = _textFieldController.text;
+
       // Prepare the request
       var request = http.MultipartRequest(
           'POST',
@@ -70,9 +72,8 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
       request.fields['payment_method_id'] = selectedOptionId.toString();
 
       // Attach the image
-      var imageUri = Uri.parse('file://${imageFile.path}');
       var multipartFile =
-          await http.MultipartFile.fromPath('image', imageUri.path);
+          await http.MultipartFile.fromPath('image', imageFile.path);
       request.files.add(multipartFile);
 
       // Send the request
@@ -102,7 +103,7 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
         var statusCode = response.statusCode;
         print('Error Response Status Code: $statusCode');
         var error = jsonDecode(responseBody);
-        print("$error");
+        print("Error: $error");
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -189,13 +190,11 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
                       ),
                       leading: Radio<int>(
                         activeColor: faceBookColor,
-                        value: paymentMethod.id, // Use int value
-                        groupValue:
-                            _selectedOptionId ?? 0, // Use selectedOptionId
+                        value: paymentMethod.id,
+                        groupValue: _selectedOptionId ?? 0,
                         onChanged: (int? value) {
                           setState(() {
-                            _selectedOptionId =
-                                value; // Update selectedOptionId
+                            _selectedOptionId = value;
                           });
                         },
                       ),

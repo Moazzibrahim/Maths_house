@@ -11,14 +11,14 @@ class CustomPackage extends StatelessWidget {
   final VoidCallback onTap;
 
   const CustomPackage({
-    Key? key,
+    super.key,
     required this.text1,
     required this.text2,
     required this.text3,
     required this.text4,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

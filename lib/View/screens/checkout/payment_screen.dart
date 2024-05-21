@@ -1,6 +1,9 @@
-import 'dart:io';
+// ignore_for_file: use_build_context_synchronously, avoid_print, library_private_types_in_public_api
 
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -8,18 +11,28 @@ import 'package:flutter_application_1/controller/payment_method_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final int? id;
+  final double? price;
+  final String? type;
+
+  const PaymentScreen({
+    super.key,
+    this.id,
+    this.price,
+    this.type,
+  });
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  String? _selectedOption;
+  int? _selectedOptionId;
   File? _image;
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
 
   Future<void> _uploadFromGallery() async {
     final picker = ImagePicker();
@@ -28,6 +41,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        print('Image selected from gallery: ${_image!.path}');
       });
     }
   }
@@ -39,7 +53,94 @@ class _PaymentScreenState extends State<PaymentScreen> {
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
+        print('Image taken from camera: ${_image!.path}');
       });
+    }
+  }
+
+  Future<void> submitPayment(int id, double price, String type,
+      int selectedOptionId, File imageFile, String payment) async {
+    try {
+      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+      final token = tokenProvider.token;
+
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/request_payment_method'));
+      request.headers['Authorization'] = 'Bearer $token';
+      request.fields['id'] = id.toString();
+      request.fields['price'] = price.toString();
+      request.fields['type'] = type;
+      request.fields['payment_method_id'] = selectedOptionId.toString();
+      request.fields['payment'] = payment;
+
+      var multipartFile =
+          await http.MultipartFile.fromPath('image', imageFile.path);
+      request.files.add(multipartFile);
+
+      print('Sending request with image: ${imageFile.path}');
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AlertDialog(
+              content: Text("Your operation is pending"),
+            );
+          },
+        );
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const OrderDetails()),
+          );
+        });
+      } else {
+        var responseBody = await response.stream.bytesToString();
+        var statusCode = response.statusCode;
+        print('Error Response Status Code: $statusCode');
+        var error = jsonDecode(responseBody);
+        print("Error: $error");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Error"),
+              content: const Text("Failed to make payment"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print("Error: $e");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Error"),
+            content: const Text(
+                "An unexpected error occurred. Please try again later."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -85,22 +186,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           fontSize: 16,
                         ),
                       ),
-                      leading: Radio<String>(
+                      leading: Radio<int>(
                         activeColor: faceBookColor,
-                        value: paymentMethod.payment,
-                        groupValue: _selectedOption,
-                        onChanged: (String? value) {
+                        value: paymentMethod.id,
+                        groupValue: _selectedOptionId,
+                        onChanged: (int? value) {
                           setState(() {
-                            _selectedOption = value;
+                            _selectedOptionId = value;
                           });
                         },
                       ),
-                      tileColor: _selectedOption == paymentMethod.payment
+                      tileColor: _selectedOptionId == paymentMethod.id
                           ? gridHomeColor
                           : null,
                       onTap: () {
                         setState(() {
-                          _selectedOption = paymentMethod.payment;
+                          _selectedOptionId = paymentMethod.id;
                         });
                       },
                     );
@@ -109,7 +210,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: _textFieldController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Enter your paid amount',
                     border: OutlineInputBorder(),
                   ),
@@ -156,26 +257,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    if (_selectedOption != null && _image != null) {
-                      //submitPayment(_selectedOption!, _image!);
-                      // Show an alert dialog with "Successful Payment" text
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const AlertDialog(
-                            // title: Text("Payment Successful"),
-                            content: Text("successful payment"),
-                          );
-                        },
+                    if (_selectedOptionId != null && _image != null) {
+                      submitPayment(
+                        widget.id!,
+                        widget.price!,
+                        widget.type!,
+                        _selectedOptionId!,
+                        _image!,
+                        _textFieldController.text,
                       );
-                      // Delay navigation to the order details screen by 2 seconds
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const OrderDetails()),
-                        );
-                      });
                     } else {
                       showDialog(
                         context: context,
@@ -208,7 +298,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   ),
                   child: Text(
-                    'submit',
+                    'Submit',
                     style: TextStyle(
                       fontSize: 16.sp,
                       color: Colors.white,

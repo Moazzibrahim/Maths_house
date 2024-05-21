@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -304,8 +306,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const PaymentScreen(),
+                                      builder: (context) => PaymentScreen(
+                                        id: widget.id,
+                                        price: updatedPrice,
+                                        type: widget.type,
+                                      ),
                                     ),
                                   );
                                 },

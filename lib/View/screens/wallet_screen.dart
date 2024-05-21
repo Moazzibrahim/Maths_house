@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/wallet_recharge.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -58,7 +60,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WalletRechargeScreen(),
+                              builder: (context) => const WalletRechargeScreen(),
                             ),
                           );
                         },

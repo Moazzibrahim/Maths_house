@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -51,7 +53,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: faceBookColor,
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           vertical: 12,
                           horizontal: 100,
                         ),
@@ -59,7 +61,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'History',
                         style: TextStyle(
                           fontSize: 15,
