@@ -58,13 +58,48 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
   Future<void> _sendFiltersToServer() async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
+    final examProvider = Provider.of<ExamProvider>(context, listen: false);
+
+    // Find the selected category ID
+    int? selectedCategoryId;
+    if (_selectedCategory != null) {
+      final index = examProvider.categoryNames.indexOf(_selectedCategory!);
+      if (index != -1) {
+        selectedCategoryId = examProvider.categoryIds[index];
+      }
+    }
+
+    // Find the selected course ID
+    int? selectedCourseId;
+    if (_selectedCourse != null) {
+      final index = examProvider.courseNames.indexOf(_selectedCourse!);
+      if (index != -1) {
+        selectedCourseId = examProvider.courseIds[index];
+      }
+    }
+
+    // Find the selected exam code ID
+    int? selectedExamCodeId;
+    if (_selectedExamCode != null) {
+      final index = examProvider.examCodes.indexOf(_selectedExamCode!);
+      if (index != -1) {
+        selectedExamCodeId = examProvider.examCodeIds[index];
+      }
+    }
+
+    // Convert the selected month to its numeric representation
+    int? selectedMonthNumber;
+    if (_selectedMonth != null) {
+      selectedMonthNumber = _months.indexOf(_selectedMonth!) + 1;
+    }
+
     // Construct the request body with selected filter values
     final Map<String, dynamic> requestBody = {
-      'category': _selectedCategory,
-      'course': _selectedCourse,
+      'category_id': selectedCategoryId,
+      'course_id': selectedCourseId,
       'year': _selectedYear,
-      'month': _selectedMonth,
-      'examCode': _selectedExamCode,
+      'month': selectedMonthNumber,
+      'code_id': selectedExamCodeId,
     };
 
     final url = Uri.parse(
@@ -79,7 +114,6 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
-          // Add any additional headers if required
         },
       );
 
@@ -88,6 +122,10 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
         // Request was successful, handle the response here
         print('Filters sent successfully!');
         print('Response body: ${response.body}');
+        print("Exam code ID: $selectedExamCodeId");
+        print("Selected category: $selectedCategoryId");
+        print("Selected month: $selectedMonthNumber");
+        print("Selected course: $selectedCourseId");
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -121,16 +159,9 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
       ),
       body: Consumer<ExamProvider>(
         builder: (context, examProvider, _) {
-          // Remove duplicates from categoryData, courseData, and examCodeData
-          List<String> uniqueCategories =
-              examProvider.categoryData.toSet().toList();
-          List<String> uniqueCourses = examProvider.courseData.toSet().toList();
-          List<String> uniqueExamCodes =
-              examProvider.examCodeData.toSet().toList();
-
-          return examProvider.courseData.isEmpty ||
-                  examProvider.categoryData.isEmpty ||
-                  examProvider.examCodeData.isEmpty
+          return examProvider.courseNames.isEmpty ||
+                  examProvider.categoryNames.isEmpty ||
+                  examProvider.examCodes.isEmpty
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
@@ -145,7 +176,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                           iconEnabledColor: faceBookColor,
                           value: _selectedCategory,
                           items: [
-                            ...uniqueCategories.map(
+                            ...examProvider.categoryNames.map(
                               (category) => DropdownMenuItem<String>(
                                 value: category,
                                 child: Row(
@@ -170,12 +201,12 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                           iconEnabledColor: faceBookColor,
                           value: _selectedCourse,
                           items: [
-                            ...uniqueCourses.map(
+                            ...examProvider.courseNames.map(
                               (course) => DropdownMenuItem<String>(
                                 value: course,
                                 child: Row(
                                   children: [
-                                    Text(course), // Customize arrow color here
+                                    Text(course),
                                   ],
                                 ),
                               ),
@@ -201,7 +232,6 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                                 child: Row(
                                   children: [
                                     Text(year),
-                                    // Customize arrow color here
                                   ],
                                 ),
                               ),
@@ -227,7 +257,6 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                                 child: Row(
                                   children: [
                                     Text(month),
-                                    // Customize arrow color here
                                   ],
                                 ),
                               ),
@@ -247,13 +276,12 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                           iconEnabledColor: faceBookColor,
                           value: _selectedExamCode,
                           items: [
-                            ...uniqueExamCodes.map(
+                            ...examProvider.examCodes.map(
                               (code) => DropdownMenuItem<String>(
                                 value: code,
                                 child: Row(
                                   children: [
                                     Text(code),
-                                    // Customize arrow color here
                                   ],
                                 ),
                               ),
@@ -279,13 +307,15 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                           // Here you can implement your logic to fetch exams based on the selected filters
                         },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: faceBookColor,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 120,
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18))),
+                          backgroundColor: faceBookColor,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 120,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
                         child: const Text(
                           'Search',
                           style: TextStyle(
