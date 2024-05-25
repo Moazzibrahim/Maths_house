@@ -1,10 +1,12 @@
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/all_courses_model.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class PurchaseCourseScreen extends StatefulWidget {
   const PurchaseCourseScreen({super.key, required this.course});
@@ -17,16 +19,25 @@ class PurchaseCourseScreen extends StatefulWidget {
 class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
   late int selectedDuration;
   List<int> durations = [];
-  List<bool> chapterActiveStatus = []; 
+  List<String> chapterDurations = [];
+  List<bool> chapterActiveStatus = [];
+  List chaptersList = [];
+  late int selectedPrice;
   @override
   void initState() {
     final durationsSet = widget.course.coursePrices.map((e) => e.duration).toSet();
     durations = durationsSet.toList();
-    log('$durations');
     selectedDuration = durations[0];
+    chaptersList = widget.course.chapterWithPrice;
+    selectedPrice = getPriceForDuration(selectedDuration);
     chapterActiveStatus = List<bool>.filled(widget.course.chapterWithPrice.length, true);
     super.initState();
   }
+
+  int getPriceForDuration(int duration) {
+    return widget.course.coursePrices.firstWhere((price) => price.duration == duration).price;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +108,7 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                         TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    widget.course.coursePrices[0].price.toString(),
+                    selectedPrice.toString(),
                     style:
                         TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
@@ -110,26 +121,27 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                     ],
                   ),
                   SizedBox(
-                    width: 50.w,
+                    width: 45.w,
                   ),
-                  const Text('Select Duration: '),
+                    const Text('Select duration: '),
                   SizedBox(
                     width: 5.w,
                   ),
-                  DropdownButton(
+                  DropdownButton<int>(
                     value: selectedDuration,
                     onChanged: (value) {
                       setState(() {
                         selectedDuration = value!;
+                        selectedPrice = getPriceForDuration(selectedDuration);
                       });
                     },
-                    items: durations.map((e){ 
-                      return DropdownMenuItem(
+                    items: durations.map((e) {
+                      return DropdownMenuItem<int>(
                         value: e,
-                        child: Text(e.toString())
-                        );
-                      }).toList(),
-                    ),
+                        child: Text(e.toString()),
+                      );
+                    }).toList(),
+                  ),
                 ],
               ),
               SizedBox(height: 20.h,),
@@ -138,13 +150,35 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                 width: double.infinity,
                 height: 42.h,
                 child: ElevatedButton(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+                    final token = tokenProvider.token;
+                    if(token == null){
+                      log('you have to login first');
+                    }else{
+                      if(chapterActiveStatus.contains(false)){
+                      showModalBottomSheet(context: context, builder: (context) {
+                        return const Text('data');
+                      },);
+                    }else{
+                      log('$selectedPrice');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx)=> CheckoutScreen(
+                        id: widget.course.id,
+                        price: selectedPrice.toDouble(),
+                        type: widget.course.type,
+                        chapterName: widget.course.courseName,
+                        ))
+                      );
+                    }
+                    }
+                  }, 
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(),
                     backgroundColor: Colors.redAccent[700],
                     foregroundColor: Colors.white,
                   ),
-                child: Text('Check Out',style: TextStyle(fontSize: 16.sp),))),
+                child: Text(chapterActiveStatus.contains(false) ? 'Proceed' : 'Check out',style: TextStyle(fontSize: 16.sp),))),
                 SizedBox(height: 10.h,),
                 const Text('Course Content',style: TextStyle(fontSize: 20,fontWeight:FontWeight.bold),),
                 Column(
