@@ -4,27 +4,49 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:provider/provider.dart';
 
-class ExamGridItem extends StatelessWidget {
+class ExamGridItem extends StatefulWidget {
   final String examName;
+  final int? examcodeid;
+  final int? courseid;
+  final int? categoryid;
+  final int? months;
+  final String? years;
 
   const ExamGridItem({
     required this.examName,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+    this.examcodeid,
+    this.courseid,
+    this.categoryid,
+    this.months,
+    this.years,
+  });
 
+  @override
+  State<ExamGridItem> createState() => _ExamGridItemState();
+}
+
+class _ExamGridItemState extends State<ExamGridItem> {
   @override
   Widget build(BuildContext context) {
     return Consumer<StartExamProvider>(
       builder: (context, startExamProvider, _) {
+        final lll = startExamProvider.examData.toList();
         if (startExamProvider.examData.isEmpty) {
           // Fetch data only if it's not already fetched
-          startExamProvider.fetchDataFromApi(context);
+          startExamProvider.fetchDataFromApi(context, {
+            'category_id': widget.categoryid,
+            'course_id': widget.courseid,
+            'year': widget.years,
+            'month': widget.months,
+            'code_id': widget.examcodeid,
+          });
           return const Center(
             child: CircularProgressIndicator(), // Show loading indicator
           );
         }
         return Column(
-          children: startExamProvider.examData.map((examData) {
+          children: lll.map((examData) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -96,10 +118,10 @@ class ExamGridItem extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Expanded(
+                            const Expanded(
                               child: Column(
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Sections',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -107,15 +129,15 @@ class ExamGridItem extends StatelessWidget {
                                       fontSize: 11,
                                     ),
                                   ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    examData.section,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                      color: faceBookColor,
-                                    ),
-                                  )
+                                  SizedBox(height: 5),
+                                  // Text(
+                                  //   examData.section!,
+                                  //   style: const TextStyle(
+                                  //     fontWeight: FontWeight.bold,
+                                  //     fontSize: 11,
+                                  //     color: faceBookColor,
+                                  //   ),
+                                  // )
                                 ],
                               ),
                             ),
