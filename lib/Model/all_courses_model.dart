@@ -108,7 +108,7 @@ class ChapterWithPrice {
 }
 
 class ChapterPrices {
-  final String duration;
+  final int duration;
   final dynamic price;
 
   ChapterPrices({required this.duration, required this.price});
