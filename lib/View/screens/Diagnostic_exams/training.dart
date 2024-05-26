@@ -342,94 +342,96 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              if (currentQuestion['ans_type'] != 'MCQ')
-                TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'Type your answer here'),
-                  onChanged: (value) {
-                    currentQuestion['selectedAnswer'] = value;
-                  },
-                ),
-            ],
-          ),
-          if (currentQuestion['ans_type'] == 'MCQ')
-            Column(
-              children: List.generate(currentQuestion['mcq'].length, (index) {
-                final mcq = currentQuestion['mcq'][index];
-                return RadioListTile<String>(
-                  title: Text(' ${mcq['mcq_ans']}'),
-                  value: mcq['mcq_ans'],
-                  groupValue: currentQuestion[
-                      'selectedAnswer'], // Set groupValue to null initially
-                  onChanged: (String? value) {
-                    setState(() {
-                      currentQuestion['selectedAnswer'] = value;
-                    });
-                  },
-                );
-              }),
-            ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              if (currentIndex > 0)
-                ElevatedButton(
-                  onPressed: _prevQuestion,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: faceBookColor,
-                  ),
-                  child: const Text(
-                    'Previous',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              // const SizedBox(
-              //   width: 3,
+              //     if (currentQuestion['ans_type'] != 'MCQ')
+              //       TextFormField(
+              //         decoration:
+              //             const InputDecoration(labelText: 'Type your answer here'),
+              //         onChanged: (value) {
+              //           currentQuestion['selectedAnswer'] = value;
+              //         },
+              //       ),
+              //   ],
               // ),
-              ElevatedButton(
-                onPressed:
-                    _showQuestionsDialog, // Show the dialog to navigate to any question
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: faceBookColor,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
-                child: const Text(
-                  'Go to Question',
-                  style: TextStyle(color: Colors.white),
-                ),
+              // if (currentQuestion['ans_type'] == 'MCQ')
+              Column(
+                children: List.generate(currentQuestion['mcq'].length, (index) {
+                  final mcq = currentQuestion['mcq'][index];
+                  return RadioListTile<String>(
+                    title: Text(' ${mcq['mcq_ans']}'),
+                    value: mcq['mcq_ans'],
+                    groupValue: currentQuestion[
+                        'selectedAnswer'], // Set groupValue to null initially
+                    onChanged: (String? value) {
+                      setState(() {
+                        currentQuestion['selectedAnswer'] = value;
+                      });
+                    },
+                  );
+                }),
               ),
-              // const SizedBox(
-              //   width: 2,
-              // ),
-              if (currentIndex < allDiagnostics.length - 1)
-                ElevatedButton(
-                  onPressed: _nextQuestion,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: faceBookColor,
-                  ),
-                  child: const Text(
-                    'Next',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              if (currentIndex == allDiagnostics.length - 1 ||
-                  allDiagnostics.length == 1)
-                ElevatedButton(
-                  onPressed: () {
-                    _submitExam(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: faceBookColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 5)),
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(
-                      color: Colors.white,
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  if (currentIndex > 0)
+                    ElevatedButton(
+                      onPressed: _prevQuestion,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor,
+                      ),
+                      child: const Text(
+                        'Previous',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  // const SizedBox(
+                  //   width: 3,
+                  // ),
+                  ElevatedButton(
+                    onPressed:
+                        _showQuestionsDialog, // Show the dialog to navigate to any question
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
+                    child: const Text(
+                      'Go to Question',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
+                  // const SizedBox(
+                  //   width: 2,
+                  // ),
+                  if (currentIndex < allDiagnostics.length - 1)
+                    ElevatedButton(
+                      onPressed: _nextQuestion,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor,
+                      ),
+                      child: const Text(
+                        'Next',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  if (currentIndex == allDiagnostics.length - 1 ||
+                      allDiagnostics.length == 1)
+                    ElevatedButton(
+                      onPressed: () {
+                        _submitExam(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: faceBookColor,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 5)),
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
         ],

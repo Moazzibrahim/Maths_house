@@ -56,7 +56,7 @@ class _DiagnosticResultScreenState extends State<ExamResultScreen> {
     int totalScore = widget.examresults?['total_score'] as int? ?? 0;
     String? chapterName = widget.examresults?['chapters'][0]['api_lesson']
         ['api_chapter']['chapter_name'];
-    String? duration = widget.examresults?['chapters'][0]['api_lesson']
+    int? duration = widget.examresults?['chapters'][0]['api_lesson']
         ['api_chapter']['price'][0]['duration'];
     double? price = widget.examresults?['chapters'][0]['api_lesson']
             ['api_chapter']['price'][0]['price']

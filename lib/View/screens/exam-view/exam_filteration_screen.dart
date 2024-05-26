@@ -1,5 +1,4 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, library_private_types_in_public_api
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -103,6 +102,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
     };
 
     final url = Uri.parse(
+        // ignore: unnecessary_brace_in_string_interps
         'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process');
 
     try {
@@ -110,6 +110,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
       final response = await http.post(
         url,
         body: jsonEncode(requestBody),
+        //  body: jsonEncode(requestBody),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -126,10 +127,17 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
         print("Selected category: $selectedCategoryId");
         print("Selected month: $selectedMonthNumber");
         print("Selected course: $selectedCourseId");
+        print("selected year: $_selectedYear");
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ExamScreenstart(),
+            builder: (context) => ExamScreenstart(
+              categoryid: selectedCategoryId,
+              courseid: selectedCourseId,
+              months: selectedMonthNumber,
+              examcodeid: selectedExamCodeId,
+              years: _selectedYear,
+            ),
           ),
         );
       } else {

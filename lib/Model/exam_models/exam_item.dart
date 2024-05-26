@@ -4,7 +4,7 @@ class ExamItem with ChangeNotifier {
   final int month;
   final String year;
   final int countOfQuestions;
-  final String section;
+  final String ?section;
   final int marks;
   int? examid;
 
@@ -12,7 +12,7 @@ class ExamItem with ChangeNotifier {
     required this.year,
     required this.month,
     required this.countOfQuestions,
-    required this.section,
+     this.section,
     required this.marks,
     this.examid,
   });
