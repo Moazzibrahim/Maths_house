@@ -168,6 +168,7 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                         price: selectedPrice.toDouble(),
                         type: widget.course.type,
                         chapterName: widget.course.courseName,
+                        duration: selectedDuration,
                         ))
                       );
                     }
