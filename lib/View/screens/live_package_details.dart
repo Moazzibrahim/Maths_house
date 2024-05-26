@@ -72,6 +72,8 @@ class _livePackageDetailsState extends State<LivePackageDetails> {
                                     .alllivepackage[selectedIndex].name,
                                 price: packageProvider
                                     .alllivepackage[selectedIndex].price,
+                                     duration: packageProvider
+                                    .alllivepackage[selectedIndex].duration,
                               )),
                     );
                   }

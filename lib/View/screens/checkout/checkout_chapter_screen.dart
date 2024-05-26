@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-class CheckoutScreen extends StatefulWidget {
+class CheckoutChapterScreen extends StatefulWidget {
   final double? price;
   final int? duration;
   final double? discount;
@@ -20,7 +20,7 @@ class CheckoutScreen extends StatefulWidget {
   final String? type;
   final Map<String, dynamic>? examresults;
 
-  const CheckoutScreen({
+  const CheckoutChapterScreen({
     super.key,
     this.price,
     this.duration,
@@ -32,13 +32,15 @@ class CheckoutScreen extends StatefulWidget {
   });
 
   @override
-  State<CheckoutScreen> createState() => _CheckoutScreenState();
+  State<CheckoutChapterScreen> createState() => _CheckoutChapterScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
   String couponCode = "";
   double? updatedPrice;
   double? discountPercentage;
+
+  List<Map<String, dynamic>> chapters = []; // List to store chapter details
 
   @override
   void initState() {
@@ -49,6 +51,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ((widget.price! - updatedPrice!) / widget.price!) * 100;
     } else {
       discountPercentage = 0;
+    }
+
+    // Add initial chapter to the list
+    if (widget.chapterName != null &&
+        widget.id != null &&
+        widget.price != null) {
+      chapters.add({
+        'chapterName': widget.chapterName,
+        'id': widget.id,
+        'price': widget.price,
+        'duration': widget.duration,
+      });
     }
   }
 
@@ -74,7 +88,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const Text("product",
+                          const Text("Product",
                               style: TextStyle(color: faceBookColor)),
                           SizedBox(width: 13.w),
                           const Text("Price",
@@ -247,12 +261,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         'Accept': 'application/json',
                                         'Authorization': 'Bearer $token',
                                       },
-                                      body: json.encode({
-                                        'id': widget.id,
-                                        'type': widget.type,
-                                        'price': updatedPrice,
-                                        'duration': widget.duration,
-                                      }),
+                                      body: json.encode(
+                                        {
+                                          'id': widget.id,
+                                          'type': widget.type,
+                                          'price': updatedPrice,
+                                          'duration': widget.duration,
+                                        },
+                                      ),
                                     );
 
                                     if (response.statusCode == 200) {
@@ -292,7 +308,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   }
                                 },
                                 child: const Text(
-                                  "wallet",
+                                  "Wallet",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -351,5 +367,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _sendChapterDetails() async {
+    try {
+      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+      final token = tokenProvider.token;
+
+      final response = await http.post(
+        Uri.parse('https://yourapiendpoint.com/api/checkout'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'chapters': chapters, // Send list of chapters
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Chapter details sent successfully');
+        // Handle success response
+      } else {
+        print(
+            'Failed to send chapter details. Status code: ${response.statusCode}');
+        // Handle failure response
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  @override
+  void dispose() {
+    _sendChapterDetails();
+    super.dispose();
   }
 }

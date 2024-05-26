@@ -71,6 +71,8 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
                                     .allquestionpackage[selectedIndex].name,
                                 price: packageProvider
                                     .allquestionpackage[selectedIndex].price,
+                                duration: packageProvider
+                                    .allquestionpackage[selectedIndex].duration,
                               )),
                     );
                   }
@@ -95,7 +97,7 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20, 
+                height: 20,
               ),
             ],
           ),

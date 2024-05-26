@@ -66,6 +66,8 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                           builder: (context) => CheckoutScreen(
                                 id: packageProvider
                                     .allexamspackage[selectedIndex].id,
+                                duration: packageProvider
+                                    .allexamspackage[selectedIndex].duration,
                                 type: packageProvider
                                     .allexamspackage[selectedIndex].type,
                                 chapterName: packageProvider
