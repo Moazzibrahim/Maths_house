@@ -1,7 +1,5 @@
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_string_interpolations, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
+import 'package:flutter_application_1/View/screens/checkout/checkout_chapter_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/controller/diagnostic/get_course_provider.dart';
@@ -35,17 +33,18 @@ class DiagnosticResultScreen extends StatefulWidget {
 
 class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
   bool showRecommendation = false;
+  List<Map<String, dynamic>> chapterDetails = [];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GetCourseProvider>(
       builder: (context, provider, _) {
         return FutureBuilder<Map<String, dynamic>>(
           future: provider.fetchDataFromApi({
-            'timer': widget.seconds, // Change this to the appropriate value
+            'timer': widget.seconds,
             'r_question': widget.correctCount,
             'exam_id': widget.exid,
-            'mistakes':
-                widget.wrongQuestionIds, // Change this to the appropriate value
+            'mistakes': widget.wrongQuestionIds,
           }, context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -54,28 +53,22 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               int? grade = snapshot.data!['score'] as int?;
-              String chapterName = snapshot.data!['recommandition'] != null
-                  ? snapshot.data!['recommandition'][0]['chapter_name'] ?? ''
-                  : '';
-              int chid = snapshot.data!['recommandition'] != null
-                  ? snapshot.data!['recommandition'][0]['id'] ?? 0
-                  : 0;
-              String type = snapshot.data!['recommandition'] != null
-                  ? snapshot.data!['recommandition'][0]['type'] ?? ''
-                  : '';
-              double price = snapshot.data!['recommandition'] != null
-                  ? (snapshot.data!['recommandition'][0]['price'][0]['price'] ??
-                          0)
-                      .toDouble()
-                  : 0.0;
-              double discount = snapshot.data!['recommandition'] != null
-                  ? (snapshot.data!['recommandition'][0]['price'][0]
-                              ['discount'] ??
-                          0)
-                      .toDouble()
-                  : 0.0;
+              chapterDetails =
+                  (snapshot.data!['recommandition'] as List<dynamic>)
+                      .map((recommendation) {
+                return {
+                  'chapterName': recommendation['chapter_name'],
+                  'id': recommendation['id'],
+                  'price':
+                      (recommendation['price'][0]['price'] ?? 0).toDouble(),
+                };
+              }).toList();
+
               return _buildResultScreen(
-                  context, grade, chid, chapterName, price, discount, type);
+                context,
+                grade,
+                chapterDetails,
+              );
             } else {
               return const Center(child: Text('No data available'));
             }
@@ -85,8 +78,8 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
     );
   }
 
-  Widget _buildResultScreen(BuildContext context, int? grade, int chid,
-      String chapterName, double price, double discount, String type) {
+  Widget _buildResultScreen(BuildContext context, int? grade,
+      List<Map<String, dynamic>> chapterDetails) {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -115,23 +108,14 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInfoRow("total score", "${widget.score}"),
-            const SizedBox(
-              height: 15,
-            ),
-            _buildInfoRow(
-                "grade", "${grade}"), // Change this to the appropriate value
-            const SizedBox(
-              height: 15,
-            ),
-            _buildInfoRow("Total Questions", " ${widget.totalQuestions}"),
-            const SizedBox(
-              height: 15,
-            ),
+            _buildInfoRow("Total Score", "${widget.score}"),
+            const SizedBox(height: 15),
+            _buildInfoRow("Grade", "$grade"),
+            const SizedBox(height: 15),
+            _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
+            const SizedBox(height: 15),
             _buildInfoRow("Correct Questions", "${widget.correctCount}"),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
             const SizedBox(height: 25),
             ElevatedButton(
@@ -148,55 +132,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             ),
             if (showRecommendation) ...[
               const SizedBox(height: 10),
-              Text(
-                "$chapterName",
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildCustomButton("Buy", () {
-                    // Action for the first elevated button
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.black,
-                        content: Text(
-                          "Done",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    );
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CheckoutScreen(
-                            chapterName: chapterName,
-                            price: price,
-                            id: chid,
-                            type: type,
-                            discount: discount,
-                          ),
-                        ),
-                      );
-                    });
-                  }),
-                  _buildCustomButton("Buy All", () {
-                    // Action for the second elevated button
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.black,
-                        content: Text(
-                          "Done",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    );
-                  }),
-                ],
-              ),
-              const SizedBox(height: 15),
+              _buildRecommendationSection(),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 onPressed: () {
@@ -212,10 +148,72 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
+              const SizedBox(height: 15),
             ],
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildRecommendationSection() {
+    return Column(
+      children: [
+        ...chapterDetails.map((chapter) {
+          return Column(
+            children: [
+              Text(
+                chapter['chapterName'],
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildCustomButton("Buy", () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.black,
+                        content: Text(
+                          "Done",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CheckoutChapterScreen(
+                            chapterName: chapter['chapterName'],
+                            price: chapter['price'],
+                            id: chapter['id'],
+                            type: 'Chapters',
+                            discount: 0, // Adjust accordingly
+                          ),
+                        ),
+                      );
+                    });
+                  }),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          );
+        }).toList(),
+        _buildCustomButton("Buy All", () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.black,
+              content: Text(
+                "Done",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }),
+        const SizedBox(height: 10),
+      ],
     );
   }
 

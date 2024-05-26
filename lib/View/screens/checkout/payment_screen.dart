@@ -17,12 +17,13 @@ class PaymentScreen extends StatefulWidget {
   final int? id;
   final double? price;
   final String? type;
+  final int? duration;
 
   const PaymentScreen({
     super.key,
     this.id,
     this.price,
-    this.type,
+    this.type, this.duration,
   });
 
   @override
