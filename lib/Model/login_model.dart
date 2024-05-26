@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 
 // Create a class to hold the token
 class TokenModel with ChangeNotifier {
-  late String _token;
+  String? _token;
 
-  String get token => _token;
+  String? get token => _token;
 
   void setToken(String token) {
     _token = token;

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/quizzes_model.dart';
-import 'package:flutter_application_1/View/screens/courses/quiz_score_screen.dart';
+import 'package:flutter_application_1/View/screens/my_courses/quiz_score_screen.dart';
 import 'dart:async';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';

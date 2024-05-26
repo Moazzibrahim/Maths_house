@@ -3,7 +3,19 @@ import 'package:flutter_application_1/View/widgets/Exams/start_exam_widget.dart'
 import 'package:flutter_application_1/constants/colors.dart';
 
 class ExamScreenstart extends StatelessWidget {
-  const ExamScreenstart({super.key});
+  final int? examcodeid;
+  final int? courseid;
+  final int? categoryid;
+  final int? months;
+  final String? years;
+
+  const ExamScreenstart(
+      {super.key,
+      this.examcodeid,
+      this.courseid,
+      this.categoryid,
+      this.months,
+      this.years});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +43,11 @@ class ExamScreenstart extends StatelessWidget {
         itemBuilder: (context, index) {
           return ExamGridItem(
             examName: exams[index],
+            categoryid: categoryid,
+            courseid: courseid,
+            examcodeid: examcodeid,
+            months: months,
+            years: years,
           );
         },
       ),

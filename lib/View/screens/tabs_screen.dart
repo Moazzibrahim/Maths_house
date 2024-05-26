@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/all_courses/unregistered_categories.dart';
 import 'package:flutter_application_1/View/screens/package_screen.dart';
 import 'package:flutter_application_1/View/screens/profile_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
@@ -27,7 +28,7 @@ class _TabsScreenState extends State<TabsScreen> {
       PackageScreen(
         isLoggedIn: widget.isLoggedIn,
       ),
-      const ChatScreen(),
+      const UnregisteredCourses(),
       ProfileScreen(
         isLoggedIn: widget.isLoggedIn,
       ),
