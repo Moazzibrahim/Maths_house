@@ -9,7 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class WalletScreen extends StatefulWidget {
-  const WalletScreen({Key? key}) : super(key: key);
+  const WalletScreen({
+    Key? key,
+    this.chapters = const [],
+  }) : super(key: key);
+  final List<Map<String, dynamic>> chapters;
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();
@@ -60,7 +64,8 @@ class _WalletScreenState extends State<WalletScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const WalletRechargeScreen(),
+                              builder: (context) =>
+                                  const WalletRechargeScreen(),
                             ),
                           );
                         },

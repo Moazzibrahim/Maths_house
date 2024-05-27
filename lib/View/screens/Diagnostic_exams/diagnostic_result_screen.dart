@@ -61,6 +61,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                   'id': recommendation['id'],
                   'price':
                       (recommendation['price'][0]['price'] ?? 0).toDouble(),
+                  'duration': (recommendation['price'][0]['duration'] ?? 0),
                 };
               }).toList();
 
@@ -187,6 +188,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                           builder: (context) => CheckoutChapterScreen(
                             chapterName: chapter['chapterName'],
                             price: chapter['price'],
+                            duration: chapter['duration'],
                             id: chapter['id'],
                             type: 'Chapters',
                             discount: 0, // Adjust accordingly
@@ -201,17 +203,17 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             ],
           );
         }).toList(),
-        _buildCustomButton("Buy All", () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              backgroundColor: Colors.black,
-              content: Text(
-                "Done",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        }),
+        // _buildCustomButton("Buy All", () {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(
+        //       backgroundColor: Colors.black,
+        //       content: Text(
+        //         "Done",
+        //         style: TextStyle(color: Colors.white),
+        //       ),
+        //     ),
+        //   );
+        // }),
         const SizedBox(height: 10),
       ],
     );

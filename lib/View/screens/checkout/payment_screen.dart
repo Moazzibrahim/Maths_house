@@ -1,6 +1,5 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print, library_private_types_in_public_api
+// ignore_for_file: avoid_print, use_build_context_synchronously, library_private_types_in_public_api
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -12,6 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image/image.dart' as img;
 
 class PaymentScreen extends StatefulWidget {
   final int? id;
@@ -23,7 +24,8 @@ class PaymentScreen extends StatefulWidget {
     super.key,
     this.id,
     this.price,
-    this.type, this.duration,
+    this.type,
+    this.duration,
   });
 
   @override
@@ -34,6 +36,29 @@ class _PaymentScreenState extends State<PaymentScreen> {
   int? _selectedOptionId;
   File? _image;
   final TextEditingController _textFieldController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    requestPermissions();
+
+    Provider.of<PaymentProvider>(context, listen: false)
+        .fetchPaymentMethods(context)
+        .catchError((e) {
+      print(e);
+    });
+  }
+
+  Future<void> requestPermissions() async {
+    var cameraStatus = await Permission.camera.request();
+    var storageStatus = await Permission.storage.request();
+
+    if (cameraStatus.isGranted && storageStatus.isGranted) {
+      // Permissions granted
+    } else {
+      // Handle permissions not granted
+    }
+  }
 
   Future<void> _uploadFromGallery() async {
     final picker = ImagePicker();
@@ -52,10 +77,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
+      final File imageFile = File(pickedFile.path);
+
+      // Decode the image from the file
+      img.Image? originalImage = img.decodeImage(imageFile.readAsBytesSync());
+
+      // Resize the image to a width of 800 pixels, maintaining the aspect ratio
+      img.Image resizedImage = img.copyResize(originalImage!, width: 800);
+
+      // Compress the resized image
+      final File resizedFile = File(imageFile.path)
+        ..writeAsBytesSync(img.encodeJpg(resizedImage, quality: 85));
+
       setState(() {
-        _image = File(pickedFile.path);
-        print('Image taken from camera: ${_image!.path}');
+        _image = resizedFile;
       });
+
+      print('Image taken from camera and resized: ${_image!.path}');
     }
   }
 
@@ -102,14 +140,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
         var responseBody = await response.stream.bytesToString();
         var statusCode = response.statusCode;
         print('Error Response Status Code: $statusCode');
-        var error = jsonDecode(responseBody);
-        print("Error: $error");
+        print("Error Response Body: $responseBody");
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Error"),
-              content: const Text("Failed to make payment"),
+              content: Text("Failed to make payment. Error: $statusCode"),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -143,16 +180,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
         },
       );
     }
-  }
-
-  @override
-  void initState() {
-    Provider.of<PaymentProvider>(context, listen: false)
-        .fetchPaymentMethods(context)
-        .catchError((e) {
-      print(e);
-    });
-    super.initState();
   }
 
   @override
