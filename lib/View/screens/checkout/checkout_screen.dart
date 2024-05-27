@@ -311,6 +311,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         id: widget.id,
                                         price: updatedPrice,
                                         type: widget.type,
+                                        duration: widget.duration,
                                       ),
                                     ),
                                   );
