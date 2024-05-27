@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -24,77 +25,90 @@ class DiagExamProvider with ChangeNotifier {
 
       final selectedCourseId = diagnosticFilterationProvider.courseIds.first;
 
-      final response = await http.get(
-        Uri.parse(
-            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam/$selectedCourseId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+      const int maxRetries = 5;
+      int retryCount = 0;
+      bool success = false;
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        print('Response body: $data');
+      while (retryCount < maxRetries && !success) {
+        final response = await http.get(
+          Uri.parse(
+              'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam/$selectedCourseId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-        if (data['exam'] != null && data['exam']['question_with_ans'] != null) {
-          final List<dynamic> questions = data['exam']['question_with_ans'];
-          exid = data['exam']['id'];
-          print(exid);
-          final passscore = data['exam']['pass_score'];
-          print(passscore);
-          score = data['exam']['score'];
-          print(score);
-          alldiagnostics.clear(); // Clear previous data
-          for (var question in questions) {
-            print('Question: $question');
-            final questionMap = {
-              'id': question['id'] ?? -1,
-              'question': question['question'] ?? '',
-              'q_num': question['q_num'] ?? '',
-              'q_type': question['q_type'] ?? '',
-              'q_url': question['q_url'] ?? '', // Include q_url field
-              'mcq': question['mcq'] != null
-                  ? (question['mcq'] as List).map((mcq) {
-                      print('MCQ: $mcq');
-                      return {
-                        'mcq_ans': mcq['mcq_ans'] ?? '', // options
-                        'mcq_answers':
-                            mcq['mcq_answers'] ?? '', // correct answer
-                      };
-                    }).toList()
-                  : [],
-              'g_ans': question['g_ans'] ?? '',
-              'selectedAnswer': null, // Add selected answer field
-            };
-            alldiagnostics.add(questionMap);
-            print('Alldiagnostics: $alldiagnostics');
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data != null && data['exam'] != null && data['exam']['question_with_ans'] != null) {
+            final List<dynamic> questions = data['exam']['question_with_ans'];
+            exid = data['exam']['id'] ?? 0;
+            passscore = data['exam']['pass_score'] ?? 0;
+            score = data['exam']['score'] ?? 0;
+
+            alldiagnostics.clear(); // Clear previous data
+            for (var question in questions) {
+              final questionMap = {
+                'id': question['id'] ?? -1,
+                'question': question['question'] ?? '',
+                'q_num': question['q_num'] ?? '',
+                'q_type': question['q_type'] ?? '',
+                'q_url': question['q_url'] ?? '',
+                'mcq': question['mcq'] != null
+                    ? (question['mcq'] as List).map((mcq) {
+                        return {
+                          'mcq_ans': mcq['mcq_ans'] ?? '',
+                          'mcq_answers': mcq['mcq_answers'] ?? '',
+                        };
+                      }).toList()
+                    : [],
+                'g_ans': question['g_ans'] ?? '',
+                'selectedAnswer': null,
+              };
+              alldiagnostics.add(questionMap);
+            }
+            success = true;
+            notifyListeners();
+          } else {
+            throw Exception('Invalid data structure: ${response.body}');
           }
-          // Notify listeners that the data has been updated
-          notifyListeners();
+        } else if (response.statusCode == 429) {
+          retryCount++;
+          final waitTime = Duration(seconds: 2 ^ retryCount);
+          print('Retrying in ${waitTime.inSeconds} seconds...');
+          await Future.delayed(waitTime);
+        } else {
+          throw Exception('Failed to load data: ${response.statusCode}');
         }
-      } else {
-        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+
+      if (!success) {
+        throw Exception('Exceeded maximum retries');
       }
     } catch (e) {
-      throw Exception('Error fetching data: $e');
+      // Log the error or show a user-friendly message
+      print('Error fetching data: $e');
     }
   }
 
   void selectAnswer(String? answer) {
     alldiagnostics[currentIndex]['selectedAnswer'] = answer;
+    notifyListeners();
   }
 
   void goToNextQuestion() {
     if (currentIndex < alldiagnostics.length - 1) {
       currentIndex++;
+      notifyListeners();
     }
   }
 
   void goToPreviousQuestion() {
     if (currentIndex > 0) {
       currentIndex--;
+      notifyListeners();
     }
   }
 

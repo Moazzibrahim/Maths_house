@@ -1,10 +1,12 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/delete_account/delete_account.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
 import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/edit_profile_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -28,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .catchError((e) {
       print(e);
     });
+
     super.initState();
   }
 
@@ -305,6 +308,78 @@ class RequesterContent extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 7,
+              ),
+              TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            actions: [
+                              const Text(
+                                  "Are you sure to delete your account ?"),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Provider.of<DeleteAccount>(context,
+                                              listen: false)
+                                          .deleteAccount(context);
+                                      Future.delayed(
+                                        const Duration(
+                                          seconds: 2,
+                                        ),
+                                        () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const UnregisteredHomescreen()));
+                                        },
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: faceBookColor,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10)),
+                                    child: const Text(
+                                      "Delete",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: faceBookColor),
+                                    child: const Text(
+                                      "ok",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          );
+                        });
+                  },
+                  child: const Text(
+                    "Delete account?",
+                    style: TextStyle(
+                        color: faceBookColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400),
+                  ))
               // Other fields...
             ] else
               const Text('User data not available'),
