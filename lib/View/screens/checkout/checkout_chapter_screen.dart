@@ -1,9 +1,6 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/checkout/payment_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -16,7 +13,7 @@ class CheckoutChapterScreen extends StatefulWidget {
   final int? duration;
   final double? discount;
   final String? chapterName;
-  final int? id;
+  final List<int>? id;
   final String? type;
   final Map<String, dynamic>? examresults;
 
@@ -57,12 +54,16 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
     if (widget.chapterName != null &&
         widget.id != null &&
         widget.price != null) {
-      chapters.add({
-        'chapterName': widget.chapterName,
-        'id': widget.id,
-        'price': widget.price,
-        'duration': widget.duration,
-      });
+      for (int i = 0; i < widget.id!.length; i++) {
+        chapters.add({
+          'chapterName': widget.chapterName,
+          'id': widget.id![i],
+          'price': widget.price,
+          'duration': widget.duration!,
+        });
+      }
+    } else {
+      discountPercentage = 0;
     }
   }
 
@@ -247,65 +248,7 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
                                   backgroundColor: faceBookColor,
                                 ),
                                 onPressed: () async {
-                                  try {
-                                    final tokenProvider =
-                                        Provider.of<TokenModel>(context,
-                                            listen: false);
-                                    final token = tokenProvider.token;
-
-                                    final response = await http.post(
-                                      Uri.parse(
-                                          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_payment_wallet'),
-                                      headers: {
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'Authorization': 'Bearer $token',
-                                      },
-                                      body: json.encode(
-                                        {
-                                          'id': widget.id,
-                                          'type': widget.type,
-                                          'price': updatedPrice,
-                                          'duration': widget.duration,
-                                        },
-                                      ),
-                                    );
-
-                                    if (response.statusCode == 200) {
-                                      print(response.body);
-                                      // Handle success response
-                                      print('Data sent successfully');
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const WalletScreen(),
-                                        ),
-                                      );
-                                    } else {
-                                      // Handle failure response
-                                      print(
-                                          'Failed to send data. Status code: ${response.statusCode}');
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: const Text('Payment Failed'),
-                                          content: const Text(
-                                              'Failed to process payment. Please try again later.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: const Text('OK'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  } catch (error) {
-                                    // Handle any exceptions
-                                    print('Error: $error');
-                                  }
+                                  await _checkoutWithWallet();
                                 },
                                 child: const Text(
                                   "Wallet",
@@ -315,27 +258,23 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
                               const SizedBox(
                                 width: 6,
                               ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: faceBookColor,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PaymentScreen(
-                                        id: widget.id,
-                                        price: updatedPrice,
-                                        type: widget.type,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  "Payment methods",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
+                              // ElevatedButton(
+                              //   style: ElevatedButton.styleFrom(
+                              //     backgroundColor: faceBookColor,
+                              //   ),
+                              //   onPressed: () {
+                              //     Navigator.push(
+                              //       context,
+                              //       MaterialPageRoute(
+                              //         builder: (context) => PaymentScreen(chapters: chapters),
+                              //       ),
+                              //     );
+                              //   },
+                              //   child: const Text(
+                              //     "Payment methods",
+                              //     style: TextStyle(color: Colors.white),
+                              //   ),
+                              // ),
                             ],
                           )
                         ],
@@ -369,39 +308,62 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
     );
   }
 
-  Future<void> _sendChapterDetails() async {
+  Future<void> _checkoutWithWallet() async {
     try {
       final tokenProvider = Provider.of<TokenModel>(context, listen: false);
       final token = tokenProvider.token;
 
       final response = await http.post(
-        Uri.parse('https://yourapiendpoint.com/api/checkout'),
+        Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_payment_wallet'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
         body: json.encode({
-          'chapters': chapters, // Send list of chapters
+          'chapters': chapters.map((chapter) {
+            return {
+              'id': chapter['id'],
+              'type': 'Chapters',
+              'price': widget.price,
+              'duration': chapter['duration'],
+            };
+          }).toList(),
         }),
       );
 
       if (response.statusCode == 200) {
-        print('Chapter details sent successfully');
+        print(response.body);
         // Handle success response
+        print('Data sent successfully');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => WalletScreen(chapters: chapters)),
+        );
       } else {
-        print(
-            'Failed to send chapter details. Status code: ${response.statusCode}');
         // Handle failure response
+        print('Failed to send data. Status code: ${response.statusCode}');
+        print('Error message: ${response.body}');
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Payment Failed'),
+            content:
+                const Text('Failed to complete payment. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
     } catch (error) {
+      // Handle any exceptions
       print('Error: $error');
     }
-  }
-
-  @override
-  void dispose() {
-    _sendChapterDetails();
-    super.dispose();
   }
 }

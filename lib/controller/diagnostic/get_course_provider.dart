@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:http/http.dart' as http;
@@ -111,7 +113,7 @@ class ApiResponse {
       recommendations: recommendationObjs,
     );
   }
-} 
+}
 
 class GetCourseProvider with ChangeNotifier {
   Future<Map<String, dynamic>> fetchDataFromApi(

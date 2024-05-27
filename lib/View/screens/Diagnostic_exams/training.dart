@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print, use_build_context_synchronously, unused_local_variable
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -39,11 +39,12 @@ class DiagnosticExamScreen extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
-class DiagnosticQuestionsList extends StatefulWidget with ChangeNotifier {
+class DiagnosticQuestionsList extends StatefulWidget {
   final int exid;
   final int score;
-  DiagnosticQuestionsList({super.key, required this.exid, required this.score});
+
+  const DiagnosticQuestionsList(
+      {super.key, required this.exid, required this.score});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -78,28 +79,35 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
   }
 
   void _nextQuestion() {
-    setState(() {
-      if (currentIndex <
-          Provider.of<DiagExamProvider>(context, listen: false)
-                  .alldiagnostics
-                  .length -
-              1) {
+    final provider = Provider.of<DiagExamProvider>(context, listen: false);
+    if (currentIndex < provider.alldiagnostics.length - 1) {
+      setState(() {
         currentIndex++;
-      }
-    });
+      });
+    }
   }
 
   void _prevQuestion() {
-    setState(() {
-      if (currentIndex > 0) {
+    if (currentIndex > 0) {
+      setState(() {
         currentIndex--;
+      });
+    }
+  }
+
+  int countAnsweredQuestions() {
+    final provider = Provider.of<DiagExamProvider>(context, listen: false);
+    int answeredCount = 0;
+    for (final question in provider.alldiagnostics) {
+      if (question['selectedAnswer'] != null) {
+        answeredCount++;
       }
-    });
+    }
+    return answeredCount;
   }
 
   void _showQuestionsDialog() {
-    final allDiagnostics =
-        Provider.of<DiagExamProvider>(context, listen: false).alldiagnostics;
+    final provider = Provider.of<DiagExamProvider>(context, listen: false);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -107,10 +115,15 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
           title: const Text('Go to Question'),
           content: SingleChildScrollView(
             child: Column(
-              children: List.generate(allDiagnostics.length, (index) {
-                final question = allDiagnostics[index];
+              children: List.generate(provider.alldiagnostics.length, (index) {
+                final question = provider.alldiagnostics[index];
+                final isAnswered = question['selectedAnswer'] != null;
                 return ListTile(
-                  title: Text('Question ${index + 1}: ${question['question']}'),
+                  title: Text('Question ${index + 1}'),
+                  leading: Icon(
+                    isAnswered ? Icons.check : Icons.close,
+                    color: isAnswered ? Colors.green : Colors.red,
+                  ),
                   onTap: () {
                     setState(() {
                       currentIndex = index;
@@ -127,10 +140,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 Navigator.pop(context); // Close the dialog
               },
               style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-              child: const Text(
-                'OK',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: const Text('OK', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -156,8 +166,6 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     print('score: ${widget.score}');
   }
 
-  int correctCount = 0;
-  int wrongCount = 0;
   void _submitExam(BuildContext context) async {
     _timer.cancel();
     final provider = Provider.of<DiagExamProvider>(context, listen: false);
@@ -165,8 +173,9 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     List<int> wrongQuestionIds = [];
     final int score = provider.score;
     final int passscore = provider.passscore;
+    int correctCount = 0;
+    int wrongCount = 0;
 
-    // Using async operations to parallelize some of the checks
     await Future.forEach(provider.alldiagnostics, (currentQuestion) async {
       var selectedAnswer = currentQuestion['selectedAnswer'];
       final correctAnswer = currentQuestion['mcq'][0]['mcq_answers'];
@@ -194,6 +203,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
         wrongQuestionIds.add(currentQuestion['id']);
       }
     });
+
+    if (!mounted) return; // Ensure widget is still mounted
 
     if (unansweredIndex != -1) {
       showDialog(
@@ -248,6 +259,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Your answers are submitted')));
                     Future.delayed(const Duration(seconds: 2), () {
+                      if (!mounted) return;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -281,6 +293,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Your answers are submitted')));
       Future.delayed(const Duration(seconds: 2), () {
+        if (!mounted) return;
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -307,6 +320,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     final currentQuestion = allDiagnostics[currentIndex];
     final minutes = _seconds ~/ 60;
     final seconds = _seconds % 60;
+    final answeredCount = countAnsweredQuestions();
 
     return SingleChildScrollView(
       child: Column(
@@ -318,11 +332,16 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
             child: Row(
               children: [
                 const Icon(Icons.timer, color: Colors.white),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 Text(
                   '$minutes:${seconds < 10 ? '0$seconds' : seconds}',
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                ),
+                const SizedBox(
+                  width: 140,
+                ),
+                Text(
+                  'Answered: $answeredCount/${allDiagnostics.length}',
                   style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ],
@@ -334,25 +353,12 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
             children: [
               if (currentQuestion['q_url'] != null)
                 Image.network(currentQuestion['q_url'], height: 200),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               Text(
                 'Question ${currentIndex + 1}: ${currentQuestion['question']}',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              //     if (currentQuestion['ans_type'] != 'MCQ')
-              //       TextFormField(
-              //         decoration:
-              //             const InputDecoration(labelText: 'Type your answer here'),
-              //         onChanged: (value) {
-              //           currentQuestion['selectedAnswer'] = value;
-              //         },
-              //       ),
-              //   ],
-              // ),
-              // if (currentQuestion['ans_type'] == 'MCQ')
               Column(
                 children: List.generate(currentQuestion['mcq'].length, (index) {
                   final mcq = currentQuestion['mcq'][index];
@@ -377,41 +383,27 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                     ElevatedButton(
                       onPressed: _prevQuestion,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: faceBookColor,
-                      ),
-                      child: const Text(
-                        'Previous',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                          backgroundColor: faceBookColor),
+                      child: const Text('Previous',
+                          style: TextStyle(color: Colors.white)),
                     ),
-                  // const SizedBox(
-                  //   width: 3,
-                  // ),
                   ElevatedButton(
                     onPressed:
                         _showQuestionsDialog, // Show the dialog to navigate to any question
                     style: ElevatedButton.styleFrom(
                         backgroundColor: faceBookColor,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10)),
-                    child: const Text(
-                      'Go to Question',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10)),
+                    child: const Text('Go to Question',
+                        style: TextStyle(color: Colors.white)),
                   ),
-                  // const SizedBox(
-                  //   width: 2,
-                  // ),
                   if (currentIndex < allDiagnostics.length - 1)
                     ElevatedButton(
                       onPressed: _nextQuestion,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: faceBookColor,
-                      ),
-                      child: const Text(
-                        'Next',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                          backgroundColor: faceBookColor),
+                      child: const Text('Next',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   if (currentIndex == allDiagnostics.length - 1 ||
                       allDiagnostics.length == 1)
@@ -423,12 +415,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                           backgroundColor: faceBookColor,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 5)),
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
+                      child: const Text('Submit',
+                          style: TextStyle(color: Colors.white)),
                     ),
                 ],
               ),
