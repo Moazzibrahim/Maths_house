@@ -39,31 +39,37 @@ class ExamMcqProvider with ChangeNotifier {
         final List<QuestionWithAnswers> questionsWithAnswers = [];
         print(jsonData['exam']);
 
-        // Loop through the exam data
-        if (jsonData['exam'] != null) {
-          for (var examData in jsonData['exam']) {
-            final Question question = Question.fromJson(examData['question']);
-            final List<Answer> answerList = [];
+        // Parse the exam data
+        if (jsonData['exam'] != null &&
+            jsonData['exam']['questionExam'] != null) {
+          print('Exam data exists, parsing...');
+          final examData = jsonData['exam']['questionExam'];
+          print('Exam data: $examData');
+          print('Type of examData: ${examData.runtimeType}');
 
-            // Loop through the answers
-            if (examData['Answers'] != null) {
-              for (var answerData in examData['Answers']) {
-                final Answer answer = Answer.fromJson(answerData);
-                answerList.add(answer);
-                print(answer.mcqAnswers); // Access mcqAnswers field here
-              }
+          final Question question = Question.fromJson(examData['question']);
+          print('Question: $question');
+          final List<Answer> answerList = [];
+
+          // Loop through the answers
+          if (examData['Answers'] != null) {
+            for (var answerData in examData['Answers']) {
+              final Answer answer = Answer.fromJson(answerData);
+              answerList.add(answer);
+              print('Answer: $answer');
+              print(answer.mcqAnswers); // Access mcqAnswers field here
             }
-
-            // Create a QuestionWithAnswers object and add it to the list
-            questionsWithAnswers.add(QuestionWithAnswers(
-              question: question,
-              answers: answerList,
-              mcqOptions: answerList
-                  .where((answer) => answer.mcqAns != null)
-                  .map((answer) => answer.mcqAns)
-                  .toList(),
-            ));
           }
+
+          // Create a QuestionWithAnswers object and add it to the list
+          questionsWithAnswers.add(QuestionWithAnswers(
+            question: question,
+            answers: answerList,
+            mcqOptions: answerList
+                .where((answer) => answer.mcqAns != null)
+                .map((answer) => answer.mcqAns)
+                .toList(),
+          ));
         }
 
         return questionsWithAnswers;

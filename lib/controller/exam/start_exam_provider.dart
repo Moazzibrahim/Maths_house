@@ -110,13 +110,19 @@ class StartExamProvider with ChangeNotifier {
         final jsonData = json.decode(response.body);
         final List<dynamic> examItems = jsonData['exam_items'];
 
-        // Assuming we want to get the first exam ID in the response
-        if (examItems.isNotEmpty) {
-          examId = examItems[0]['id'];
-          print("exam id is : $examId");
-          return examId!;
+        // Check if examItems is not empty and has valid ID
+        if (examItems.isNotEmpty && examItems[0]['id'] != null) {
+          final examIdString = examItems[0]['id'].toString(); // Parse as string
+          final examId = int.tryParse(examIdString); // Try parsing as integer
+
+          if (examId != null) {
+            print("Exam ID successfully fetched: $examId");
+            return examId;
+          } else {
+            throw Exception('Failed to parse exam ID: $examIdString');
+          }
         } else {
-          throw Exception('No exam items found.');
+          throw Exception('No valid exam ID found.');
         }
       } else {
         throw Exception('Failed to fetch exam ID: ${response.statusCode}');
