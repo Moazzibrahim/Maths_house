@@ -109,3 +109,17 @@ class Answer {
     );
   }
 }
+
+class QuestionWithAnswers {
+  final Question question;
+  final List<Answer> answers;
+  final List<String> mcqOptions;
+  int? selectedSolutionIndex;
+
+  QuestionWithAnswers({
+    required this.question,
+    required this.answers,
+    required this.mcqOptions,
+    this.selectedSolutionIndex,
+  });
+}

@@ -1,4 +1,6 @@
-// ignore_for_file: avoid_print, unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison
+
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
@@ -16,12 +18,12 @@ class ExamMcqProvider with ChangeNotifier {
     final examId = startExamProvider.examId;
 
     if (examId == null) {
-      print('Exam ID is null');
+      debugPrint('Exam ID is null');
       return [];
     }
 
     final url =
-        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$examId';
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/16';
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
@@ -34,30 +36,34 @@ class ExamMcqProvider with ChangeNotifier {
           'Authorization': 'Bearer $token',
         },
       );
+
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         final List<QuestionWithAnswers> questionsWithAnswers = [];
-        print(jsonData['exam']);
 
-        // Parse the exam data
+        debugPrint('Response data: ${jsonData['exam']}');
+
+        // Check if the exam and questionExam fields are present
         if (jsonData['exam'] != null &&
             jsonData['exam']['questionExam'] != null) {
-          print('Exam data exists, parsing...');
+          debugPrint('Exam data exists, parsing...');
           final examData = jsonData['exam']['questionExam'];
-          print('Exam data: $examData');
-          print('Type of examData: ${examData.runtimeType}');
 
-          final Question question = Question.fromJson(examData['question']);
-          print('Question: $question');
+          log('Exam data: $examData');
+          log('Type of examData: ${examData.runtimeType}');
+
+          final question = Question.fromJson(examData['question']);
+          log('Question: $question');
+
           final List<Answer> answerList = [];
 
           // Loop through the answers
           if (examData['Answers'] != null) {
             for (var answerData in examData['Answers']) {
-              final Answer answer = Answer.fromJson(answerData);
+              final answer = Answer.fromJson(answerData);
               answerList.add(answer);
-              print('Answer: $answer');
-              print(answer.mcqAnswers); // Access mcqAnswers field here
+              log("answer list: $answerList");
+              log(answer.mcqAnswers.toString()); // Access mcqAnswers field here
             }
           }
 
@@ -66,33 +72,26 @@ class ExamMcqProvider with ChangeNotifier {
             question: question,
             answers: answerList,
             mcqOptions: answerList
+                // Ensure mcqAns is not null before adding to the list
                 .where((answer) => answer.mcqAns != null)
                 .map((answer) => answer.mcqAns)
                 .toList(),
           ));
+          log("all: $questionsWithAnswers");
+        } else {
+          debugPrint('No exam data found in the response');
         }
 
         return questionsWithAnswers;
       } else {
-        print('Failed to fetch data: ${response.statusCode}');
+        debugPrint('Failed to fetch data: ${response.statusCode}');
+        // Handle specific status codes if needed
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
+      // Optionally, handle specific exceptions if needed
     }
-    return []; // Return empty list in case of failure
+
+    return []; // Return an empty list in case of failure
   }
-}
-
-class QuestionWithAnswers {
-  final Question question;
-  final List<Answer> answers;
-  final List<String> mcqOptions;
-  int? selectedSolutionIndex;
-
-  QuestionWithAnswers({
-    required this.question,
-    required this.answers,
-    required this.mcqOptions,
-    this.selectedSolutionIndex,
-  });
 }

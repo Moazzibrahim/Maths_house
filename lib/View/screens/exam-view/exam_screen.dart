@@ -1,6 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable
+// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable, use_build_context_synchronously, unrelated_type_equality_checks
+
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_result.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -81,6 +84,7 @@ class _ExamBodyState extends State<ExamBody> {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final startExamProvider =
         Provider.of<StartExamProvider>(context, listen: false);
+    final exxxid = startExamProvider.examId;
 
     if (questionsWithAnswers == null) {
       return const Center(
@@ -106,6 +110,8 @@ class _ExamBodyState extends State<ExamBody> {
               correctAnswerCount: correctAnswerCount,
               totalQuestions: totalQuestions,
               wrongAnswerQuestions: wrongAnswerCount,
+              // elapsedtime: elapsedTime.inMinutes,
+              // wrongids: wrongQuestionIds,
             ),
           ),
         );
@@ -309,14 +315,13 @@ class _ExamBodyState extends State<ExamBody> {
     final Uri uri = Uri.parse('$baseUrl');
     print('Attempting to fetch exam results with data: $postData');
     try {
-      final response = await http.post(
+      final response = await http.get(
         uri,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode(postData),
       );
 
       if (response.statusCode == 200) {
@@ -354,7 +359,10 @@ class _ExamBodyState extends State<ExamBody> {
       final selectedAnswerIndex = questionsWithAnswers[i].selectedSolutionIndex;
       final correctAnswerIndex = questionsWithAnswers[i]
           .answers
-          .indexWhere((answer) => answer.mcqAns == true);
+          // ignore: unnecessary_null_comparison
+          .indexWhere((answer) => answer.mcqAns != null);
+      log("selected answer: $selectedAnswerIndex");
+      log("correct answer :$correctAnswerIndex ");
 
       if (selectedAnswerIndex != null && correctAnswerIndex != -1) {
         if (selectedAnswerIndex == correctAnswerIndex) {
