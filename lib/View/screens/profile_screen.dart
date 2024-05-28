@@ -318,6 +318,9 @@ class RequesterContent extends StatelessWidget {
                         builder: (context) {
                           return AlertDialog(
                             actions: [
+                              const SizedBox(
+                                height: 20,
+                              ),
                               const Text(
                                   "Are you sure to delete your account ?"),
                               const SizedBox(
@@ -363,7 +366,7 @@ class RequesterContent extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: faceBookColor),
                                     child: const Text(
-                                      "ok",
+                                      "cancel",
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ),

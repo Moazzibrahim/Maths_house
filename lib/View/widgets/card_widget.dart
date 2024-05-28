@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, use_key_in_widget_constructors, no_logic_in_create_state
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
