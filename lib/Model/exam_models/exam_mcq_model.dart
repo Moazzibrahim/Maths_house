@@ -1,13 +1,12 @@
 class ExamMcq {
-  List<ExamQuestion> exam;
+  ExamQuestion exam;
 
   ExamMcq({required this.exam});
 
   factory ExamMcq.fromJson(Map<String, dynamic> json) {
-    List<dynamic> examList = json['exam'];
-    List<ExamQuestion> examQuestions =
-        examList.map((question) => ExamQuestion.fromJson(question)).toList();
-    return ExamMcq(exam: examQuestions);
+    return ExamMcq(
+      exam: ExamQuestion.fromJson(json['exam']['questionExam']),
+    );
   }
 }
 
@@ -42,6 +41,7 @@ class Question {
   String difficulty;
   String ansType;
   String updatedAt;
+  String createdAt;
 
   Question(
       {required this.id,
@@ -57,7 +57,8 @@ class Question {
       required this.section,
       required this.difficulty,
       required this.ansType,
-      required this.updatedAt});
+      required this.updatedAt,
+      required this.createdAt});
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
@@ -75,6 +76,7 @@ class Question {
       difficulty: json['difficulty'],
       ansType: json['ans_type'],
       updatedAt: json['updated_at'],
+      createdAt: json['created_at'],
     );
   }
 }
@@ -82,7 +84,7 @@ class Question {
 class Answer {
   int id;
   String mcqAns;
-  String? mcqAnswers; // Add this line
+  String? mcqAnswers;
   int qId;
   String createdAt;
   String updatedAt;
@@ -90,7 +92,7 @@ class Answer {
   Answer({
     required this.id,
     required this.mcqAns,
-    required this.mcqAnswers,
+    this.mcqAnswers,
     required this.qId,
     required this.createdAt,
     required this.updatedAt,
@@ -106,4 +108,18 @@ class Answer {
       updatedAt: json['updated_at'],
     );
   }
+}
+
+class QuestionWithAnswers {
+  final Question question;
+  final List<Answer> answers;
+  final List<String> mcqOptions;
+  int? selectedSolutionIndex;
+
+  QuestionWithAnswers({
+    required this.question,
+    required this.answers,
+    required this.mcqOptions,
+    this.selectedSolutionIndex,
+  });
 }

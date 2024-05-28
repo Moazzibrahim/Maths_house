@@ -1,6 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable
+// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable, use_build_context_synchronously, unrelated_type_equality_checks
+
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_result.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -51,7 +54,6 @@ class _ExamBodyState extends State<ExamBody> {
   bool _isSubmitting = false;
   List<QuestionWithAnswers>? questionsWithAnswers;
   late DateTime startTime;
-  DateTime? endTime;
   Duration elapsedTime = Duration.zero;
   List<int> wrongQuestionIds = [];
 
@@ -64,15 +66,17 @@ class _ExamBodyState extends State<ExamBody> {
   }
 
   Future<void> fetchExamData() async {
-    final mcqprovider = Provider.of<ExamMcqProvider>(context,
-        listen: false); // Assuming examId is available in ExamMcqProvider
-    final data = await mcqprovider.fetchExamDataFromApi(
-      context,
-    );
-
-    setState(() {
-      questionsWithAnswers = data;
-    });
+    final mcqprovider = Provider.of<ExamMcqProvider>(context, listen: false);
+    print('Attempting to fetch exam data...');
+    try {
+      final data = await mcqprovider.fetchExamDataFromApi(context);
+      print('Exam data successfully fetched: $data');
+      setState(() {
+        questionsWithAnswers = data;
+      });
+    } catch (e) {
+      print('Error fetching exam data: $e');
+    }
   }
 
   @override
@@ -80,6 +84,7 @@ class _ExamBodyState extends State<ExamBody> {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final startExamProvider =
         Provider.of<StartExamProvider>(context, listen: false);
+    final exxxid = startExamProvider.examId;
 
     if (questionsWithAnswers == null) {
       return const Center(
@@ -98,16 +103,15 @@ class _ExamBodyState extends State<ExamBody> {
             await fetchExamResults(postData);
 
         Navigator.push(
-          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ExamResultScreen(
               examresults: examResults,
               correctAnswerCount: correctAnswerCount,
               totalQuestions: totalQuestions,
-              wrongAnswerQuestions:
-                  wrongAnswerCount, // Pass the fetched exam results data
-              // Pass other required arguments if needed
+              wrongAnswerQuestions: wrongAnswerCount,
+              // elapsedtime: elapsedTime.inMinutes,
+              // wrongids: wrongQuestionIds,
             ),
           ),
         );
@@ -128,9 +132,7 @@ class _ExamBodyState extends State<ExamBody> {
               return Row(
                 children: [
                   const Icon(Icons.timer, color: Colors.white),
-                  const SizedBox(
-                    width: 5,
-                  ),
+                  const SizedBox(width: 5),
                   Text(
                     " ${timer.secondsSpent ~/ 60}:${(timer.secondsSpent % 60).toString().padLeft(2, '0')}",
                     style: const TextStyle(
@@ -173,7 +175,7 @@ class _ExamBodyState extends State<ExamBody> {
                         onChanged: (value) {
                           setState(() {
                             questionsWithAnswers![_questionIndex]
-                                .selectedSolutionIndex = value;
+                                .selectedSolutionIndex = value as int;
                           });
                         },
                       ),
@@ -242,16 +244,6 @@ class _ExamBodyState extends State<ExamBody> {
                   });
                   timerProvider.stopTimer();
                   Future.delayed(const Duration(seconds: 1), () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => ExamResultScreen(
-                    //       correctAnswerCount: correctAnswerCount,
-                    //       totalQuestions: totalQuestions,
-                    //       wrongAnswerQuestions: wrongAnswerCount,
-                    //     ),
-                    //   ),
-                    // );
                     final examId = startExamProvider.examId;
                     fetchAndNavigateToExamResultScreen({
                       'exam_id': examId,
@@ -259,21 +251,13 @@ class _ExamBodyState extends State<ExamBody> {
                       'timer': elapsedTime.inMinutes,
                       'mistakes': wrongQuestionIds,
                     });
-                  }); // Stop timer
+                  });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Answers submitted.'),
                     ),
                   );
-                  submitAnswers(questionsWithAnswers!);
-                  final examId = startExamProvider.examId;
                   wrongQuestionIds = submitAnswers(questionsWithAnswers!);
-                  fetchExamResults({
-                    'exam_id': examId,
-                    'right_question': correctAnswerCount,
-                    'timer': elapsedTime.inMinutes,
-                    'mistakes': wrongQuestionIds,
-                  });
                 },
                 child: const Text(
                   'Submit',
@@ -321,20 +305,15 @@ class _ExamBodyState extends State<ExamBody> {
     );
   }
 
-  Future<Map<String, dynamic>?>? fetchExamResults(
+  Future<Map<String, dynamic>?> fetchExamResults(
       Map<String, dynamic> postData) async {
     const baseUrl =
         'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade';
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token; // Replace with your auth token
+    final token = tokenProvider.token;
 
-    // Construct the query parameters
-    String queryParams = '';
-    postData.forEach((key, value) {
-      queryParams += '$key=$value&';
-    });
-    final Uri uri = Uri.parse('$baseUrl?$queryParams');
-
+    final Uri uri = Uri.parse('$baseUrl');
+    print('Attempting to fetch exam results with data: $postData');
     try {
       final response = await http.get(
         uri,
@@ -346,16 +325,11 @@ class _ExamBodyState extends State<ExamBody> {
       );
 
       if (response.statusCode == 200) {
-        // Decode the response body
         final Map<String, dynamic> data = json.decode(response.body);
-
-        // Process the data as needed
-        print('Exam results retrieved successfully:');
-        print(data);
+        print('Exam results retrieved successfully: $data');
         return data;
       } else {
         print('Failed to retrieve exam results: ${response.statusCode}');
-        // Print response body for more details
         print('Response body: ${response.body}');
         throw Exception('Failed to fetch exam results');
       }
@@ -368,17 +342,16 @@ class _ExamBodyState extends State<ExamBody> {
   List<Map<String, dynamic>> wrongAnswerQuestions = [];
   int correctAnswerCount = 0;
   int wrongAnswerCount = 0;
-  int totalQuestions = 0; // Counter for total questions
+  int totalQuestions = 0;
 
   List<int> submitAnswers(List<QuestionWithAnswers> questionsWithAnswers) {
-    // Clear wrong answer questions list before checking again
     wrongAnswerQuestions.clear();
     correctAnswerCount = 0;
     wrongAnswerCount = 0;
-    totalQuestions =
-        questionsWithAnswers.length; // Initialize total questions counter
+    totalQuestions = questionsWithAnswers.length;
+
     DateTime endTime = DateTime.now();
-    Duration elapsedTime = endTime.difference(startTime);
+    elapsedTime = endTime.difference(startTime);
     print(
         'Time taken: ${elapsedTime.inMinutes} minutes and ${elapsedTime.inSeconds % 60} seconds');
 
@@ -388,20 +361,17 @@ class _ExamBodyState extends State<ExamBody> {
           .answers
           // ignore: unnecessary_null_comparison
           .indexWhere((answer) => answer.mcqAns != null);
+      log("selected answer: $selectedAnswerIndex");
+      log("correct answer :$correctAnswerIndex ");
 
-      // Check if both selected answer and correct answer are valid
       if (selectedAnswerIndex != null && correctAnswerIndex != -1) {
-        // Compare the positions of selected answer and correct answer
         if (selectedAnswerIndex == correctAnswerIndex) {
           correctAnswerCount++;
         } else {
-          // Add the question to the list of wrong answer questions
           wrongAnswerQuestions.add({
             'question': questionsWithAnswers[i].question,
-            'selectedAnswer': String.fromCharCode(selectedAnswerIndex +
-                65), // Convert index to letter representation
-            'correctAnswer': String.fromCharCode(correctAnswerIndex +
-                65), // Convert index to letter representation
+            'selectedAnswer': String.fromCharCode(selectedAnswerIndex + 65),
+            'correctAnswer': String.fromCharCode(correctAnswerIndex + 65),
           });
           wrongAnswerCount++;
         }
@@ -412,11 +382,10 @@ class _ExamBodyState extends State<ExamBody> {
     print('Wrong Answers: $wrongAnswerCount');
     print('Total Questions: $totalQuestions');
     print(wrongAnswerQuestions);
+
     List<int> wrongQuestionIds = [];
     print('Wrong Question IDs:');
-    // Extract wrong question IDs and add them to wrongQuestionIds list
     for (var question in wrongAnswerQuestions) {
-      // Assuming 'id' is the key for question IDs
       final questionId = question['question'].id;
       wrongQuestionIds.add(questionId);
       print(wrongQuestionIds);
