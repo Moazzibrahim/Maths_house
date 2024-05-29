@@ -22,8 +22,6 @@ class ExamScreenstart extends StatelessWidget {
     // Simulated list of exams
     List<String> exams = [
       'Exam 1',
-      'Exam 2',
-      'Exam 3',
     ];
 
     return Scaffold(

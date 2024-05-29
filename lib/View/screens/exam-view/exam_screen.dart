@@ -15,7 +15,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ExamScreen extends StatefulWidget {
-  const ExamScreen({super.key});
+  final int? fetchedexamid;
+  const ExamScreen({super.key, this.fetchedexamid});
 
   @override
   State<ExamScreen> createState() => _ExamScreenState();
@@ -37,13 +38,16 @@ class _ExamScreenState extends State<ExamScreen> {
           },
         ),
       ),
-      body: const ExamBody(),
+      body: ExamBody(
+        fetchedexamids: widget.fetchedexamid,
+      ),
     );
   }
 }
 
 class ExamBody extends StatefulWidget {
-  const ExamBody({super.key});
+  final int? fetchedexamids;
+  const ExamBody({super.key, this.fetchedexamids});
 
   @override
   _ExamBodyState createState() => _ExamBodyState();
@@ -56,6 +60,7 @@ class _ExamBodyState extends State<ExamBody> {
   late DateTime startTime;
   Duration elapsedTime = Duration.zero;
   List<int> wrongQuestionIds = [];
+  int questionsSolved = 0;
 
   @override
   void initState() {
@@ -84,7 +89,7 @@ class _ExamBodyState extends State<ExamBody> {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final startExamProvider =
         Provider.of<StartExamProvider>(context, listen: false);
-    final exxxid = startExamProvider.examId;
+    log("exxxid: ${widget.fetchedexamids}");
 
     if (questionsWithAnswers == null) {
       return const Center(
@@ -110,8 +115,9 @@ class _ExamBodyState extends State<ExamBody> {
               correctAnswerCount: correctAnswerCount,
               totalQuestions: totalQuestions,
               wrongAnswerQuestions: wrongAnswerCount,
-              // elapsedtime: elapsedTime.inMinutes,
-              // wrongids: wrongQuestionIds,
+              elapsedtime: elapsedTime.inMinutes,
+              wrongids: wrongQuestionIds,
+              exxxid: widget.fetchedexamids,
             ),
           ),
         );
@@ -140,6 +146,13 @@ class _ExamBodyState extends State<ExamBody> {
                       fontSize: 20.0,
                     ),
                   ),
+                  const SizedBox(
+                      width: 120), // Spacing between timer and solved questions
+                  Text(
+                    "Solved: $questionsSolved / $totalQuestions questions",
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w500),
+                  ),
                 ],
               );
             },
@@ -151,6 +164,21 @@ class _ExamBodyState extends State<ExamBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (questionsWithAnswers![_questionIndex].question.qUrl !=
+                        null &&
+                    questionsWithAnswers![_questionIndex]
+                        .question
+                        .qUrl!
+                        .isNotEmpty)
+                  Image.network(
+                    questionsWithAnswers![_questionIndex].question.qUrl!,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Text(
                   "Question ${_questionIndex + 1}: ${questionsWithAnswers![_questionIndex].question.questionText ?? ''}",
                   style: const TextStyle(
@@ -176,6 +204,7 @@ class _ExamBodyState extends State<ExamBody> {
                           setState(() {
                             questionsWithAnswers![_questionIndex]
                                 .selectedSolutionIndex = value as int;
+                            updateQuestionsSolved();
                           });
                         },
                       ),
@@ -243,8 +272,10 @@ class _ExamBodyState extends State<ExamBody> {
                     _isSubmitting = true;
                   });
                   timerProvider.stopTimer();
-                  Future.delayed(const Duration(seconds: 1), () {
+                  checkMissedQuestions();
+                  Future.delayed(const Duration(seconds: 2), () {
                     final examId = startExamProvider.examId;
+                    log("exids: $examId");
                     fetchAndNavigateToExamResultScreen({
                       'exam_id': examId,
                       'right_question': correctAnswerCount,
@@ -305,6 +336,64 @@ class _ExamBodyState extends State<ExamBody> {
     );
   }
 
+  void updateQuestionsSolved() {
+    setState(() {
+      questionsSolved++; // Increment questions solved counter
+    });
+  }
+
+  void checkMissedQuestions() {
+    List<int> missedQuestions = [];
+    for (int i = 0; i < questionsWithAnswers!.length; i++) {
+      if (questionsWithAnswers![i].selectedSolutionIndex == -1) {
+        missedQuestions.add(i);
+      }
+    }
+    if (missedQuestions.isNotEmpty) {
+      showMissedQuestionsDialog(missedQuestions);
+    } else {
+      submitAnswers(questionsWithAnswers!);
+    }
+  }
+
+  void showMissedQuestionsDialog(List<int> missedQuestions) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('You have missed these questions:'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+              missedQuestions.length,
+              (index) => ListTile(
+                title: Text('Question ${missedQuestions[index] + 1}'),
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _questionIndex = missedQuestions[index];
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: const Text('View'),
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                submitAnswers(questionsWithAnswers!);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<Map<String, dynamic>?> fetchExamResults(
       Map<String, dynamic> postData) async {
     const baseUrl =
@@ -312,7 +401,7 @@ class _ExamBodyState extends State<ExamBody> {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
-    final Uri uri = Uri.parse('$baseUrl');
+    final Uri uri = Uri.parse(baseUrl);
     print('Attempting to fetch exam results with data: $postData');
     try {
       final response = await http.get(
@@ -381,6 +470,7 @@ class _ExamBodyState extends State<ExamBody> {
     print('Correct Answers: $correctAnswerCount');
     print('Wrong Answers: $wrongAnswerCount');
     print('Total Questions: $totalQuestions');
+
     print(wrongAnswerQuestions);
 
     List<int> wrongQuestionIds = [];

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -183,11 +184,18 @@ class _ExamGridItemState extends State<ExamGridItem> {
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () {
+                                            Provider.of<ExamMcqProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .fetchExamDataFromApi(context);
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const ExamScreen(),
+                                                    ExamScreen(
+                                                  fetchedexamid:
+                                                      examData.examid,
+                                                ),
                                               ),
                                             );
                                           },
