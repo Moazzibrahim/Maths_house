@@ -1,8 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable, use_build_context_synchronously, unrelated_type_equality_checks
 
 import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
