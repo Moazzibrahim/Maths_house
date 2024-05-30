@@ -1,11 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable, use_build_context_synchronously, unrelated_type_equality_checks
 
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_result.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
@@ -34,7 +36,8 @@ class _ExamScreenState extends State<ExamScreen> {
             color: faceBookColor,
           ),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const RegisteredHomeScreen()));
           },
         ),
       ),
@@ -172,8 +175,8 @@ class _ExamBodyState extends State<ExamBody> {
                         .isNotEmpty)
                   Image.network(
                     questionsWithAnswers![_questionIndex].question.qUrl!,
-                    width: 100,
-                    height: 100,
+                    // width: 200,
+                    height: 200,
                     fit: BoxFit.cover,
                   ),
                 const SizedBox(
@@ -272,23 +275,25 @@ class _ExamBodyState extends State<ExamBody> {
                     _isSubmitting = true;
                   });
                   timerProvider.stopTimer();
-                  checkMissedQuestions();
-                  Future.delayed(const Duration(seconds: 2), () {
-                    final examId = startExamProvider.examId;
-                    log("exids: $examId");
-                    fetchAndNavigateToExamResultScreen({
-                      'exam_id': examId,
-                      'right_question': correctAnswerCount,
-                      'timer': elapsedTime.inMinutes,
-                      'mistakes': wrongQuestionIds,
+                  bool hasMissedQuestions = checkMissedQuestions();
+                  if (!hasMissedQuestions) {
+                    Future.delayed(const Duration(seconds: 2), () {
+                      final examId = startExamProvider.examId;
+                      log("exids: $examId");
+                      fetchAndNavigateToExamResultScreen({
+                        'exam_id': examId,
+                        'right_question': correctAnswerCount,
+                        'timer': elapsedTime.inMinutes,
+                        'mistakes': wrongQuestionIds,
+                      });
                     });
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Answers submitted.'),
-                    ),
-                  );
-                  wrongQuestionIds = submitAnswers(questionsWithAnswers!);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Answers submitted.'),
+                      ),
+                    );
+                    wrongQuestionIds = submitAnswers(questionsWithAnswers!);
+                  }
                 },
                 child: const Text(
                   'Submit',
@@ -328,7 +333,30 @@ class _ExamBodyState extends State<ExamBody> {
                 });
                 Navigator.pop(context);
               },
-              child: Text("Question ${index + 1}"),
+              child: Row(
+                children: [
+                  Text(
+                    questionsWithAnswers![index].selectedSolutionIndex != null
+                        ? 'Solved'
+                        : 'Missed',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color:
+                          questionsWithAnswers![index].selectedSolutionIndex !=
+                                  null
+                              ? Colors.green
+                              : Colors.red,
+                    ),
+                  ),
+                  const SizedBox(width: 20), // Adjust spacing as needed
+                  Text(
+                    "Question ${index + 1}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -342,17 +370,20 @@ class _ExamBodyState extends State<ExamBody> {
     });
   }
 
-  void checkMissedQuestions() {
+  bool checkMissedQuestions() {
     List<int> missedQuestions = [];
     for (int i = 0; i < questionsWithAnswers!.length; i++) {
-      if (questionsWithAnswers![i].selectedSolutionIndex == -1) {
+      if (questionsWithAnswers![i].selectedSolutionIndex == -1 ||
+          questionsWithAnswers![i].selectedSolutionIndex == null) {
         missedQuestions.add(i);
       }
     }
     if (missedQuestions.isNotEmpty) {
       showMissedQuestionsDialog(missedQuestions);
+      return true;
     } else {
       submitAnswers(questionsWithAnswers!);
+      return false;
     }
   }
 
@@ -369,24 +400,35 @@ class _ExamBodyState extends State<ExamBody> {
               (index) => ListTile(
                 title: Text('Question ${missedQuestions[index] + 1}'),
                 trailing: ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                   onPressed: () {
                     setState(() {
                       _questionIndex = missedQuestions[index];
                     });
                     Navigator.pop(context);
                   },
-                  child: const Text('View'),
+                  child: const Text(
+                    'View',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                submitAnswers(questionsWithAnswers!);
-              },
-              child: const Text('OK'),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                onPressed: () {
+                  Navigator.pop(context);
+                  submitAnswers(questionsWithAnswers!);
+                },
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           ],
         );

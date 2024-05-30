@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/exam/get_exam_provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -36,7 +36,6 @@ class ExamResultScreen extends StatefulWidget {
 
 class _ExamResultScreenState extends State<ExamResultScreen> {
   bool showRecommendation = false;
- 
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +82,18 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
                 0.5;
 
             return Scaffold(
-              appBar: buildAppBar(context, "Result"),
+              appBar: AppBar(
+                title: const Text("Result"),
+                leading: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const RegisteredHomeScreen()));
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: faceBookColor,
+                    )),
+              ),
               body: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(

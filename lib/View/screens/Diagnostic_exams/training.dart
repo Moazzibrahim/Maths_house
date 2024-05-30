@@ -120,9 +120,11 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 final isAnswered = question['selectedAnswer'] != null;
                 return ListTile(
                   title: Text('Question ${index + 1}'),
-                  leading: Icon(
-                    isAnswered ? Icons.check : Icons.close,
-                    color: isAnswered ? Colors.green : Colors.red,
+                  leading: Text(
+                    isAnswered ? "solved" : "missed",
+                    style: TextStyle(
+                        color: isAnswered ? Colors.green : faceBookColor,
+                        fontSize: 12),
                   ),
                   onTap: () {
                     setState(() {

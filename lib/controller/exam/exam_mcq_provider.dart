@@ -6,12 +6,11 @@ import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 class ExamMcqProvider with ChangeNotifier {
-  Future<List<QuestionWithAnswers>> fetchExamDataFromApi(
-      BuildContext context) async {
-    final startExamProvider =
-        Provider.of<StartExamProvider>(context, listen: false);
+  Future<List<QuestionWithAnswers>> fetchExamDataFromApi(BuildContext context) async {
+    final startExamProvider = Provider.of<StartExamProvider>(context, listen: false);
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
@@ -25,65 +24,82 @@ class ExamMcqProvider with ChangeNotifier {
         continue;
       }
 
-      final url =
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$examId';
+      final url = 'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$examId';
 
-      try {
-        final response = await http.get(
-          Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        );
+      int retryCount = 0;
+      const int maxRetries = 5;
+      const int initialDelay = 1000; // Initial delay in milliseconds
 
-        if (response.statusCode == 200) {
-          final jsonData = json.decode(response.body);
-          final List<QuestionWithAnswers> questionsWithAnswers = [];
-          // Check if the exam and questionExam fields are present
-          if (jsonData['exam'] != null &&
-              jsonData['exam']['questionExam'] != null) {
-            debugPrint('Exam data exists, parsing...');
-            final examData = jsonData['exam']['questionExam'];
-            log('Exam data: $examData');
-            final question = Question.fromJson(examData['question']);
-            final List<Answer> answerList = [];
+      while (retryCount < maxRetries) {
+        try {
+          final response = await http.get(
+            Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+          );
 
-            // Loop through the answers
-            if (examData['Answers'] != null) {
-              for (var answerData in examData['Answers']) {
-                final answer = Answer.fromJson(answerData);
-                answerList.add(answer);
-                log(answer.mcqAnswers
-                    .toString()); // Access mcqAnswers field here
+          if (response.statusCode == 200) {
+            final jsonData = json.decode(response.body);
+            final List<QuestionWithAnswers> questionsWithAnswers = [];
+            // Check if the exam and questionExam fields are present
+            if (jsonData['exam'] != null && jsonData['exam']['questionExam'] != null) {
+              debugPrint('Exam data exists, parsing...');
+              final examData = jsonData['exam']['questionExam'];
+              log('Exam data: $examData');
+              final question = Question.fromJson(examData['question']);
+              final List<Answer> answerList = [];
+
+              // Loop through the answers
+              if (examData['Answers'] != null) {
+                for (var answerData in examData['Answers']) {
+                  final answer = Answer.fromJson(answerData);
+                  answerList.add(answer);
+                  log(answer.mcqAnswers.toString()); // Access mcqAnswers field here
+                }
               }
+
+              // Create a QuestionWithAnswers object and add it to the list
+              questionsWithAnswers.add(QuestionWithAnswers(
+                question: question,
+                answers: answerList,
+                mcqOptions: answerList
+                    // Ensure mcqAns is not null before adding to the list
+                    // ignore: unnecessary_null_comparison
+                    .where((answer) => answer.mcqAns != null)
+                    .map((answer) => answer.mcqAns)
+                    .toList(),
+              ));
+              log("all: $questionsWithAnswers");
+            } else {
+              debugPrint('No exam data found in the response');
             }
 
-            // Create a QuestionWithAnswers object and add it to the list
-            questionsWithAnswers.add(QuestionWithAnswers(
-              question: question,
-              answers: answerList,
-              mcqOptions: answerList
-                  // Ensure mcqAns is not null before adding to the list
-                  // ignore: unnecessary_null_comparison
-                  .where((answer) => answer.mcqAns != null)
-                  .map((answer) => answer.mcqAns)
-                  .toList(),
-            ));
-            log("all: $questionsWithAnswers");
+            allQuestionsWithAnswers.addAll(questionsWithAnswers);
+            break; // Exit the retry loop on successful response
+          } else if (response.statusCode == 429) {
+            // Handle rate limiting
+            debugPrint('Rate limit exceeded. Retrying...');
+            await Future.delayed(Duration(milliseconds: initialDelay * (retryCount + 1)));
+            retryCount++;
           } else {
-            debugPrint('No exam data found in the response');
+            debugPrint('Failed to fetch data: ${response.statusCode}');
+            // Handle specific status codes if needed
+            break; // Exit the retry loop on other status codes
           }
-
-          allQuestionsWithAnswers.addAll(questionsWithAnswers);
-        } else {
-          debugPrint('Failed to fetch data: ${response.statusCode}');
-          // Handle specific status codes if needed
+        } catch (e) {
+          debugPrint('Error: $e');
+          if (retryCount < maxRetries) {
+            debugPrint('Retrying...');
+            await Future.delayed(Duration(milliseconds: initialDelay * (retryCount + 1)));
+            retryCount++;
+          } else {
+            debugPrint('Max retries reached. Failed to fetch exam data');
+            break; // Exit the retry loop if max retries reached
+          }
         }
-      } catch (e) {
-        debugPrint('Error: $e');
-        // Optionally, handle specific exceptions if needed
       }
     }
 
