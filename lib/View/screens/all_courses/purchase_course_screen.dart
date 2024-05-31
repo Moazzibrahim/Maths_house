@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/all_courses_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/screens/all_courses/chapter_duration_screen.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,9 +19,9 @@ class PurchaseCourseScreen extends StatefulWidget {
 class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
   late int selectedDuration;
   List<int> durations = [];
-  List<String> chapterDurations = [];
+  List<int> chapterDurations = [];
   List<bool> chapterActiveStatus = [];
-  List chaptersList = [];
+  List<ChapterWithPrice> chaptersList = [];
   late int selectedPrice;
   @override
   void initState() {
@@ -166,31 +166,26 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text('Login Required'),
-                                content:
-                                    const Text('You have to log in first to buy.'),
+                                content: const Text(
+                                    'You have to log in first to buy.'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); 
+                                      Navigator.of(context).pop();
                                     },
-                                    child: const Text('OK',style: TextStyle(color: Colors.black),),
+                                    child: const Text(
+                                      'OK',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
                                   ),
                                 ],
                               );
                             },
-                          ); /*  */
+                          );
                         } else {
                           if (chapterActiveStatus.contains(false)) {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return Column(
-                                  children: [
-                                    Text('Select duration for chapters: ')
-                                  ],
-                                );
-                              },
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (ctx)=> ChapterDurationScreen(chapterActiveStatus: chapterActiveStatus,chaptersList: chaptersList,))
                             );
                           } else {
                             log('$selectedPrice');
@@ -212,7 +207,7 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                       ),
                       child: Text(
                         chapterActiveStatus.contains(false)
-                            ? 'Proceed'
+                            ? 'Proceed to chapters'
                             : 'Check out',
                         style: TextStyle(fontSize: 16.sp),
                       ))),

@@ -102,7 +102,7 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("${widget.chapterName}",
+                          Text("${widget.type}",
                               style: const TextStyle(color: Colors.grey)),
                           SizedBox(width: 13.w),
                           Text("$updatedPrice",
