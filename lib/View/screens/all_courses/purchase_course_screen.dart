@@ -25,17 +25,21 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
   late int selectedPrice;
   @override
   void initState() {
-    final durationsSet = widget.course.coursePrices.map((e) => e.duration).toSet();
+    final durationsSet =
+        widget.course.coursePrices.map((e) => e.duration).toSet();
     durations = durationsSet.toList();
     selectedDuration = durations[0];
     chaptersList = widget.course.chapterWithPrice;
     selectedPrice = getPriceForDuration(selectedDuration);
-    chapterActiveStatus = List<bool>.filled(widget.course.chapterWithPrice.length, true);
+    chapterActiveStatus =
+        List<bool>.filled(widget.course.chapterWithPrice.length, true);
     super.initState();
   }
 
   int getPriceForDuration(int duration) {
-    return widget.course.coursePrices.firstWhere((price) => price.duration == duration).price;
+    return widget.course.coursePrices
+        .firstWhere((price) => price.duration == duration)
+        .price;
   }
 
   @override
@@ -123,7 +127,7 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                   SizedBox(
                     width: 45.w,
                   ),
-                    const Text('Select duration: '),
+                  const Text('Select duration: '),
                   SizedBox(
                     width: 5.w,
                   ),
@@ -144,49 +148,89 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 20.h,),
+              SizedBox(
+                height: 20.h,
+              ),
               Container(
-                margin: const EdgeInsets.all(8),
-                width: double.infinity,
-                height: 42.h,
-                child: ElevatedButton(
-                  onPressed: (){
-                    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-                    final token = tokenProvider.token;
-                    if(token == null){
-                      log('you have to login first');
-                    }else{
-                      if(chapterActiveStatus.contains(false)){
-                      showModalBottomSheet(context: context, builder: (context) {
-                        return const Text('data');
-                      },);
-                    }else{
-                      log('$selectedPrice');
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx)=> CheckoutScreen(
-                        id: widget.course.id,
-                        price: selectedPrice.toDouble(),
-                        type: widget.course.type,
-                        chapterName: widget.course.courseName,
-                        duration: selectedDuration,
-                        ))
-                      );
-                    }
-                    }
-                  }, 
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(),
-                    backgroundColor: Colors.redAccent[700],
-                    foregroundColor: Colors.white,
-                  ),
-                child: Text(chapterActiveStatus.contains(false) ? 'Proceed' : 'Check out',style: TextStyle(fontSize: 16.sp),))),
-                SizedBox(height: 10.h,),
-                const Text('Course Content',style: TextStyle(fontSize: 20,fontWeight:FontWeight.bold),),
-                Column(
-                  children: [
-                    for (int i = 0; i < widget.course.chapterWithPrice.length; i++)
+                  margin: const EdgeInsets.all(8),
+                  width: double.infinity,
+                  height: 42.h,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        final tokenProvider =
+                            Provider.of<TokenModel>(context, listen: false);
+                        final token = tokenProvider.token;
+                        if (token == null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Login Required'),
+                                content:
+                                    const Text('You have to log in first to buy.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); 
+                                    },
+                                    child: const Text('OK',style: TextStyle(color: Colors.black),),
+                                  ),
+                                ],
+                              );
+                            },
+                          ); /*  */
+                        } else {
+                          if (chapterActiveStatus.contains(false)) {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Column(
+                                  children: [
+                                    Text('Select duration for chapters: ')
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            log('$selectedPrice');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) => CheckoutScreen(
+                                      id: widget.course.id,
+                                      price: selectedPrice.toDouble(),
+                                      type: widget.course.type,
+                                      chapterName: widget.course.courseName,
+                                      duration: selectedDuration,
+                                    )));
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(),
+                        backgroundColor: Colors.redAccent[700],
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text(
+                        chapterActiveStatus.contains(false)
+                            ? 'Proceed'
+                            : 'Check out',
+                        style: TextStyle(fontSize: 16.sp),
+                      ))),
+              SizedBox(
+                height: 10.h,
+              ),
+              const Text(
+                'Course Content',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Column(
+                children: [
+                  for (int i = 0;
+                      i < widget.course.chapterWithPrice.length;
+                      i++)
                     CheckboxListTile(
-                      title: Text(widget.course.chapterWithPrice[i].chapterName),
+                      title:
+                          Text(widget.course.chapterWithPrice[i].chapterName),
                       value: chapterActiveStatus[i],
                       activeColor: Colors.redAccent[700],
                       onChanged: (bool? value) {
@@ -195,8 +239,8 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                         });
                       },
                     ),
-                  ],
-                )
+                ],
+              )
             ],
           ),
         ),
