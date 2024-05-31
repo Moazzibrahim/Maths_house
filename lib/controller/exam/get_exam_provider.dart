@@ -5,6 +5,7 @@ import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:convert';
+import 'dart:async';
 
 class GetExamProvider with ChangeNotifier {
   Future<Map<String, dynamic>?>? fetchExamResults(
@@ -21,33 +22,52 @@ class GetExamProvider with ChangeNotifier {
     });
     final Uri uri = Uri.parse('$baseUrl?$queryParams');
 
-    try {
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+    int retryCount = 0;
+    const int maxRetries = 5;
+    const int initialDelay = 1000; // Initial delay in milliseconds
 
-      if (response.statusCode == 200) {
-        // Decode the response body
-        final Map<String, dynamic> data = json.decode(response.body);
+    while (retryCount < maxRetries) {
+      try {
+        final response = await http.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
 
-        // Process the data as needed
-        print('Exam results retrieved successfully:');
-        print(data);
-        return data;
-      } else {
-        print('Failed to retrieve exam results: ${response.statusCode}');
-        // Print response body for more details
-        print('Response body: ${response.body}');
-        throw Exception('Failed to fetch exam results');
+        if (response.statusCode == 200) {
+          // Decode the response body
+          final Map<String, dynamic> data = json.decode(response.body);
+
+          // Process the data as needed
+          print('Exam results retrieved successfully:');
+          print(data);
+          return data;
+        } else if (response.statusCode == 429) {
+          // Handle rate limiting
+          print('Rate limit exceeded. Retrying...');
+          await Future.delayed(Duration(milliseconds: initialDelay * (retryCount + 1)));
+          retryCount++;
+        } else {
+          print('Failed to retrieve exam results: ${response.statusCode}');
+          // Print response body for more details
+          print('Response body: ${response.body}');
+          throw Exception('Failed to fetch exam results');
+        }
+      } catch (e) {
+        print('Error retrieving exam results: $e');
+        if (retryCount < maxRetries) {
+          print('Retrying...');
+          await Future.delayed(Duration(milliseconds: initialDelay * (retryCount + 1)));
+          retryCount++;
+        } else {
+          throw Exception('Max retries reached. Failed to fetch exam results');
+        }
       }
-    } catch (e) {
-      print('Error retrieving exam results: $e');
     }
+
     return null;
   }
 }

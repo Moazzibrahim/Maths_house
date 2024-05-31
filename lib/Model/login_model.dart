@@ -100,7 +100,7 @@ class LoginModel with ChangeNotifier {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Error occurred while authenticating'),
+          content: Text('Your email or password is incorrect'),
         ),
       );
       return 'Error occurred while authenticating';

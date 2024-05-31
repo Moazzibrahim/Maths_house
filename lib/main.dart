@@ -11,6 +11,7 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_filterati
 import 'package:flutter_application_1/controller/diagnostic/get_course_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_provider.dart';
+import 'package:flutter_application_1/controller/exam/get_exam_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:flutter_application_1/controller/history_controllers/dia_exam_history_controller.dart';
 import 'package:flutter_application_1/controller/history_controllers/exam_history_controller.dart';
@@ -112,6 +113,9 @@ class MathHouse extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => DeleteAccount(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GetExamProvider(),
         ),
       ],
       child: const ScreenUtilInit(

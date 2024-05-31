@@ -64,7 +64,6 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                   'duration': (recommendation['price'][0]['duration'] ?? 0),
                 };
               }).toList();
-
               return _buildResultScreen(
                 context,
                 grade,
@@ -202,7 +201,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
               const SizedBox(height: 10),
             ],
           );
-        }).toList(),
+        }),
         // _buildCustomButton("Buy All", () {
         //   ScaffoldMessenger.of(context).showSnackBar(
         //     const SnackBar(

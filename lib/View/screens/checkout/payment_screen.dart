@@ -97,8 +97,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
-  Future<void> submitPayment(int id, double price, String type,
-      int selectedOptionId, File imageFile, String payment) async {
+  Future<void> submitPayment(
+      int id,
+      double price,
+      String type,
+      int selectedOptionId,
+      File imageFile,
+      String payment,
+      int duration) async {
     try {
       final tokenProvider = Provider.of<TokenModel>(context, listen: false);
       final token = tokenProvider.token;
@@ -108,11 +114,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
           Uri.parse(
               'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/request_payment_method'));
       request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Content-Type'] = 'application/json';
+      request.headers['Accept'] = 'application/json';
+
       request.fields['id'] = id.toString();
       request.fields['price'] = price.toString();
       request.fields['type'] = type;
       request.fields['payment_method_id'] = selectedOptionId.toString();
       request.fields['payment'] = payment;
+      request.fields['duration'] = duration.toString();
 
       var multipartFile =
           await http.MultipartFile.fromPath('image', imageFile.path);
@@ -293,6 +303,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         _selectedOptionId!,
                         _image!,
                         _textFieldController.text,
+                        widget.duration!,
                       );
                     } else {
                       showDialog(

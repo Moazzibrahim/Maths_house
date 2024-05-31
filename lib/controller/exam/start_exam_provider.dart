@@ -22,8 +22,6 @@ class StartExamProvider with ChangeNotifier {
     while (attempt < maxRetries) {
       try {
         // Fetch the exam ID first
-        examId ??= await fetchExamId(context);
-
         final response = await http.post(
             Uri.parse(
               'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process',
@@ -38,13 +36,13 @@ class StartExamProvider with ChangeNotifier {
 
         if (response.statusCode == 200) {
           final jsonData = json.decode(response.body);
-          print("exams=: $jsonData");
           final dynamic examList = jsonData['exam_items'];
 
           // Process exam items
           Set<ExamItem> examItemList = {};
           Set<Question> questionlist = {};
           for (var examData in examList) {
+            examId = examData['id'];
             final List<dynamic> questions = examData['question'];
             final int month = examData['month'] ?? 0;
             final String year = examData['year'] ?? '';
@@ -59,6 +57,7 @@ class StartExamProvider with ChangeNotifier {
                 examid: examId,
               ),
             );
+            print("exid: $examId");
 
             // You need to loop through each question in the 'question' list
             for (var questionData in questions) {
@@ -90,40 +89,51 @@ class StartExamProvider with ChangeNotifier {
     throw Exception('Failed to load data after $maxRetries attempts');
   }
 
-  Future<int> fetchExamId(BuildContext context) async {
-    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token;
+  // int _currentIndex = 0;
 
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
+  // Future<int> fetchNextExamId(BuildContext context) async {
+  //   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+  //   final token = tokenProvider.token;
 
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        final List<dynamic> examItems = jsonData['exam_items'];
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse(
+  //         'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process',
+  //       ),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     );
 
-        // Assuming we want to get the first exam ID in the response
-        if (examItems.isNotEmpty) {
-          examId = examItems[0]['id'];
-          print("exam id is : $examId");
-          return examId!;
-        } else {
-          throw Exception('No exam items found.');
-        }
-      } else {
-        throw Exception('Failed to fetch exam ID: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching exam ID: $e');
-      rethrow; // Rethrow the caught error
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       final jsonData = json.decode(response.body);
+  //       final List<dynamic> examItems = jsonData['exam_items'];
+
+  //       // Check if the current index is valid
+  //       if (_currentIndex < examItems.length &&
+  //           examItems[_currentIndex]['id'] != null) {
+  //         final examIdString =
+  //             examItems[_currentIndex]['id'].toString(); // Parse as string
+  //         final examId = int.tryParse(examIdString); // Try parsing as integer
+
+  //         if (examId != null) {
+  //           print("Exam ID successfully fetched: $examId");
+  //           _currentIndex++; // Move to the next index for the next call
+  //           return examId;
+  //         } else {
+  //           throw Exception('Failed to parse exam ID: $examIdString');
+  //         }
+  //       } else {
+  //         throw Exception('No valid exam ID found at index $_currentIndex.');
+  //       }
+  //     } else {
+  //       throw Exception('Failed to fetch exam ID: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching exam ID: $e');
+  //     rethrow; // Rethrow the caught error
+  //   }
+  // }
 }
