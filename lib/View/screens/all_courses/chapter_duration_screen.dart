@@ -17,9 +17,9 @@ class ChapterDurationScreen extends StatefulWidget {
 }
 
 class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
-  List<int> ids =[];
+  List<int> ids = [];
   List<String?> selectedDurations = [];
-  double totalPrice = 0.0; // Variable to store the total price
+  double totalPrice = 0.0;
 
   @override
   void initState() {
@@ -38,7 +38,8 @@ class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
           final selectedDuration = selectedDurations[i]!;
           final chapter = widget.chaptersList[i];
           final price = chapter.chapterPrices
-              .firstWhere((element) => element.duration.toString() == selectedDuration)
+              .firstWhere(
+                  (element) => element.duration.toString() == selectedDuration)
               .price;
           total += price;
         }
@@ -51,69 +52,86 @@ class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
     return Scaffold(
       appBar: buildAppBar(context, 'Durations'),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            for (var i = 0; i < widget.chaptersList.length; i++)
-              if (widget.chapterActiveStatus[i]) ...[
-                Row(
-                  children: [
-                    Text(
-                      'Select duration for ${widget.chaptersList[i].chapterName}: ',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    if (widget.chaptersList[i].chapterPrices.isNotEmpty)
-                      DropdownButton<String>(
-                        value: selectedDurations[i],
-                        items: widget.chaptersList[i].chapterPrices
-                            .map((price) {
-                          return DropdownMenuItem<String>(
-                            value: price.duration.toString(),
-                            child: Text(price.duration.toString()),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDurations[i] = value;
-                            calculateTotalPrice(); 
-                          });
-                        },
-                        hint: const Text('Select duration'),
-                      )
-                    else
-                      const Text('No duration available'),
-                  ],
-                ),
-                if (i < widget.chaptersList.length - 1)
-                  const SizedBox(height: 30),
-              ],
-            SizedBox(height: 40.h),
-            Text('Total Price: $totalPrice',style:
-                        TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),),
-                        SizedBox(height: 20.h),
-                        Container(
-                  margin: const EdgeInsets.all(13),
-                  width: double.infinity,
-                  height: 42.h,
-                  child: ElevatedButton(
-                      onPressed: totalPrice != 0.0 ?() {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (ctx)=> CheckoutChapterScreen(id: ids,price: totalPrice,type: 'Chapters',))
-                        );
-                      } : null,
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(),
-                        backgroundColor: Colors.redAccent[700],
-                        foregroundColor: Colors.white,
+        padding: EdgeInsets.all(8.w),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              for (var i = 0; i < widget.chaptersList.length; i++)
+                if (widget.chapterActiveStatus[i]) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Select duration for ${widget.chaptersList[i].chapterName}: ',
+                          style: TextStyle(fontSize: 16.sp),
+                        ),
                       ),
-                      child: Text(
-                        'Check Out',
-                        style: TextStyle(fontSize: 16.sp),
-                      ))),
-          ],
+                      if (widget.chaptersList[i].chapterPrices.isNotEmpty)
+                        DropdownButton<String>(
+                          value: selectedDurations[i],
+                          items:
+                              widget.chaptersList[i].chapterPrices.map((price) {
+                            return DropdownMenuItem<String>(
+                              value: price.duration.toString(),
+                              child: Text(price.duration.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedDurations[i] = value;
+                              calculateTotalPrice();
+                            });
+                          },
+                          hint: Text('Select duration',
+                              style: TextStyle(fontSize: 14.sp)),
+                        )
+                      else
+                        Text('No duration available',
+                            style: TextStyle(fontSize: 14.sp)),
+                    ],
+                  ),
+                  if (i < widget.chaptersList.length - 1)
+                    SizedBox(height: 30.h),
+                ],
+              SizedBox(height: 40.h),
+              Text(
+                'Total Price: \$${totalPrice.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20.h),
+              Container(
+                margin: EdgeInsets.all(13.w),
+                width: double.infinity,
+                height: 42.h,
+                child: ElevatedButton(
+                  onPressed: totalPrice != 0.0
+                      ? () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => CheckoutChapterScreen(
+                                id: ids,
+                                price: totalPrice,
+                                type: 'Chapters',
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(),
+                    backgroundColor: Colors.redAccent[700],
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    'Check Out',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

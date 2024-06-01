@@ -11,7 +11,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key, required this.isLoggedIn});
   final bool isLoggedIn;
-  
+
   @override
   State<TabsScreen> createState() => _TabsScreenState();
 }
@@ -66,7 +66,7 @@ class _TabsScreenState extends State<TabsScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.chat_bubble_outline),
-              label: 'Chat',
+              label: 'Categories',
             ),
             BottomNavigationBarItem(
               icon: Icon(
