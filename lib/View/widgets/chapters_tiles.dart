@@ -3,6 +3,7 @@ import 'package:flutter_application_1/Model/chapters_model.dart';
 import 'package:flutter_application_1/View/widgets/lessons_cards.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/chapters_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class ChaptersTiles extends StatefulWidget {
@@ -14,7 +15,8 @@ class ChaptersTiles extends StatefulWidget {
 }
 
 class _ChaptersTilesState extends State<ChaptersTiles> {
-  bool istapped=true;
+  bool istapped = true;
+
   @override
   void initState() {
     Provider.of<ChapterProvider>(context, listen: false)
@@ -25,10 +27,8 @@ class _ChaptersTilesState extends State<ChaptersTiles> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: istapped? gridHomeColor : const Color.fromARGB(255, 234, 228, 228),
-      margin: const EdgeInsets.symmetric(
-        vertical: 15,
-      ),
+      color: istapped ? gridHomeColor : const Color.fromARGB(255, 234, 228, 228),
+      margin: EdgeInsets.symmetric(vertical: 15.h),
       elevation: 3,
       child: ExpansionTile(
         onExpansionChanged: (_) {
@@ -38,17 +38,25 @@ class _ChaptersTilesState extends State<ChaptersTiles> {
         },
         title: Row(
           children: [
-            const Icon(
+            Icon(
               Icons.video_collection_rounded,
               color: faceBookColor,
+              size: 24.w,
             ),
-            const SizedBox(
-              width: 10,
+            SizedBox(
+              width: 10.w,
             ),
-            Text(widget.chapter.name),
+            Expanded(
+              child: Text(
+                widget.chapter.name,
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
           ],
         ),
-        shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: BeveledRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
         children: [
           Consumer<ChapterProvider>(
             builder: (context, lessonsProvider, _) {

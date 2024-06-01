@@ -3,8 +3,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,19 @@ class DiagnosticExamScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, "Diagnostic Exam"),
+      appBar: AppBar(
+        title: const Text("Diagnostic Exam"),
+        leading: InkWell(
+          child: const Icon(
+            Icons.arrow_back,
+            color: faceBookColor,
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const RegisteredHomeScreen()));
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Consumer<DiagExamProvider>(
