@@ -1,15 +1,19 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
-
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/confirm_password.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({Key? key});
+  final String user;
+
+  const OtpVerificationScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   _OtpVerificationScreenState createState() => _OtpVerificationScreenState();
@@ -18,6 +22,8 @@ class OtpVerificationScreen extends StatefulWidget {
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   int _countdown = 180; // 3 minutes in seconds
   late Timer _timer;
+  String _pin = '';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -54,6 +60,55 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     String minutesStr = (minutes < 10) ? '0$minutes' : '$minutes';
     String secondsStr = (seconds < 10) ? '0$seconds' : '$seconds';
     return '$minutesStr:$secondsStr';
+  }
+
+  Future<void> _sendVerificationCode() async {
+    // final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    // final token = tokenProvider.token;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final String url =
+        'https://login.mathshouse.net/api/confirm_code';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        //  'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(<String, String>{
+          'user': widget.user,
+          'code': _pin,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConfirmPassword(user: widget.user,code: _pin,),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Failed to verify code: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -94,7 +149,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  "Enter the OTP sent to - +91-8976500001 ",
+                  "Enter the OTP sent to - ${widget.user}",
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 18.sp,
@@ -111,7 +166,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       border: Border.all(color: Colors.red),
                     ),
                   ),
-                  onCompleted: (pin) => debugPrint(pin),
+                  onCompleted: (pin) => setState(() {
+                    _pin = pin;
+                  }),
                 ),
               ),
               Padding(
@@ -145,31 +202,27 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               SizedBox(
                 height: 20.h,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ConfirmPassword(),
-                      ));
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: faceBookColor,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12.h,
-                      horizontal: 130.w,
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _sendVerificationCode,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: faceBookColor,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 12.h,
+                            horizontal: 130.w,
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r))),
+                      child: Text(
+                        maxLines: 1,
+                        'Submit',
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r))),
-                child: Text(
-                  maxLines: 1,
-                  'submit',
-                  style: TextStyle(
-                      fontSize: 15.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
             ],
           ),
         ),
