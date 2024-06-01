@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print, unused_local_variable
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
+import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -151,12 +151,13 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CheckoutScreen(
-                              chapterName: chapterNames[i],
-                              duration: durations[i],
-                              price: prices[i],
-                              type: types[i],
-                              id: ids[i],
+                            builder: (context) => ExamDuration(
+                              chapterNames: chapterNames,
+                              discounts: discounts,
+                              ids: ids,
+                              durations: durations,
+                              prices: prices,
+                              types: types,
                             ),
                           ),
                         );
