@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:http/http.dart' as http;
@@ -39,6 +40,9 @@ class DiagnosticFilterationProvider with ChangeNotifier {
           courseIds.add(course['id'] ?? 0);
         }
         courseData = courseData.toSet().toList();
+        log("category: $categoryData");
+        log("course data: $courseData");
+        log("course ids: $courseIds");
 
         diagfilters.addAll(categoryData);
         diagfilters.addAll(courseData);

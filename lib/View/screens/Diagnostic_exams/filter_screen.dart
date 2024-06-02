@@ -1,5 +1,7 @@
 // ignore_for_file: use_super_parameters, avoid_print, use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/training.dart';
@@ -42,12 +44,14 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     final token = tokenProvider.token;
 
     final selectedCourseId = Provider.of<DiagnosticFilterationProvider>(context,
-            listen: false)
-        .courseIds
-        .firstWhere((courseId) =>
-            _selectedCourse ==
-            Provider.of<DiagnosticFilterationProvider>(context, listen: false)
-                .courseData[courseId - 1]);
+        listen: false)
+    .courseIds
+    .firstWhere((courseId) =>
+        _selectedCourse ==
+        Provider.of<DiagnosticFilterationProvider>(context, listen: false)
+            .courseData[courseId - 15]); // Adjusted index here
+
+                log("selected course id: $selectedCourseId");
 
     // Construct the URL with the selected course ID
     final url = Uri.parse(
