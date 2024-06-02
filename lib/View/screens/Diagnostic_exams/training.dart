@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_prov
 import 'package:provider/provider.dart';
 
 class DiagnosticExamScreen extends StatelessWidget {
-  const DiagnosticExamScreen({Key? key});
+  const DiagnosticExamScreen({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +56,10 @@ class DiagnosticQuestionsList extends StatefulWidget {
   final int score;
 
   const DiagnosticQuestionsList(
-      {Key? key, required this.exid, required this.score});
+      {super.key, required this.exid, required this.score});
 
   @override
+  // ignore: library_private_types_in_public_api
   _DiagnosticQuestionsListState createState() =>
       _DiagnosticQuestionsListState();
 }
