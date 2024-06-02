@@ -12,14 +12,14 @@ class ExamDuration extends StatefulWidget {
   final List<String> types;
 
   const ExamDuration({
-    Key? key,
+    super.key,
     required this.chapterNames,
     required this.ids,
     required this.prices,
     required this.durations,
     required this.discounts,
     required this.types,
-  }) : super(key: key);
+  });
 
   @override
   State<ExamDuration> createState() => _ExamDurationState();
@@ -93,7 +93,7 @@ class _ExamDurationState extends State<ExamDuration> {
                     SizedBox(height: 16.h),
                   ],
                 ),
-              Divider(),
+              const Divider(),
               Text(
                 'Total Price: \$${totalPrice.toStringAsFixed(2)}',
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),

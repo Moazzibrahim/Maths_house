@@ -10,6 +10,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -128,39 +129,40 @@ class _ExamBodyState extends State<ExamBody> {
       }
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          color: faceBookColor,
-          child: Consumer<TimerProvider>(
-            builder: (context, timer, child) {
-              return Row(
-                children: [
-                  const Icon(Icons.timer, color: Colors.white),
-                  const SizedBox(width: 5),
-                  Text(
-                    " ${timer.secondsSpent ~/ 60}:${(timer.secondsSpent % 60).toString().padLeft(2, '0')}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            color: faceBookColor,
+            child: Consumer<TimerProvider>(
+              builder: (context, timer, child) {
+                return Row(
+                  children: [
+                    const Icon(Icons.timer, color: Colors.white),
+                    const SizedBox(width: 5),
+                    Text(
+                      " ${timer.secondsSpent ~/ 60}:${(timer.secondsSpent % 60).toString().padLeft(2, '0')}",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                      width: 120), // Spacing between timer and solved questions
-                  Text(
-                    "Solved: $questionsSolved / $totalQuestions questions",
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              );
-            },
+                    SizedBox(
+                        width: 100
+                            .w), // Spacing between timer and solved questions
+                    Text(
+                      "Solved: $questionsSolved / $totalQuestions questions",
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-        Expanded(
-          child: Padding(
+          Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,21 +173,21 @@ class _ExamBodyState extends State<ExamBody> {
                         .question
                         .qUrl!
                         .isNotEmpty)
-                  Image.network(
-                    questionsWithAnswers![_questionIndex].question.qUrl!,
-                    // width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
+                  Text(
+                    "Question ${_questionIndex + 1}:",
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 const SizedBox(
                   height: 20,
                 ),
-                Text(
-                  "Question ${_questionIndex + 1}: ${questionsWithAnswers![_questionIndex].question.questionText ?? ''}",
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Image.network(
+                  questionsWithAnswers![_questionIndex].question.qUrl!,
+                  // width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
                 ),
                 const SizedBox(height: 20.0),
                 if (questionsWithAnswers![_questionIndex].question.ansType ==
@@ -195,8 +197,7 @@ class _ExamBodyState extends State<ExamBody> {
                       questionsWithAnswers![_questionIndex].mcqOptions.length,
                       (index) => RadioListTile(
                         title: Text(
-                          questionsWithAnswers![_questionIndex]
-                              .mcqOptions[index],
+                          " ${questionsWithAnswers![_questionIndex].answers[index].mcqnum}.",
                         ),
                         value: index,
                         groupValue: questionsWithAnswers![_questionIndex]
@@ -229,78 +230,81 @@ class _ExamBodyState extends State<ExamBody> {
               ],
             ),
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (!_isSubmitting && _questionIndex > 0)
-              ElevatedButton(
-                onPressed: goToPreviousQuestion,
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                child: const Text(
-                  "Previous",
-                  style: TextStyle(color: Colors.white),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (!_isSubmitting && _questionIndex > 0)
+                ElevatedButton(
+                  onPressed: goToPreviousQuestion,
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                  child: const Text(
+                    "Previous",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-            GestureDetector(
-              onTap: () {
-                _navigateToQuestion(context);
-              },
-              child: Text(
-                "Question ${_questionIndex + 1}",
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            if (!_isSubmitting &&
-                _questionIndex < questionsWithAnswers!.length - 1)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                onPressed: goToNextQuestion,
-                child: const Text(
-                  "Next",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            if (_questionIndex == questionsWithAnswers!.length - 1)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                onPressed: () {
-                  setState(() {
-                    _isSubmitting = true;
-                  });
-                  timerProvider.stopTimer();
-                  bool hasMissedQuestions = checkMissedQuestions();
-                  if (!hasMissedQuestions) {
-                    Future.delayed(const Duration(seconds: 2), () {
-                      final examId = startExamProvider.examId;
-                      log("exids: $examId");
-                      fetchAndNavigateToExamResultScreen({
-                        'exam_id': examId,
-                        'right_question': correctAnswerCount,
-                        'timer': elapsedTime.inMinutes,
-                        'mistakes': wrongQuestionIds,
-                      });
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Answers submitted.'),
-                      ),
-                    );
-                    wrongQuestionIds = submitAnswers(questionsWithAnswers!);
-                  }
+              GestureDetector(
+                onTap: () {
+                  _navigateToQuestion(context);
                 },
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  "Question ${_questionIndex + 1}",
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-          ],
-        ),
-      ],
+              if (!_isSubmitting &&
+                  _questionIndex < questionsWithAnswers!.length - 1)
+                ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                  onPressed: goToNextQuestion,
+                  child: const Text(
+                    "Next",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              if (_questionIndex == questionsWithAnswers!.length - 1)
+                ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                  onPressed: () {
+                    setState(() {
+                      _isSubmitting = true;
+                    });
+                    timerProvider.stopTimer();
+                    bool hasMissedQuestions = checkMissedQuestions();
+                    if (!hasMissedQuestions) {
+                      Future.delayed(const Duration(seconds: 2), () {
+                        final examId = startExamProvider.examId;
+                        log("exids: $examId");
+                        fetchAndNavigateToExamResultScreen({
+                          'exam_id': examId,
+                          'right_question': correctAnswerCount,
+                          'timer': elapsedTime.inMinutes,
+                          'mistakes': wrongQuestionIds,
+                        });
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Answers submitted.'),
+                        ),
+                      );
+                      wrongQuestionIds = submitAnswers(questionsWithAnswers!);
+                    }
+                  },
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
