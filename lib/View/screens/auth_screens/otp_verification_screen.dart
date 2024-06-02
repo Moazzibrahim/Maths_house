@@ -9,7 +9,6 @@ import 'package:pinput/pinput.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
 class OtpVerificationScreen extends StatefulWidget {
   final String user;
 
@@ -63,15 +62,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   }
 
   Future<void> _sendVerificationCode() async {
-    // final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    // final token = tokenProvider.token;
-
     setState(() {
       _isLoading = true;
     });
 
-    final String url =
-        'https://login.mathshouse.net/api/confirm_code';
+    final String url = 'https://login.mathshouse.net/api/confirm_code';
 
     try {
       final response = await http.post(
@@ -79,7 +74,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-        //  'Authorization': 'Bearer $token',
+          //  'Authorization': 'Bearer $token',
         },
         body: jsonEncode(<String, String>{
           'user': widget.user,
@@ -87,13 +82,28 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         }),
       );
 
+      final responseData = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ConfirmPassword(user: widget.user,code: _pin,),
-          ),
-        );
+        if (responseData['success'] == 'Congratulations Code Is Right') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ConfirmPassword(user: widget.user, code: _pin),
+            ),
+          );
+        } else if (responseData['faild'] == 'Code Is Wrong') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Code is wrong'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Unexpected response: ${response.body}')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

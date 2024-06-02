@@ -18,12 +18,12 @@ class ChapterDurationScreen extends StatefulWidget {
 
 class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
   List<int> ids = [];
-  List<String?> selectedDurations = [];
+  List<int?> selectedDurations = [];
   double totalPrice = 0.0;
 
   @override
   void initState() {
-    selectedDurations = List<String?>.filled(widget.chaptersList.length, null);
+    selectedDurations = List<int?>.filled(widget.chaptersList.length, null);
     ids = widget.chaptersList.map((e) => e.id).toList();
     super.initState();
   }
@@ -38,8 +38,7 @@ class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
           final selectedDuration = selectedDurations[i]!;
           final chapter = widget.chaptersList[i];
           final price = chapter.chapterPrices
-              .firstWhere(
-                  (element) => element.duration.toString() == selectedDuration)
+              .firstWhere((element) => element.duration == selectedDuration)
               .price;
           total += price;
         }
@@ -67,12 +66,12 @@ class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
                         ),
                       ),
                       if (widget.chaptersList[i].chapterPrices.isNotEmpty)
-                        DropdownButton<String>(
+                        DropdownButton<int>(
                           value: selectedDurations[i],
                           items:
                               widget.chaptersList[i].chapterPrices.map((price) {
-                            return DropdownMenuItem<String>(
-                              value: price.duration.toString(),
+                            return DropdownMenuItem<int>(
+                              value: price.duration,
                               child: Text(price.duration.toString()),
                             );
                           }).toList(),
@@ -111,7 +110,10 @@ class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
                               builder: (ctx) => CheckoutChapterScreen(
                                 id: ids,
                                 price: totalPrice,
-                                type: 'Chapters',
+                                type: 'Chapter',
+                                duration: selectedDurations
+                                    .map((e) => e ?? 0)
+                                    .toList(),
                               ),
                             ),
                           );

@@ -1,9 +1,8 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/wallet_screen.dart';
+import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
+import 'package:flutter_application_1/View/screens/checkout/payment_chapter_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +11,7 @@ import 'package:provider/provider.dart';
 
 class CheckoutChapterScreen extends StatefulWidget {
   final double? price;
-  final int? duration;
+  final List<int>? duration;
   final double? discount;
   final String? chapterName;
   final List<int>? id;
@@ -66,6 +65,69 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
       }
     } else {
       discountPercentage = 0;
+    }
+  }
+
+  Future<void> handleWalletPayment(
+      List<int> filteredId, List<int> filteredDuration) async {
+    try {
+      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+      final token = tokenProvider.token;
+
+      // Print the data being sent to the API
+      print('Sending to API:');
+      print('ID: $filteredId');
+      print('Duration: $filteredDuration');
+      print('Type: Chapter');
+      print('Price: $updatedPrice');
+
+      final response = await http.post(
+        Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_payment_wallet'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'id': filteredId,
+          'duration': filteredDuration,
+          'type': 'Chapter',
+          'price': updatedPrice,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Handle success response
+        print('Payment successful');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetails(),
+          ),
+        );
+        // Navigate to another screen or show a success message
+      } else {
+        // Handle failure response
+        print('Payment failed. Status code: ${response.statusCode}');
+        print(response.body);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Payment Failed'),
+            content: const Text('Failed to process payment. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (error) {
+      // Handle any exceptions
+      print('Error: $error');
     }
   }
 
@@ -250,7 +312,46 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
                                   backgroundColor: faceBookColor,
                                 ),
                                 onPressed: () async {
-                                  await _checkoutWithWallet();
+                                  // Filter out the elements with duration equal to 0
+                                  List<int> filteredId = [];
+                                  List<int> filteredDuration = [];
+
+                                  if (widget.duration != null &&
+                                      widget.id != null) {
+                                    for (int i = 0;
+                                        i < widget.duration!.length;
+                                        i++) {
+                                      if (widget.duration![i] != 0) {
+                                        filteredId.add(widget.id![i]);
+                                        filteredDuration
+                                            .add(widget.duration![i]);
+                                      }
+                                    }
+                                  }
+
+                                  if (filteredDuration.isNotEmpty) {
+                                    await handleWalletPayment(
+                                        filteredId, filteredDuration);
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text("Error"),
+                                          content: const Text(
+                                              "Duration list is invalid."),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("OK"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 },
                                 child: const Text(
                                   "Wallet",
@@ -260,23 +361,66 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
                               const SizedBox(
                                 width: 6,
                               ),
-                              // ElevatedButton(
-                              //   style: ElevatedButton.styleFrom(
-                              //     backgroundColor: faceBookColor,
-                              //   ),
-                              //   onPressed: () {
-                              //     Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //         builder: (context) => PaymentScreen(chapters: chapters),
-                              //       ),
-                              //     );
-                              //   },
-                              //   child: const Text(
-                              //     "Payment methods",
-                              //     style: TextStyle(color: Colors.white),
-                              //   ),
-                              // ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: faceBookColor,
+                                ),
+                                onPressed: () {
+                                  // Filter out the elements with duration equal to 0
+                                  List<int> filteredId = [];
+                                  List<int> filteredDuration = [];
+
+                                  if (widget.duration != null &&
+                                      widget.id != null) {
+                                    for (int i = 0;
+                                        i < widget.duration!.length;
+                                        i++) {
+                                      if (widget.duration![i] != 0) {
+                                        filteredId.add(widget.id![i]);
+                                        filteredDuration
+                                            .add(widget.duration![i]);
+                                      }
+                                    }
+                                  }
+
+                                  if (filteredDuration.isNotEmpty) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaymentChapterScreen(
+                                          id: filteredId,
+                                          price: updatedPrice,
+                                          duration: filteredDuration,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text("Error"),
+                                          content: const Text(
+                                              "Duration list is invalid."),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("OK"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                child: const Text(
+                                  "Payment methods",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ],
                           )
                         ],
@@ -308,64 +452,5 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _checkoutWithWallet() async {
-    try {
-      final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-      final token = tokenProvider.token;
-
-      final response = await http.post(
-        Uri.parse(
-            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_payment_wallet'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode({
-          'chapters': chapters.map((chapter) {
-            return {
-              'id': chapter['id'],
-              'type': 'Chapters',
-              'price': widget.price,
-              'duration': chapter['duration'],
-            };
-          }).toList(),
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        print(response.body);
-        // Handle success response
-        print('Data sent successfully');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => WalletScreen(chapters: chapters)),
-        );
-      } else {
-        // Handle failure response
-        print('Failed to send data. Status code: ${response.statusCode}');
-        print('Error message: ${response.body}');
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Payment Failed'),
-            content:
-                const Text('Failed to complete payment. Please try again.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (error) {
-      // Handle any exceptions
-      print('Error: $error');
-    }
   }
 }
