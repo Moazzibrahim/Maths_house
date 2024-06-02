@@ -8,23 +8,30 @@ import 'dart:convert';
 import 'dart:async';
 
 class GetExamProvider with ChangeNotifier {
+  static const String baseUrl =
+      'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade';
+  static const int maxRetries = 5;
+  static const int initialDelay = 1000; // Initial delay in milliseconds
+
   Future<Map<String, dynamic>?>? fetchExamResults(
       Map<String, dynamic> postData, BuildContext context) async {
-    const baseUrl =
-        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade';
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token; // Replace with your auth token
+    final token = tokenProvider.token;
 
-    // Construct the query parameters
-    String queryParams = '';
+    final Uri uri = _buildUri(postData);
+    return _retryFetch(uri, token!);
+  }
+
+  Uri _buildUri(Map<String, dynamic> postData) {
+    final queryParams = StringBuffer();
     postData.forEach((key, value) {
-      queryParams += '$key=$value&';
+      queryParams.write('$key=$value&');
     });
-    final Uri uri = Uri.parse('$baseUrl?$queryParams');
+    return Uri.parse('$baseUrl?$queryParams');
+  }
 
+  Future<Map<String, dynamic>?> _retryFetch(Uri uri, String token) async {
     int retryCount = 0;
-    const int maxRetries = 5;
-    const int initialDelay = 1000; // Initial delay in milliseconds
 
     while (retryCount < maxRetries) {
       try {
@@ -38,29 +45,16 @@ class GetExamProvider with ChangeNotifier {
         );
 
         if (response.statusCode == 200) {
-          // Decode the response body
-          final Map<String, dynamic> data = json.decode(response.body);
-
-          // Process the data as needed
-          print('Exam results retrieved successfully:');
-          print(data);
-          return data;
+          return _handleSuccess(response);
         } else if (response.statusCode == 429) {
-          // Handle rate limiting
-          print('Rate limit exceeded. Retrying...');
-          await Future.delayed(Duration(milliseconds: initialDelay * (retryCount + 1)));
+          await _handleRateLimit(retryCount);
           retryCount++;
         } else {
-          print('Failed to retrieve exam results: ${response.statusCode}');
-          // Print response body for more details
-          print('Response body: ${response.body}');
-          throw Exception('Failed to fetch exam results');
+          _handleFailure(response);
         }
       } catch (e) {
-        print('Error retrieving exam results: $e');
         if (retryCount < maxRetries) {
-          print('Retrying...');
-          await Future.delayed(Duration(milliseconds: initialDelay * (retryCount + 1)));
+          await _handleRetry(retryCount, e);
           retryCount++;
         } else {
           throw Exception('Max retries reached. Failed to fetch exam results');
@@ -69,5 +63,31 @@ class GetExamProvider with ChangeNotifier {
     }
 
     return null;
+  }
+
+  Future<void> _handleRateLimit(int retryCount) async {
+    print('Rate limit exceeded. Retrying...');
+    await Future.delayed(
+        Duration(milliseconds: initialDelay * (retryCount + 1)));
+  }
+
+  void _handleFailure(http.Response response) {
+    print('Failed to retrieve exam results: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    throw Exception('Failed to fetch exam results');
+  }
+
+  Future<void> _handleRetry(int retryCount, dynamic error) async {
+    print('Error retrieving exam results: $error');
+    print('Retrying...');
+    await Future.delayed(
+        Duration(milliseconds: initialDelay * (retryCount + 1)));
+  }
+
+  Map<String, dynamic> _handleSuccess(http.Response response) {
+    final Map<String, dynamic> data = json.decode(response.body);
+    print('Exam results retrieved successfully:');
+    print(data);
+    return data;
   }
 }

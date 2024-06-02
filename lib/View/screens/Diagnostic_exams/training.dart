@@ -1,20 +1,32 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously, unused_local_variable
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
+import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_provider.dart';
 import 'package:provider/provider.dart';
 
 class DiagnosticExamScreen extends StatelessWidget {
-  const DiagnosticExamScreen({super.key});
+  const DiagnosticExamScreen({super.key,});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, "Diagnostic Exam"),
+      appBar: AppBar(
+        title: const Text("Diagnostic Exam"),
+        leading: InkWell(
+          child: const Icon(
+            Icons.arrow_back,
+            color: faceBookColor,
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const RegisteredHomeScreen()));
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Consumer<DiagExamProvider>(
@@ -324,108 +336,120 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     final seconds = _seconds % 60;
     final answeredCount = countAnsweredQuestions();
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            color: faceBookColor,
-            child: Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.timer, color: Colors.white),
-                const SizedBox(width: 5),
-                Text(
-                  '$minutes:${seconds < 10 ? '0$seconds' : seconds}',
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  color: faceBookColor,
+                  child: Row(
+                    children: [
+                      const Icon(Icons.timer, color: Colors.white),
+                      const SizedBox(width: 5),
+                      Text(
+                        '$minutes:${seconds < 10 ? '0$seconds' : seconds}',
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                      const SizedBox(
+                        width: 120,
+                      ),
+                      Text(
+                        'Answered: $answeredCount/${allDiagnostics.length}',
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  width: 140,
-                ),
-                Text(
-                  'Answered: $answeredCount/${allDiagnostics.length}',
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                const SizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (currentQuestion['q_url'] != null)
+                      Image.network(currentQuestion['q_url'], height: 200),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Question ${currentIndex + 1}: ${currentQuestion['question']}',
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Column(
+                      children:
+                          List.generate(currentQuestion['mcq'].length, (index) {
+                        final mcq = currentQuestion['mcq'][index];
+                        return RadioListTile<String>(
+                          title: Text(' ${mcq['mcq_ans']}'),
+                          value: mcq['mcq_ans'],
+                          groupValue: currentQuestion[
+                              'selectedAnswer'], // Set groupValue to null initially
+                          onChanged: (String? value) {
+                            setState(() {
+                              currentQuestion['selectedAnswer'] = value;
+                            });
+                          },
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        if (currentIndex > 0)
+                          ElevatedButton(
+                            onPressed: _prevQuestion,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: faceBookColor),
+                            child: const Text('Previous',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        ElevatedButton(
+                          onPressed:
+                              _showQuestionsDialog, // Show the dialog to navigate to any question
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: faceBookColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10)),
+                          child: const Text('Go to Question',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                        if (currentIndex < allDiagnostics.length - 1)
+                          ElevatedButton(
+                            onPressed: _nextQuestion,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: faceBookColor),
+                            child: const Text('Next',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                        if (currentIndex == allDiagnostics.length - 1 ||
+                            allDiagnostics.length == 1)
+                          ElevatedButton(
+                            onPressed: () {
+                              _submitExam(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: faceBookColor,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 5)),
+                            child: const Text('Submit',
+                                style: TextStyle(color: Colors.white)),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (currentQuestion['q_url'] != null)
-                Image.network(currentQuestion['q_url'], height: 200),
-              const SizedBox(height: 10),
-              Text(
-                'Question ${currentIndex + 1}: ${currentQuestion['question']}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Column(
-                children: List.generate(currentQuestion['mcq'].length, (index) {
-                  final mcq = currentQuestion['mcq'][index];
-                  return RadioListTile<String>(
-                    title: Text(' ${mcq['mcq_ans']}'),
-                    value: mcq['mcq_ans'],
-                    groupValue: currentQuestion[
-                        'selectedAnswer'], // Set groupValue to null initially
-                    onChanged: (String? value) {
-                      setState(() {
-                        currentQuestion['selectedAnswer'] = value;
-                      });
-                    },
-                  );
-                }),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  if (currentIndex > 0)
-                    ElevatedButton(
-                      onPressed: _prevQuestion,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: faceBookColor),
-                      child: const Text('Previous',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  ElevatedButton(
-                    onPressed:
-                        _showQuestionsDialog, // Show the dialog to navigate to any question
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: faceBookColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10)),
-                    child: const Text('Go to Question',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                  if (currentIndex < allDiagnostics.length - 1)
-                    ElevatedButton(
-                      onPressed: _nextQuestion,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: faceBookColor),
-                      child: const Text('Next',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                  if (currentIndex == allDiagnostics.length - 1 ||
-                      allDiagnostics.length == 1)
-                    ElevatedButton(
-                      onPressed: () {
-                        _submitExam(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: faceBookColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 5)),
-                      child: const Text('Submit',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

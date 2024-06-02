@@ -1,13 +1,10 @@
 // ignore_for_file: avoid_print, unused_local_variable
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
+import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam/get_exam_provider.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class ExamResultScreen extends StatefulWidget {
@@ -39,154 +36,156 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int? totalQuestions = widget.totalQuestions;
-    int? correctAnswerCount = widget.correctAnswerCount;
-    int? wrongAnswerQuestions = widget.wrongAnswerQuestions;
+    return Consumer<GetExamProvider>(
+      builder: (context, provider, _) {
+        return FutureBuilder<Map<String, dynamic>?>(
+          future: provider.fetchExamResults({
+            "exam_id": widget.exxxid,
+            "timer": widget.elapsedtime,
+            "right_question": widget.correctAnswerCount,
+            "mistakes": widget.wrongids,
+          }, context),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData) {
+              return _buildResultScreen(context, snapshot.data!);
+            } else {
+              return const Center(child: Text('No data available'));
+            }
+          },
+        );
+      },
+    );
+  }
 
-    return Consumer<GetExamProvider>(builder: (context, provider, _) {
-      return FutureBuilder<Map<String, dynamic>?>(
-        future: provider.fetchExamResults({
-          "exam_id": widget.exxxid,
-          "timer": widget.elapsedtime,
-          "right_question": widget.correctAnswerCount,
-          "mistakes": widget.wrongids,
-        }, context),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            int grade = snapshot.data!['grade'] as int;
-            int totalscore = snapshot.data!['total_score'] as int;
-            int passscore = snapshot.data!['pass_score'] as int;
-            String chapterName = snapshot.data!['chapters'][0]['api_lesson']
-                    ['api_chapter']['chapter_name'] ??
-                "";
-            int id = snapshot.data!['chapters'][0]['api_lesson']['api_chapter']
-                    ['id'] ??
-                0;
-            String type = snapshot.data!['chapters'][0]['api_lesson']
-                    ['api_chapter']['type'] ??
-                "";
-            double price = snapshot.data!['chapters'][0]['api_lesson']
-                        ['api_chapter']['price'][0]['price']
-                    ?.toDouble() ??
-                0.5;
-            int duration = snapshot.data!['chapters'][0]['api_lesson']
-                    ['api_chapter']['price'][0]['duration'] ??
-                0;
-            double discount = snapshot.data!['chapters'][0]['api_lesson']
-                        ['api_chapter']['price'][0]['discount']
-                    ?.toDouble() ??
-                0.5;
+  Widget _buildResultScreen(BuildContext context, Map<String, dynamic> data) {
+    int grade = data['grade'] as int;
+    int totalScore = data['total_score'] as int;
+    int passScore = data['pass_score'] as int;
 
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text("Result"),
-                leading: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const RegisteredHomeScreen()));
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: faceBookColor,
-                    )),
-              ),
-              body: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+    List<String> chapterNames = [];
+    List<int> ids = [];
+    List<double> prices = [];
+    List<int> durations = [];
+    List<double> discounts = [];
+    List<String> types = [];
+
+    for (var chapter in data['chapters']) {
+      var apiChapter = chapter['api_lesson']['api_chapter'];
+      chapterNames.add(apiChapter['chapter_name']);
+      ids.add(apiChapter['id']);
+      prices.add(apiChapter['price'][0]['price'].toDouble());
+      durations.add(apiChapter['price'][0]['duration']);
+      discounts.add(apiChapter['price'][0]['discount'].toDouble());
+      types.add(apiChapter['type']);
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Result"),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const RegisteredHomeScreen(),
+            ));
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            color: faceBookColor,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildInfoRow("Total Score", totalScore.toString()),
+            const SizedBox(height: 15),
+            _buildInfoRow("Grade", grade.toString()),
+            const SizedBox(height: 15),
+            _buildInfoRow("Pass Score", passScore.toString()),
+            const SizedBox(height: 15),
+            _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
+            const SizedBox(height: 15),
+            _buildInfoRow("Correct Questions", "${widget.correctAnswerCount}"),
+            const SizedBox(height: 15),
+            _buildInfoRow("Wrong Questions", "${widget.wrongAnswerQuestions}"),
+            const SizedBox(height: 25),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+              onPressed: () {
+                setState(() {
+                  showRecommendation = !showRecommendation;
+                });
+              },
+              child: const Text("Recommended",
+                  style: TextStyle(color: Colors.white)),
+            ),
+            if (showRecommendation) ...[
+              const SizedBox(height: 10),
+              if (chapterNames.isEmpty)
+                const Text("No recommended chapters available",
+                    style: TextStyle(fontSize: 16, color: Colors.black)),
+              for (int i = 0; i < chapterNames.length; i++) ...[
+                Text(chapterNames[i],
+                    style: const TextStyle(fontSize: 16, color: Colors.black)),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildInfoRow("total score", totalscore.toString()),
-                    const SizedBox(height: 15),
-                    _buildInfoRow("grade", grade.toString()),
-                    const SizedBox(height: 15),
-                    _buildInfoRow("Total Questions", "$totalQuestions"),
-                    const SizedBox(height: 15),
-                    _buildInfoRow(
-                        "Correct Questions", correctAnswerCount.toString()),
-                    const SizedBox(height: 15),
-                    _buildInfoRow(
-                        "Wrong Questions", wrongAnswerQuestions.toString()),
-                    const SizedBox(height: 25),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: faceBookColor),
-                      onPressed: () {
-                        setState(() {
-                          showRecommendation = !showRecommendation;
-                        });
-                      },
-                      child: const Text("Recommended",
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                    if (showRecommendation) ...[
-                      const SizedBox(height: 10),
-                      Text(chapterName,
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black)),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildCustomButton("Buy", () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: Colors.black,
-                                content: Text(
-                                  "Done",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            );
-                            fetchExamResults();
-                            Future.delayed(const Duration(seconds: 2), () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CheckoutScreen(
-                                    chapterName: chapterName,
-                                    // discount: discount,
-                                    duration: duration,
-                                    price: price,
-                                    type: type,
-                                    id: id,
-                                  ),
-                                ),
-                              );
-                            });
-                          }),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: faceBookColor),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ExamHistoryScreen(),
+                    _buildCustomButton("Buy", () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.black,
+                          content: Text(
+                            "Done",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      );
+                      Future.delayed(const Duration(seconds: 2), () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ExamDuration(
+                              chapterNames: chapterNames,
+                              discounts: discounts,
+                              ids: ids,
+                              durations: durations,
+                              prices: prices,
+                              types: types,
                             ),
-                          );
-                        },
-                        child: const Text("View mistakes",
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                      const SizedBox(height: 15),
-                    ],
+                          ),
+                        );
+                      });
+                    }),
                   ],
                 ),
+                const SizedBox(height: 15),
+              ],
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ExamHistoryScreen(),
+                    ),
+                  );
+                },
+                child: const Text("View Mistakes",
+                    style: TextStyle(color: Colors.white)),
               ),
-            );
-          } else {
-            return const Center(child: Text('No data available'));
-          }
-        },
-      );
-    });
+              const SizedBox(height: 15),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildInfoRow(String title, String value) {
@@ -224,27 +223,5 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
         style: const TextStyle(color: faceBookColor),
       ),
     );
-  }
-
-  Future<Map<String, dynamic>> fetchExamResults() async {
-    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token;
-    final response = await http.get(
-      Uri.parse(
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam_grade'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = json.decode(response.body);
-      print(data);
-      return data;
-    } else {
-      throw Exception('Failed to fetch exam results');
-    }
   }
 }
