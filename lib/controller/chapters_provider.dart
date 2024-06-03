@@ -56,7 +56,7 @@ class ChapterProvider with ChangeNotifier {
         List<Lesson> l =
             lessonsList.lessonsList.map((e) => Lesson.fromJson(e)).toList();
             for(var i in l){
-              i.videos!.forEach((element) {allvideos!.add(element);});
+              i.videos.forEach((element) {allvideos!.add(element);});
             }
             log('all videos : ${allvideos!.map((e) => e.videoName)}');
             allLessons=l;

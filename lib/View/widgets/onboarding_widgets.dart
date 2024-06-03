@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingWidgets extends StatelessWidget {
   const OnBoardingWidgets({super.key, required this.description, required this.image});
@@ -24,7 +25,11 @@ class OnBoardingWidgets extends StatelessWidget {
               ),
               SizedBox(height: 150.h,),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
+                  SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('isNewUser', false);
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (ctx)=>  const TabsScreen(isLoggedIn: true))
                   );

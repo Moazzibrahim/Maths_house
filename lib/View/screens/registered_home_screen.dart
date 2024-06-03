@@ -8,6 +8,7 @@ import 'package:flutter_application_1/View/screens/history_screens/history_scree
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class RegisteredHomeScreen extends StatelessWidget {
@@ -20,6 +21,16 @@ class RegisteredHomeScreen extends StatelessWidget {
     profileProvider.getprofileData(context);
 
     return Scaffold(
+      appBar: AppBar(
+        leading:  Column(
+          children: [
+            CircleAvatar(
+              radius: 21.r,
+              backgroundImage:const AssetImage('assets/images/logo.jpg'),
+            ),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -29,25 +40,14 @@ class RegisteredHomeScreen extends StatelessWidget {
                 builder: (context, profileProvider, _) {
                   final userData = profileProvider.userData;
                   if (userData == null) {
-                    return const CircularProgressIndicator(); // Show loading indicator until user data is fetched
+                    return const CircularProgressIndicator();
                   } else {
                     return Column(
                       children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage:
-                                  AssetImage('assets/images/logo.jpg'),
-                            ),
-                          ],
-                        ),
                         Row(
                           children: [
                             CircleAvatar(
                               radius: 25,
-                              // Use the user's image here
                               backgroundImage: NetworkImage(userData.image),
                             ),
                             const SizedBox(width: 10),
@@ -61,9 +61,7 @@ class RegisteredHomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 15,
-                        )
+                        const SizedBox(height: 10,)
                       ],
                     );
                   }

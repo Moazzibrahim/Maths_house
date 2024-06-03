@@ -2,7 +2,7 @@ class Lesson {
   final String name;
   final int chapterId;
   final int lessonId;
-  final List<Videos>? videos;
+  final List<Videos> videos;
   Lesson(
       {required this.name, required this.chapterId, required this.videos,required this.lessonId});
 

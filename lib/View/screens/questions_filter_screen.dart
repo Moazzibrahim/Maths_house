@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/questions_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/question_provider.dart';
+import 'package:provider/provider.dart';
 
 class QuestionFilterScreen extends StatefulWidget {
   const QuestionFilterScreen({super.key});
@@ -35,6 +37,7 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
   int selectedYear = DateTime.now().year;
   String selectedMonth = 'Select Month';
   bool isFormsFilled = true;
+  bool isPackagePurchased = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,12 +149,17 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                           setState(() {
                             isFormsFilled=false;
                           });
-                      log('You have to complete all fields');
                     } else {
                       setState(() {
                         isFormsFilled=true;
                       });
-                      Navigator.of(context).push(
+                      Provider.of<QuestionsProvider>(context,listen: false).getQuestionsData(context);
+                      if(Provider.of<QuestionsProvider>(context,listen: false).allQuestions.isEmpty){
+                        setState(() {
+                          isPackagePurchased = false;
+                        });
+                      }else{
+                        Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (ctx) => QuestionsScreen(
                                   month: indexMonth,
@@ -161,6 +169,7 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                                   section: sectionController.text,
                                 )),
                       );
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -183,7 +192,9 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                         style:
                             TextStyle(fontSize: 18, color: Colors.redAccent[700]),
                       )
-                    : const Text('')
+                    : const Text(''),
+                isPackagePurchased? const Text('') : Text('You have to buy a package first',style:
+                            TextStyle(fontSize: 18, color: Colors.redAccent[700]),)
               ],
             ),
           ),

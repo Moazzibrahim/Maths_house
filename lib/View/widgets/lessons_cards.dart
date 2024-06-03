@@ -27,10 +27,12 @@ class LessonCards extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
-            Text(
-              lesson.name,
-              style: TextStyle(
-                color: Colors.redAccent[700],
+            Expanded(
+              child: Text(
+                lesson.name,
+                style: TextStyle(
+                  color: Colors.redAccent[700],
+                ),
               ),
             ),
           ],

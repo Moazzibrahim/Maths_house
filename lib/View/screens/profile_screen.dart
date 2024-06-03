@@ -25,12 +25,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    Provider.of<ProfileProvider>(context, listen: false)
+    if(!widget.isLoggedIn){
+      Provider.of<ProfileProvider>(context, listen: false)
         .getprofileData(context)
         .catchError((e) {
       print(e);
     });
-
+    }
     super.initState();
   }
 
@@ -473,8 +474,6 @@ class ParentContent extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Other fields...
             ] else
               const Text('User data not available'),
           ],

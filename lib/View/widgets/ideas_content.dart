@@ -95,10 +95,11 @@ class _IdeasContentState extends State<IdeasContent> {
                 ),
               ],
             ),
+            widget.lesson.videos.isNotEmpty ?
             ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: widget.lesson.videos!.length,
+            itemCount: widget.lesson.videos.length,
             itemBuilder: (context, i) {
               return Row(
                 children: [
@@ -139,7 +140,7 @@ class _IdeasContentState extends State<IdeasContent> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(widget.lesson.videos![i].videoName!),
+                        Text(widget.lesson.videos[i].videoName ?? 'camera wowo'),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -150,7 +151,7 @@ class _IdeasContentState extends State<IdeasContent> {
                 ],
               );
             },
-          ),
+          ): Text('wowowowowowow')
           ],
         ),
       ),

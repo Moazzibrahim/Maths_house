@@ -1,9 +1,7 @@
 // ignore_for_file: file_names
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/View/screens/all_courses/unregistered_categories.dart';
 import 'package:flutter_application_1/View/widgets/courses_container.dart';
@@ -74,7 +72,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => const UnregisteredCourses()));
+                            builder: (ctx) => const UnregisteredCourses(isLoggedIn: false,)));
                       },
                       child: CustomSmallCard(
                         icon: Icons.book_rounded,
@@ -84,6 +82,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                       ),
                     ),
                     InkWell(
+                      borderRadius: BorderRadius.circular(20),
                       onTap: () {
                         showDialog(
                             context: context,
@@ -117,6 +116,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                       ),
                     ),
                     InkWell(
+                      borderRadius: BorderRadius.circular(20),
                       onTap: () {
                         showDialog(
                             context: context,
@@ -143,6 +143,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                             });
                       },
                       child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
                         onTap: () {
                           showDialog(
                               context: context,
@@ -177,6 +178,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                       ),
                     ),
                     InkWell(
+                      borderRadius: BorderRadius.circular(20),
                       onTap: () {
                         showDialog(
                             context: context,
@@ -210,6 +212,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                       ),
                     ),
                     InkWell(
+                      borderRadius: BorderRadius.circular(20),
                       onTap: () {
                         showDialog(
                             context: context,

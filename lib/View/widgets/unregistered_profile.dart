@@ -18,7 +18,7 @@ class UnregisteredProfile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             Text(text),
+            Text(text),
             Container(
               margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
               width: double.infinity,

@@ -28,7 +28,7 @@ class _TabsScreenState extends State<TabsScreen> {
       PackageScreen(
         isLoggedIn: widget.isLoggedIn,
       ),
-      const UnregisteredCourses(),
+      UnregisteredCourses(isLoggedIn: widget.isLoggedIn,),
       ProfileScreen(
         isLoggedIn: widget.isLoggedIn,
       ),
@@ -50,8 +50,7 @@ class _TabsScreenState extends State<TabsScreen> {
         children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors
-              .white, // Set the background color of the entire BottomNavigationBar here
+          backgroundColor: Colors.white, 
           selectedItemColor: faceBookColor,
           unselectedItemColor: Colors.redAccent[700],
           currentIndex: selectedIndex,
@@ -65,7 +64,7 @@ class _TabsScreenState extends State<TabsScreen> {
               label: 'Packages',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_outline),
+              icon: Icon(Icons.menu_book_sharp),
               label: 'Categories',
             ),
             BottomNavigationBarItem(

@@ -41,7 +41,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 
   Container _buildRadioListTile(Question question, int index) {
-    String mcqText = question.mcqList[index].text;
+    String mcqText = question.mcqList[index].text!;
     String mcqValue =
         String.fromCharCode(index + 65); // Convert index to A, B, C, D
     Color? currentContainerColor;
@@ -144,14 +144,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   child: Center(
                     child: Column(
                       children: [
-                        Text(
-                          question[0].question,
-                          style: const TextStyle(fontSize: 25),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Image.asset('assets/images/planet.png'),
+                        Image.network(question[0].qUrl!),
                         const SizedBox(
                           height: 20,
                         ),
@@ -172,7 +165,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                           onPressed: () {
                             if (selectedAnswer != null && !answerSubmitted) {
                               String correctAnswer =
-                                  question[0].mcqList[0].answer;
+                                  question[0].mcqList[0].answer!;
                               correctAnswerIndex =
                                   correctAnswer.codeUnitAt(0) - 65;
                               setState(() {

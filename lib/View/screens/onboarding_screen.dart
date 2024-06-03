@@ -75,9 +75,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       onPressed: () async {
                         if (currentPage < onboarrdingPages.length - 1) {
                           controller.nextPage(
-                            duration: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 400),
                             curve: Curves.ease,
                           );
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('isNewUser', false);
                         } else {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();

@@ -1,25 +1,24 @@
 class Question {
-  final String question;
-  final String qUrl;
-  final String section;
-  final int month;
-  final String questionNum;
-  final int year;
-  final String examCode;
+  final String? question;
+  final String? qUrl;
+  final String? section;
+  final int? month;
+  final String? questionNum;
+  final int? year;
+  final String? examCode;
   final List<Mcq> mcqList;
   final List<McqAnswer> mcqAnswerList;
 
-  Question({
-    required this.question,
-    required this.qUrl,
-    required this.mcqList,
-    required this.section,
-    required this.month,
-    required this.questionNum,
-    required this.year,
-    required this.examCode,
-    required this.mcqAnswerList
-  });
+  Question(
+      {required this.question,
+      required this.qUrl,
+      required this.mcqList,
+      required this.section,
+      required this.month,
+      required this.questionNum,
+      required this.year,
+      required this.examCode,
+      required this.mcqAnswerList});
 
   factory Question.fromJson(Map<String, dynamic> json) {
     List<Mcq> mcqList = [];
@@ -63,20 +62,22 @@ class QuestionsList {
 }
 
 class Mcq {
-  final String text;
-  final String answer;
+  final String? text;
+  final String? answer;
 
   Mcq({required this.text, required this.answer});
 
-  factory Mcq.fromJson(Map<String, dynamic> json) =>
-      Mcq(text: json['mcq_ans'], answer: json['mcq_answers']);
+  factory Mcq.fromJson(Map<String, dynamic> json) => Mcq(
+        text: json['mcq_ans'] ?? '',
+        answer: json['mcq_answers']?? '',
+      );
 }
 
-class McqAnswer{
+class McqAnswer {
   final String mcqAnswer;
 
   McqAnswer({required this.mcqAnswer});
 
-  factory McqAnswer.fromJson(Map<String,dynamic> json)=>
-  McqAnswer(mcqAnswer: json['grid_ans']);
+  factory McqAnswer.fromJson(Map<String, dynamic> json) =>
+      McqAnswer(mcqAnswer: json['grid_ans']);
 }
