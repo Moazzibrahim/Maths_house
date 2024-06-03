@@ -27,38 +27,39 @@ class ExamQuestion {
 }
 
 class Question {
-  int id;
+  final int? id;
   int lessonId;
   String? questionText;
   String state;
   String? qUrl;
   String qCode;
   String qType;
-  int month;
+  final int? month;
   String qNum;
-  int year;
+  final int? year;
   String section;
   String difficulty;
   String ansType;
   String updatedAt;
   String createdAt;
 
-  Question(
-      {required this.id,
-      required this.lessonId,
-      this.questionText,
-      required this.state,
-      this.qUrl,
-      required this.qCode,
-      required this.qType,
-      required this.month,
-      required this.qNum,
-      required this.year,
-      required this.section,
-      required this.difficulty,
-      required this.ansType,
-      required this.updatedAt,
-      required this.createdAt});
+  Question({
+    this.id,
+    required this.lessonId,
+    this.questionText,
+    required this.state,
+    this.qUrl,
+    required this.qCode,
+    required this.qType,
+    this.month,
+    required this.qNum,
+    this.year,
+    required this.section,
+    required this.difficulty,
+    required this.ansType,
+    required this.updatedAt,
+    required this.createdAt,
+  });
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
@@ -82,20 +83,20 @@ class Question {
 }
 
 class Answer {
-  int id;
-  String? mcqAns;
-  String mcqAnswers;
-  String? mcqnum;
-  int qId;
+  final int? id;
+  final String? mcqAns;
+  final String? mcqAnswers;
+  final String? mcqnum;
+  final int? qId;
   String createdAt;
   String updatedAt;
 
   Answer({
-    required this.id,
+    this.id,
     this.mcqAns,
     this.mcqnum,
-    required this.mcqAnswers,
-    required this.qId,
+    this.mcqAnswers,
+    this.qId,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -104,7 +105,7 @@ class Answer {
     return Answer(
       id: json['id'],
       mcqAns: json['mcq_ans'] ?? "",
-      mcqnum: json['mcq_num']??"",
+      mcqnum: json['mcq_num'] ?? "",
       mcqAnswers: json['mcq_answers'],
       qId: json['q_id'],
       createdAt: json['created_at'],
@@ -114,13 +115,15 @@ class Answer {
 }
 
 class QuestionWithAnswers {
-  final Question question;
+  final Question? question;
+  final List<Question> questiondata;
   final List<Answer> answers;
   final List<String> mcqOptions;
   int? selectedSolutionIndex;
 
   QuestionWithAnswers({
-    required this.question,
+    this.question,
+    required this.questiondata,
     required this.answers,
     required this.mcqOptions,
     this.selectedSolutionIndex,
