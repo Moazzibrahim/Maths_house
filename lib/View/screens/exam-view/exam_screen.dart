@@ -17,7 +17,7 @@ import 'package:http/http.dart' as http;
 
 class ExamScreen extends StatefulWidget {
   final int? fetchedexamid;
-  const ExamScreen({super.key, this.fetchedexamid});
+  const ExamScreen({Key? key, this.fetchedexamid}) : super(key: key);
 
   @override
   State<ExamScreen> createState() => _ExamScreenState();
@@ -167,10 +167,12 @@ class _ExamBodyState extends State<ExamBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (questionsWithAnswers![_questionIndex].question.qUrl !=
+                if (questionsWithAnswers![_questionIndex]
+                            .questiondata[_questionIndex]
+                            .qUrl !=
                         null &&
                     questionsWithAnswers![_questionIndex]
-                        .question
+                        .questiondata[_questionIndex]
                         .qUrl!
                         .isNotEmpty)
                   Text(
@@ -184,20 +186,24 @@ class _ExamBodyState extends State<ExamBody> {
                   height: 20,
                 ),
                 Image.network(
-                  questionsWithAnswers![_questionIndex].question.qUrl!,
+                  questionsWithAnswers![_questionIndex]
+                      .questiondata[_questionIndex]
+                      .qUrl!,
                   // width: 200,
                   height: 200,
                   fit: BoxFit.cover,
                 ),
                 const SizedBox(height: 20.0),
-                if (questionsWithAnswers![_questionIndex].question.ansType ==
+                if (questionsWithAnswers![_questionIndex]
+                        .questiondata[_questionIndex]
+                        .ansType ==
                     'MCQ')
                   Column(
                     children: List.generate(
                       questionsWithAnswers![_questionIndex].mcqOptions.length,
                       (index) => RadioListTile(
                         title: Text(
-                          " ${questionsWithAnswers![_questionIndex].answers[index].mcqnum}.",
+                          " ${questionsWithAnswers![_questionIndex].answers[index].mcqnum!}.",
                         ),
                         value: index,
                         groupValue: questionsWithAnswers![_questionIndex]
@@ -212,7 +218,9 @@ class _ExamBodyState extends State<ExamBody> {
                       ),
                     ),
                   ),
-                if (questionsWithAnswers![_questionIndex].question.ansType !=
+                if (questionsWithAnswers![_questionIndex]
+                        .questiondata[_questionIndex]
+                        .qUrl !=
                     'MCQ')
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -222,6 +230,7 @@ class _ExamBodyState extends State<ExamBody> {
                         border: OutlineInputBorder(),
                       ),
                       // Handle text input for non-MCQ questions
+
                       onChanged: (value) {
                         // You can store the entered text in your data model or handle it as needed
                       },

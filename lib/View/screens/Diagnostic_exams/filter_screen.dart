@@ -43,15 +43,27 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
-    final selectedCourseId = Provider.of<DiagnosticFilterationProvider>(context,
-        listen: false)
-    .courseIds
-    .firstWhere((courseId) =>
-        _selectedCourse ==
-        Provider.of<DiagnosticFilterationProvider>(context, listen: false)
-            .courseData[courseId - 15]); // Adjusted index here
+    final provider =
+        Provider.of<DiagnosticFilterationProvider>(context, listen: false);
+    final selectedCourse = _selectedCourse;
 
-                log("selected course id: $selectedCourseId");
+    final selectedCourseId = provider.courseIds.firstWhere(
+      (courseId) => selectedCourse == provider.courseData[courseId - 15],
+      orElse: () => -1, // Return a default value if not found
+    );
+
+    if (selectedCourseId == -1) {
+      // Handle the case where the course is not found
+      // You can show an error message or handle it accordingly
+      print('Selected course not found!');
+      return;
+    }
+
+// Use selectedCourseId as needed
+    print('Selected Course ID: $selectedCourseId');
+// Adjusted index here
+
+    log("selected course id: $selectedCourseId");
 
     // Construct the URL with the selected course ID
     final url = Uri.parse(

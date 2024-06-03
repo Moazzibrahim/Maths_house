@@ -43,46 +43,39 @@ class ExamMcqProvider with ChangeNotifier {
             debugPrint('Exam data exists, parsing...');
             final examData = jsonData['exam']['questionExam'];
             log('Exam data: $examData');
+            for (var element in examData) {
+              List<Question> questiondata = [];
+              questiondata.add(Question.fromJson(element));
+              final List<Answer> answerList = [];
+              answerList.add(Answer.fromJson(element));
 
-            final question = Question.fromJson(examData['question']);
-            final List<Answer> answerList = [];
-
-            if (examData['Answers'] is List) {
-              for (var answerData in examData['Answers']) {
-                final answer = Answer.fromJson(answerData);
-                answerList.add(answer);
-                log(answer.mcqAnswers
-                    .toString()); // Access mcqAnswers field here
+              if (answerList.isNotEmpty) {
+                allQuestionsWithAnswers.add(QuestionWithAnswers(
+                  questiondata: questiondata,
+                  answers: answerList,
+                  mcqOptions: answerList
+                      .where((answer) => answer.mcqAns != null)
+                      .map((answer) => answer.mcqAns!)
+                      .toList(),
+                ));
+                log("Aggregated allQuestionsWithAnswers: $allQuestionsWithAnswers");
+              } else {
+                debugPrint('No answers found for exam ID $examId');
               }
             }
-
-            if (answerList.isNotEmpty) {
-              allQuestionsWithAnswers.add(QuestionWithAnswers(
-                question: question,
-                answers: answerList,
-                mcqOptions: answerList
-                    .where((answer) => answer.mcqAns != null)
-                    .map((answer) => answer.mcqAns!)
-                    .toList(),
-              ));
-              log("all: $allQuestionsWithAnswers");
-            } else {
-              debugPrint('No questions found for exam ID $examId');
-            }
-          } else {
-            debugPrint('No exam data found in the response');
           }
         } else {
           debugPrint('Failed to fetch data: ${response.statusCode}');
         }
       } catch (e) {
         debugPrint('Error: $e');
-        debugPrint('Max retries reached. Failed to fetch exam data');
+        debugPrint(
+            'Max retries reached. Failed to fetch exam data for exam ID $examId');
       }
     }
 
     notifyListeners(); // Notify listeners to update the UI
-    return allQuestionsWithAnswers; // Return the aggregated list of questions with answers
+    return allQuestionsWithAnswers;
   }
 
   Future<http.Response> _fetchWithRetry(

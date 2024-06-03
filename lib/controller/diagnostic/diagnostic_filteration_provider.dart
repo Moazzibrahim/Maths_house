@@ -40,9 +40,10 @@ class DiagnosticFilterationProvider with ChangeNotifier {
           courseIds.add(course['id'] ?? 0);
         }
         courseData = courseData.toSet().toList();
+        final courseidsss = courseIds.toSet().toList();
         log("category: $categoryData");
         log("course data: $courseData");
-        log("course ids: $courseIds");
+        log("course ids: $courseidsss");
 
         diagfilters.addAll(categoryData);
         diagfilters.addAll(courseData);
