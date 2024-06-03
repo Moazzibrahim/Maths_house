@@ -44,16 +44,17 @@ class ExamMcqProvider with ChangeNotifier {
             final examData = jsonData['exam']['questionExam'];
             log('Exam data: $examData');
             for (var element in examData) {
-              List<Question> questiondata = [];
-              questiondata.add(Question.fromJson(element));
-              final List<Answer> answerList = [];
-              answerList.add(Answer.fromJson(element));
+              final question = Question.fromJson(element['question']);
+              final answers = (element['Answers'] as List)
+                  .map((answer) => Answer.fromJson(answer))
+                  .toList();
 
-              if (answerList.isNotEmpty) {
+              if (answers.isNotEmpty) {
                 allQuestionsWithAnswers.add(QuestionWithAnswers(
-                  questiondata: questiondata,
-                  answers: answerList,
-                  mcqOptions: answerList
+                  question: question,
+                  questiondata: [question],
+                  answers: answers,
+                  mcqOptions: answers
                       .where((answer) => answer.mcqAns != null)
                       .map((answer) => answer.mcqAns!)
                       .toList(),

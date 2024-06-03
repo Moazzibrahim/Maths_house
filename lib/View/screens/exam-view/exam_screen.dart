@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_print, unused_local_variable, use_build_context_synchronously, unrelated_type_equality_checks
+// ignore_for_file: avoid_print, unused_local_variable
 
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -167,74 +167,75 @@ class _ExamBodyState extends State<ExamBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (questionsWithAnswers![_questionIndex]
-                            .questiondata[_questionIndex]
-                            .qUrl !=
-                        null &&
-                    questionsWithAnswers![_questionIndex]
-                        .questiondata[_questionIndex]
-                        .qUrl!
-                        .isNotEmpty)
-                  Text(
-                    "Question ${_questionIndex + 1}:",
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Image.network(
-                  questionsWithAnswers![_questionIndex]
-                      .questiondata[_questionIndex]
-                      .qUrl!,
-                  // width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-                const SizedBox(height: 20.0),
-                if (questionsWithAnswers![_questionIndex]
-                        .questiondata[_questionIndex]
-                        .ansType ==
-                    'MCQ')
+                if (_questionIndex < questionsWithAnswers!.length)
                   Column(
-                    children: List.generate(
-                      questionsWithAnswers![_questionIndex].mcqOptions.length,
-                      (index) => RadioListTile(
-                        title: Text(
-                          " ${questionsWithAnswers![_questionIndex].answers[index].mcqnum!}.",
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Question ${_questionIndex + 1}:",
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
                         ),
-                        value: index,
-                        groupValue: questionsWithAnswers![_questionIndex]
-                            .selectedSolutionIndex,
-                        onChanged: (value) {
-                          setState(() {
-                            questionsWithAnswers![_questionIndex]
-                                .selectedSolutionIndex = value as int;
-                            updateQuestionsSolved();
-                          });
-                        },
                       ),
-                    ),
-                  ),
-                if (questionsWithAnswers![_questionIndex]
-                        .questiondata[_questionIndex]
-                        .qUrl !=
-                    'MCQ')
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter your answer',
-                        border: OutlineInputBorder(),
+                      const SizedBox(
+                        height: 20,
                       ),
-                      // Handle text input for non-MCQ questions
-
-                      onChanged: (value) {
-                        // You can store the entered text in your data model or handle it as needed
-                      },
-                    ),
+                      if (questionsWithAnswers![_questionIndex]
+                                  .questiondata[0]
+                                  .qUrl !=
+                              null &&
+                          questionsWithAnswers![_questionIndex]
+                              .questiondata[0]
+                              .qUrl!
+                              .isNotEmpty)
+                        Image.network(
+                          questionsWithAnswers![_questionIndex]
+                              .questiondata[0]
+                              .qUrl!,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      const SizedBox(height: 20.0),
+                      if (questionsWithAnswers![_questionIndex]
+                              .questiondata[0]
+                              .ansType ==
+                          'MCQ')
+                        Column(
+                          children: List.generate(
+                            questionsWithAnswers![_questionIndex].mcqOptions.length,
+                            (index) => RadioListTile(
+                              title: Text(
+                                " ${questionsWithAnswers![_questionIndex].answers[index].mcqnum!}.",
+                              ),
+                              value: index,
+                              groupValue: questionsWithAnswers![_questionIndex]
+                                  .selectedSolutionIndex,
+                              onChanged: (value) {
+                                setState(() {
+                                  questionsWithAnswers![_questionIndex]
+                                      .selectedSolutionIndex = value as int;
+                                  updateQuestionsSolved();
+                                });
+                              },
+                            ),
+                          ),
+                        )
+                      else
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Enter your answer',
+                              border: OutlineInputBorder(),
+                            ),
+                            // Handle text input for non-MCQ questions
+                            onChanged: (value) {
+                              // You can store the entered text in your data model or handle it as needed
+                            },
+                          ),
+                        ),
+                    ],
                   ),
               ],
             ),
@@ -287,16 +288,14 @@ class _ExamBodyState extends State<ExamBody> {
                     timerProvider.stopTimer();
                     bool hasMissedQuestions = checkMissedQuestions();
                     if (!hasMissedQuestions) {
-                      Future.delayed(const Duration(seconds: 2), () {
-                        final examId = startExamProvider.examId;
-                        log("exids: $examId");
-                        fetchAndNavigateToExamResultScreen({
-                          'exam_id': examId,
-                          'right_question': correctAnswerCount,
-                          'timer': elapsedTime.inMinutes,
-                          'mistakes': wrongQuestionIds,
-                        });
-                      });
+                      var postData = {
+                        'exam_id': widget.fetchedexamids,
+                        'answers': questionsWithAnswers!
+                            .map((q) => q.selectedSolutionIndex)
+                            .toList(),
+                        'time_taken': elapsedTime.inSeconds,
+                      };
+                      fetchAndNavigateToExamResultScreen(postData);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Answers submitted.'),
@@ -319,13 +318,17 @@ class _ExamBodyState extends State<ExamBody> {
 
   void goToNextQuestion() {
     setState(() {
-      _questionIndex++;
+      if (_questionIndex < questionsWithAnswers!.length - 1) {
+        _questionIndex++;
+      }
     });
   }
 
   void goToPreviousQuestion() {
     setState(() {
-      _questionIndex--;
+      if (_questionIndex > 0) {
+        _questionIndex--;
+      }
     });
   }
 
@@ -352,11 +355,11 @@ class _ExamBodyState extends State<ExamBody> {
                         : 'Missed',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color:
-                          questionsWithAnswers![index].selectedSolutionIndex !=
-                                  null
-                              ? Colors.green
-                              : Colors.red,
+                      color: questionsWithAnswers![index]
+                                  .selectedSolutionIndex !=
+                              null
+                          ? Colors.green
+                          : Colors.red,
                     ),
                   ),
                   const SizedBox(width: 20), // Adjust spacing as needed
@@ -501,7 +504,6 @@ class _ExamBodyState extends State<ExamBody> {
       final selectedAnswerIndex = questionsWithAnswers[i].selectedSolutionIndex;
       final correctAnswerIndex = questionsWithAnswers[i]
           .answers
-          // ignore: unnecessary_null_comparison
           .indexWhere((answer) => answer.mcqAns != null);
       log("selected answer: $selectedAnswerIndex");
       log("correct answer :$correctAnswerIndex ");

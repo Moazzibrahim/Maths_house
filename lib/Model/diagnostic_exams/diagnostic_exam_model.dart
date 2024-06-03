@@ -7,7 +7,8 @@ List<QuestionData> questionDataFromJson(String str) => List<QuestionData>.from(
 
 String questionDataToJson(List<QuestionData> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-class QuestionData  with ChangeNotifier{
+
+class QuestionData with ChangeNotifier {
   QuestionData({
     required this.courseId,
     required this.question,
@@ -42,24 +43,28 @@ class QuestionData  with ChangeNotifier{
         "question": question,
         "q_num": qNum,
         "q_type": qType,
-        "mcq": mcq != null ? List<dynamic>.from(mcq!.map((x) => x.toJson())) : null,
+        "mcq": mcq != null
+            ? List<dynamic>.from(mcq!.map((x) => x.toJson()))
+            : null,
         "g_ans": gAns,
       };
 }
 
-class Mcq  with ChangeNotifier{
+class Mcq with ChangeNotifier {
   Mcq({
     required this.id,
-    required this.mcqAns,
+    this.mcqAns,
     required this.mcqAnswers,
+    this.mcqnum,
     required this.qId,
     required this.createdAt,
     required this.updatedAt,
   });
 
   final int id;
-  final String mcqAns;
+  final String? mcqAns;
   final String mcqAnswers;
+  final String? mcqnum;
   final int qId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -68,6 +73,7 @@ class Mcq  with ChangeNotifier{
         id: json["id"],
         mcqAns: json["mcq_ans"],
         mcqAnswers: json["mcq_answers"],
+        mcqnum: json["mcq_num"],
         qId: json["q_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -77,6 +83,7 @@ class Mcq  with ChangeNotifier{
         "id": id,
         "mcq_ans": mcqAns,
         "mcq_answers": mcqAnswers,
+        "mcq_num": mcqnum,
         "q_id": qId,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),

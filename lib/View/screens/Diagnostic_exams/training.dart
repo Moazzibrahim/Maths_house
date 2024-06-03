@@ -9,7 +9,9 @@ import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_prov
 import 'package:provider/provider.dart';
 
 class DiagnosticExamScreen extends StatelessWidget {
-  const DiagnosticExamScreen({super.key,});
+  const DiagnosticExamScreen({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -373,25 +375,25 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (currentQuestion['q_url'] != null)
-                      Image.network(currentQuestion['q_url'], height: 200),
-                    const SizedBox(height: 10),
                     Text(
-                      'Question ${currentIndex + 1}: ${currentQuestion['question']}',
+                      'Question ${currentIndex + 1}:',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(height: 10),
+                    if (currentQuestion['q_url'] != null)
+                      Image.network(currentQuestion['q_url'], height: 200),
                     Column(
                       children:
                           List.generate(currentQuestion['mcq'].length, (index) {
                         final mcq = currentQuestion['mcq'][index];
                         return RadioListTile<String>(
-                          title: Text(' ${mcq['mcq_ans']}'),
+                          title: Text('${mcq['mcqnum']}.'),
                           value: mcq['mcq_ans'],
-                          groupValue: currentQuestion[
-                              'selectedAnswer'], // Set groupValue to null initially
+                          groupValue: currentQuestion['selectedAnswer'],
                           onChanged: (String? value) {
                             setState(() {
+                              // Update the selectedAnswer for the current question only
                               currentQuestion['selectedAnswer'] = value;
                             });
                           },
