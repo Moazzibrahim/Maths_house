@@ -71,7 +71,7 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
     List<double> prices = [];
     List<int> durations = [];
     List<double> discounts = [];
-    List<String> types = [];
+    String types="";
 
     for (var chapter in data['chapters']) {
       var apiChapter = chapter['api_lesson']['api_chapter'];
@@ -80,7 +80,7 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
       prices.add(apiChapter['price'][0]['price'].toDouble());
       durations.add(apiChapter['price'][0]['duration']);
       discounts.add(apiChapter['price'][0]['discount'].toDouble());
-      types.add(apiChapter['type']);
+     // types.add(apiChapter['type']);
     }
 
     return Scaffold(
@@ -157,7 +157,7 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
                               ids: ids,
                               durations: durations,
                               prices: prices,
-                              types: types,
+                           //   types: types,
                             ),
                           ),
                         );

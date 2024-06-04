@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/checkout/checkout_chapter_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/controller/diagnostic/get_course_provider.dart';
+import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart'; // Import ExamDuration screen
 import 'package:provider/provider.dart';
 
 class DiagnosticResultScreen extends StatefulWidget {
@@ -171,30 +171,30 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildCustomButton("Buy", () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.black,
-                        content: Text(
-                          "Done",
-                          style: TextStyle(color: Colors.white),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ExamDuration(
+                          chapterNames: chapterDetails
+                              .map(
+                                  (chapter) => chapter['chapterName'] as String)
+                              .toList(),
+                          ids: chapterDetails
+                              .map((chapter) => chapter['id'] as int)
+                              .toList(),
+                          prices: chapterDetails
+                              .map((chapter) => chapter['price'] as double)
+                              .toList(),
+                          durations: chapterDetails
+                              .map((chapter) => chapter['duration'] as int)
+                              .toList(),
+                          discounts: List<double>.filled(
+                              chapterDetails.length, 0), // Adjust accordingly
+                          // types: List<String>.filled(chapterDetails.length,
+                          //     'Chapters'), // Adjust accordingly
                         ),
                       ),
                     );
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CheckoutChapterScreen(
-                            chapterName: chapter['chapterName'],
-                            price: chapter['price'],
-                            duration: chapter['duration'],
-                            id: chapter['id'],
-                            type: 'Chapters',
-                            discount: 0, // Adjust accordingly
-                          ),
-                        ),
-                      );
-                    });
                   }),
                 ],
               ),
@@ -202,17 +202,6 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             ],
           );
         }),
-        // _buildCustomButton("Buy All", () {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(
-        //       backgroundColor: Colors.black,
-        //       content: Text(
-        //         "Done",
-        //         style: TextStyle(color: Colors.white),
-        //       ),
-        //     ),
-        //   );
-        // }),
         const SizedBox(height: 10),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/checkout/checkout_chapter_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +10,7 @@ class ExamDuration extends StatefulWidget {
   final List<double> prices;
   final List<int> durations;
   final List<double> discounts;
-  final List<String> types;
+ // final String types;
 
   const ExamDuration({
     super.key,
@@ -18,7 +19,7 @@ class ExamDuration extends StatefulWidget {
     required this.prices,
     required this.durations,
     required this.discounts,
-    required this.types,
+   // required this.types,
   });
 
   @override
@@ -97,6 +98,29 @@ class _ExamDurationState extends State<ExamDuration> {
               Text(
                 'Total Price: \$${totalPrice.toStringAsFixed(2)}',
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(),
+                  backgroundColor: Colors.redAccent[700],
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CheckoutChapterScreen(
+                            duration: widget.durations,
+                            price: totalPrice,
+                            id: widget.ids,
+                            type: "Chapter",
+                          )));
+                },
+                child: const Text(
+                  "check out",
+                  style: TextStyle(fontSize: 13, color: Colors.white),
+                ),
               ),
             ],
           ),

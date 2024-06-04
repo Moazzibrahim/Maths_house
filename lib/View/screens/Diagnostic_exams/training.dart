@@ -388,7 +388,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                           List.generate(currentQuestion['mcq'].length, (index) {
                         final mcq = currentQuestion['mcq'][index];
                         return RadioListTile<String>(
-                          title: Text('${mcq['mcqnum']}.'),
+                          title: Text('${mcq['mcq_num']}.'),
                           value: mcq['mcq_ans'],
                           groupValue: currentQuestion['selectedAnswer'],
                           onChanged: (String? value) {

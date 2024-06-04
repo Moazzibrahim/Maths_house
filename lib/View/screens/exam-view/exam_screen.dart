@@ -17,7 +17,7 @@ import 'package:http/http.dart' as http;
 
 class ExamScreen extends StatefulWidget {
   final int? fetchedexamid;
-  const ExamScreen({Key? key, this.fetchedexamid}) : super(key: key);
+  const ExamScreen({super.key, this.fetchedexamid});
 
   @override
   State<ExamScreen> createState() => _ExamScreenState();
@@ -52,6 +52,7 @@ class ExamBody extends StatefulWidget {
   const ExamBody({super.key, this.fetchedexamids});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ExamBodyState createState() => _ExamBodyState();
 }
 
@@ -90,7 +91,7 @@ class _ExamBodyState extends State<ExamBody> {
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
     final startExamProvider =
-        Provider.of<StartExamProvider>(context, listen: false);
+        Provider.of<StartExamProvider>(context, listen: false).examData;
     log("exxxid: ${widget.fetchedexamids}");
 
     if (questionsWithAnswers == null) {
@@ -110,6 +111,7 @@ class _ExamBodyState extends State<ExamBody> {
             await fetchExamResults(postData);
 
         Navigator.push(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
             builder: (context) => ExamResultScreen(
@@ -153,7 +155,7 @@ class _ExamBodyState extends State<ExamBody> {
                         width: 100
                             .w), // Spacing between timer and solved questions
                     Text(
-                      "Solved: $questionsSolved / $totalQuestions questions",
+                      "Solved: $questionsSolved / ${questionsWithAnswers!.length} questions",
                       style: const TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w500),
                     ),
@@ -203,7 +205,9 @@ class _ExamBodyState extends State<ExamBody> {
                           'MCQ')
                         Column(
                           children: List.generate(
-                            questionsWithAnswers![_questionIndex].mcqOptions.length,
+                            questionsWithAnswers![_questionIndex]
+                                .mcqOptions
+                                .length,
                             (index) => RadioListTile(
                               title: Text(
                                 " ${questionsWithAnswers![_questionIndex].answers[index].mcqnum!}.",
@@ -355,11 +359,11 @@ class _ExamBodyState extends State<ExamBody> {
                         : 'Missed',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: questionsWithAnswers![index]
-                                  .selectedSolutionIndex !=
-                              null
-                          ? Colors.green
-                          : Colors.red,
+                      color:
+                          questionsWithAnswers![index].selectedSolutionIndex !=
+                                  null
+                              ? Colors.green
+                              : Colors.red,
                     ),
                   ),
                   const SizedBox(width: 20), // Adjust spacing as needed
@@ -407,42 +411,49 @@ class _ExamBodyState extends State<ExamBody> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('You have missed these questions:'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              missedQuestions.length,
-              (index) => ListTile(
-                title: Text('Question ${missedQuestions[index] + 1}'),
-                trailing: ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                  onPressed: () {
-                    setState(() {
-                      _questionIndex = missedQuestions[index];
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'View',
-                    style: TextStyle(color: Colors.white),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max, // Allow content to expand
+              children: List.generate(
+                missedQuestions.length,
+                (index) => ListTile(
+                  title: Text('Question ${missedQuestions[index] + 1}'),
+                  trailing: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor),
+                    onPressed: () {
+                      setState(() {
+                        _questionIndex = missedQuestions[index];
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'View',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
           actions: [
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                onPressed: () {
-                  Navigator.pop(context);
-                  submitAnswers(questionsWithAnswers!);
-                },
-                child: const Text(
-                  'OK',
-                  style: TextStyle(color: Colors.white),
+            Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween, // Align button to end
+              children: [
+                ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    submitAnswers(questionsWithAnswers!);
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         );
