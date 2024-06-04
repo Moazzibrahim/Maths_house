@@ -8,60 +8,69 @@ class QuizzesModel {
     required this.id,
     required this.questionQuizList,
   });
-  factory QuizzesModel.fromJson(Map<String, dynamic> json) { 
+  factory QuizzesModel.fromJson(Map<String, dynamic> json) {
     List<QuestionsQuiz> qql = [];
-    List<dynamic> questionsQuizList= json['question_api'];
-    for(var e in questionsQuizList){
+    List<dynamic> questionsQuizList = json['question_api'];
+    for (var e in questionsQuizList) {
       qql.add(QuestionsQuiz.fromJson(e));
     }
     return QuizzesModel(
-        title: json['title']??'no title',
-        id: json['id']?? 0,
-        questionQuizList: qql,
-      );
+      title: json['title'] ?? 'no title',
+      id: json['id'] ?? 0,
+      questionQuizList: qql,
+    );
   }
 }
 
 class QuestionsQuiz {
   final int questionId;
-  final String question;
+  final String? question;
+  final String qUrl;
   final List<McqQuiz> mcqQuizList;
   final List<GridAnswer> gridList;
 
   QuestionsQuiz({
-      required this.questionId,
-      required this.question,
-      required this.mcqQuizList,
-      required this.gridList,
-      });
+    required this.questionId,
+    required this.question,
+    required this.qUrl,
+    required this.mcqQuizList,
+    required this.gridList,
+  });
   factory QuestionsQuiz.fromJson(Map<String, dynamic> json) {
     List<McqQuiz> mcql = [];
     List<dynamic> mcqQuizList = json['mcq'];
-    for(var e in mcqQuizList){
+    for (var e in mcqQuizList) {
       mcql.add(McqQuiz.fromJson(e));
     }
-    List<GridAnswer> gal=[];
-    List<dynamic> gridAnswerList = json['g_ans']??[];
-    for(var e in gridAnswerList){
+    List<GridAnswer> gal = [];
+    List<dynamic> gridAnswerList = json['g_ans'] ?? [];
+    for (var e in gridAnswerList) {
       gal.add(GridAnswer.fromJson(e));
     }
     return QuestionsQuiz(
-        questionId: json['id']?? 'no id',
-        question: json['question']??'no question',
-        mcqQuizList: mcql,
-        gridList: gal,
-      );
+      questionId: json['id'] ?? 'no id',
+      question: json['question'] ?? '',
+      qUrl: json['q_url'],
+      mcqQuizList: mcql,
+      gridList: gal,
+    );
   }
 }
 
 class McqQuiz {
-  final String choice;
-  final String answer;
+  final String? choice;
+  final String? mcqNum;
+  final String? answer;
 
-  McqQuiz({required this.choice, required this.answer});
+  McqQuiz({
+    required this.choice,
+    required this.answer,
+    required this.mcqNum,
+  });
   factory McqQuiz.fromJson(Map<String, dynamic> json) => McqQuiz(
-        choice: json['mcq_ans']?? 'no choice',
-        answer: json['mcq_answers']?? 'no ans',
+        choice: json['mcq_ans'] ?? '',
+        mcqNum: json['mcq_num'] ?? '',
+        answer: json['mcq_answers'] ?? 'no ans',
       );
 }
 
@@ -71,10 +80,9 @@ class GridAnswer {
   GridAnswer({required this.correctAnswer});
 
   factory GridAnswer.fromJson(Map<String, dynamic> json) => GridAnswer(
-        correctAnswer: json['grid_ans']??'no grid ans',
+        correctAnswer: json['grid_ans'] ?? 'no grid ans',
       );
 }
-
 
 class QuizzesModelList {
   final List<dynamic> quizzesModelList;
@@ -82,8 +90,6 @@ class QuizzesModelList {
   QuizzesModelList({required this.quizzesModelList});
   factory QuizzesModelList.fromJson(Map<String, dynamic> json) =>
       QuizzesModelList(
-        quizzesModelList: json['quiz']??[],
+        quizzesModelList: json['quiz'] ?? [],
       );
 }
-
-

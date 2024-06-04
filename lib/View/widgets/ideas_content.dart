@@ -151,7 +151,7 @@ class _IdeasContentState extends State<IdeasContent> {
                 ],
               );
             },
-          ): Text('wowowowowowow')
+          ):const Text('no more videos')
           ],
         ),
       ),

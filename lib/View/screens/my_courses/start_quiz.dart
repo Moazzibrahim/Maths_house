@@ -85,7 +85,7 @@ class _StartQuizState extends State<StartQuiz> {
   }
 
   RadioListTile buildRadioListTile(QuestionsQuiz questionsQuiz, int i) {
-    String mcqChoice = questionsQuiz.mcqQuizList[i].choice;
+    String mcqChoice = questionsQuiz.mcqQuizList[i].mcqNum!;
     String mcqValue = String.fromCharCode(i + 65);
 
     return RadioListTile(
@@ -132,10 +132,7 @@ class _StartQuizState extends State<StartQuiz> {
                     ),
                   ],
                 ),
-                Text(
-                  currentQuestion.question,
-                  style: const TextStyle(fontSize: 20),
-                ),
+                Image.network(currentQuestion.qUrl),
                 if (currentQuestion.mcqQuizList.isNotEmpty)
                   for (int i = 0; i < currentQuestion.mcqQuizList.length; i++)
                     buildRadioListTile(currentQuestion, i)
