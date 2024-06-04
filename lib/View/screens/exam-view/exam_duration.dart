@@ -10,7 +10,6 @@ class ExamDuration extends StatefulWidget {
   final List<double> prices;
   final List<int> durations;
   final List<double> discounts;
- // final String types;
 
   const ExamDuration({
     super.key,
@@ -19,7 +18,6 @@ class ExamDuration extends StatefulWidget {
     required this.prices,
     required this.durations,
     required this.discounts,
-   // required this.types,
   });
 
   @override
@@ -28,10 +26,31 @@ class ExamDuration extends StatefulWidget {
 
 class _ExamDurationState extends State<ExamDuration> {
   Map<int, double> selectedPrices = {};
+  Map<int, int> selectedDurations = {};
   double totalPrice = 0.0;
+  bool showError = false;
 
   void _updateTotalPrice() {
     totalPrice = selectedPrices.values.fold(0.0, (sum, price) => sum + price);
+  }
+
+  void _checkout() {
+    if (selectedDurations.isEmpty) {
+      setState(() {
+        showError = true;
+      });
+    } else {
+      setState(() {
+        showError = false;
+      });
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => CheckoutChapterScreen(
+                duration: selectedDurations.values.toList(),
+                price: totalPrice,
+                id: widget.ids,
+                type: "Chapter",
+              )));
+    }
   }
 
   @override
@@ -81,6 +100,7 @@ class _ExamDurationState extends State<ExamDuration> {
                                 widget.durations.indexOf(selectedDuration);
                             double price = widget.prices[index];
                             selectedPrices[i] = price;
+                            selectedDurations[i] = selectedDuration;
                             _updateTotalPrice();
                           });
                         }
@@ -102,21 +122,21 @@ class _ExamDurationState extends State<ExamDuration> {
               const SizedBox(
                 height: 14,
               ),
+              if (showError)
+                Text(
+                  'You must select at least one duration first!',
+                  style: TextStyle(fontSize: 14.sp, color: Colors.red),
+                ),
+              const SizedBox(
+                height: 10,
+              ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(),
                   backgroundColor: Colors.redAccent[700],
                   foregroundColor: Colors.white,
                 ),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CheckoutChapterScreen(
-                            duration: widget.durations,
-                            price: totalPrice,
-                            id: widget.ids,
-                            type: "Chapter",
-                          )));
-                },
+                onPressed: _checkout,
                 child: const Text(
                   "check out",
                   style: TextStyle(fontSize: 13, color: Colors.white),

@@ -87,6 +87,33 @@ class _ExamBodyState extends State<ExamBody> {
     }
   }
 
+  Future<void> fetchAndNavigateToExamResultScreen(
+      Map<String, dynamic> postData) async {
+    try {
+      final Map<String, dynamic>? examResults =
+          await fetchExamResults(postData);
+
+      Navigator.push(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => ExamResultScreen(
+            examresults: examResults,
+            correctAnswerCount: correctAnswerCount,
+            totalQuestions: totalQuestions,
+            wrongAnswerQuestions: wrongAnswerCount,
+            elapsedtime: elapsedTime.inMinutes,
+            wrongids: wrongQuestionIds,
+            exxxid: widget.fetchedexamids,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error fetching exam results: $e');
+      // Handle error, e.g., show error dialog
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final timerProvider = Provider.of<TimerProvider>(context, listen: false);
@@ -102,33 +129,6 @@ class _ExamBodyState extends State<ExamBody> {
       return const Center(
         child: Text("No questions available"),
       );
-    }
-
-    Future<void> fetchAndNavigateToExamResultScreen(
-        Map<String, dynamic> postData) async {
-      try {
-        final Map<String, dynamic>? examResults =
-            await fetchExamResults(postData);
-
-        Navigator.push(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-            builder: (context) => ExamResultScreen(
-              examresults: examResults,
-              correctAnswerCount: correctAnswerCount,
-              totalQuestions: totalQuestions,
-              wrongAnswerQuestions: wrongAnswerCount,
-              elapsedtime: elapsedTime.inMinutes,
-              wrongids: wrongQuestionIds,
-              exxxid: widget.fetchedexamids,
-            ),
-          ),
-        );
-      } catch (e) {
-        print('Error fetching exam results: $e');
-        // Handle error, e.g., show error dialog
-      }
     }
 
     return SingleChildScrollView(
@@ -438,18 +438,38 @@ class _ExamBodyState extends State<ExamBody> {
           ),
           actions: [
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween, // Align button to end
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                   onPressed: () {
                     Navigator.pop(context);
-                    submitAnswers(questionsWithAnswers!);
                   },
                   child: const Text(
                     'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _isSubmitting = true;
+                    });
+                    submitAnswers(questionsWithAnswers!);
+                    fetchAndNavigateToExamResultScreen({
+                      'exam_id': widget.fetchedexamids,
+                      'answers': questionsWithAnswers!
+                          .map((q) => q.selectedSolutionIndex)
+                          .toList(),
+                      'time_taken': elapsedTime.inSeconds,
+                    });
+                  },
+                  child: const Text(
+                    'Submit',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
