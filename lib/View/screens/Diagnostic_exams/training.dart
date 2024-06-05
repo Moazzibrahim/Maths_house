@@ -1,16 +1,20 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class DiagnosticExamScreen extends StatelessWidget {
+  final int selectedCourseId;
   const DiagnosticExamScreen({
     super.key,
+    required this.selectedCourseId,
   });
 
   @override
@@ -25,7 +29,9 @@ class DiagnosticExamScreen extends StatelessWidget {
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const RegisteredHomeScreen()));
+                builder: (context) => const TabsScreen(
+                      isLoggedIn: false,
+                    )));
           },
         ),
       ),
@@ -35,7 +41,7 @@ class DiagnosticExamScreen extends StatelessWidget {
           builder: (context, provider, _) {
             if (provider.alldiagnostics.isEmpty) {
               // Data not loaded yet, fetch data
-              provider.fetchDataFromApi(context);
+              provider.fetchDataFromApi(context, selectedCourseId);
               return const Center(
                 child: CircularProgressIndicator(),
               );
@@ -192,27 +198,25 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
     int correctCount = 0;
     int wrongCount = 0;
 
+    // Clear missedQuestions at the start of the method
+    missedQuestions.clear();
+
     await Future.forEach(provider.alldiagnostics, (currentQuestion) async {
-      var selectedAnswer = currentQuestion['selectedAnswer'];
-      final correctAnswer = currentQuestion['mcq'][0]['mcq_answers'];
+      var selectedAnswerIndex = currentQuestion['selectedAnswer'];
+      final correctAnswerIndex =
+          currentQuestion['mcq'].indexWhere((mcq) => mcq['mcq_answers'] != null);
+      log("selected answer index: $selectedAnswerIndex");
+      log("correct answer index: $correctAnswerIndex");
 
-      if (selectedAnswer != null && selectedAnswer is String) {
-        final mcqOptions = currentQuestion['mcq'];
-        for (int j = 0; j < mcqOptions.length; j++) {
-          if (selectedAnswer == mcqOptions[j]['mcq_ans']) {
-            selectedAnswer = String.fromCharCode(65 + j);
-            currentQuestion['selectedAnswer'] = selectedAnswer;
-            break;
-          }
-        }
-      }
-
-      if (selectedAnswer == null) {
+      if (selectedAnswerIndex == null) {
         if (unansweredIndex == -1) {
           unansweredIndex = provider.alldiagnostics.indexOf(currentQuestion);
         }
         missedQuestions.add(provider.alldiagnostics.indexOf(currentQuestion));
-      } else if (selectedAnswer == correctAnswer) {
+        wrongCount++; // Increment wrongCount for missed questions
+        wrongQuestionIds.add(currentQuestion[
+            'id']); // Add missed question IDs to wrongQuestionIds
+      } else if (selectedAnswerIndex == correctAnswerIndex) {
         correctCount++;
       } else {
         wrongCount++;
@@ -226,78 +230,95 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Unanswered Questions'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(missedQuestions.length, (index) {
-                final int unansweredIndex = missedQuestions[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Text('Question ${unansweredIndex + 1} is missed '),
-                      const SizedBox(width: 7),
-                      ElevatedButton(
+          return SingleChildScrollView(
+            child: AlertDialog(
+              title: const Text('Unanswered Questions'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(missedQuestions.length, (index) {
+                  final int unansweredIndex = missedQuestions[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        Text('Question ${unansweredIndex + 1} is missed '),
+                        SizedBox(width: 7.w),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: faceBookColor),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              currentIndex = unansweredIndex;
+                            });
+                          },
+                          child: const Text('View',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: faceBookColor),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('OK',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: faceBookColor),
                         onPressed: () {
-                          Navigator.pop(context);
-                          setState(() {
-                            currentIndex = unansweredIndex;
+                          int minutes = _seconds ~/ 60;
+                          int seconds = _seconds % 60;
+                          storeExamResults(
+                              correctCount,
+                              wrongCount,
+                              minutes,
+                              wrongQuestionIds,
+                              provider.alldiagnostics.length,
+                              score,
+                              passscore);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Your answers are submitted')));
+                          Future.delayed(const Duration(seconds: 2), () {
+                            if (!mounted) return;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiagnosticResultScreen(
+                                  wrongCount: wrongCount,
+                                  correctCount: correctCount,
+                                  totalQuestions:
+                                      provider.alldiagnostics.length,
+                                  score: score,
+                                  passscore: passscore,
+                                  seconds: seconds,
+                                  wrongQuestionIds: wrongQuestionIds,
+                                  exid: provider.exid,
+                                ),
+                              ),
+                            );
                           });
                         },
-                        child: const Text('View',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-            ),
-            actions: [
-              Center(
-                child: ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                  onPressed: () {
-                    int minutes = _seconds ~/ 60;
-                    int seconds = _seconds % 60;
-                    storeExamResults(
-                        correctCount,
-                        wrongCount,
-                        minutes,
-                        wrongQuestionIds,
-                        provider.alldiagnostics.length,
-                        score,
-                        passscore);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Your answers are submitted')));
-                    Future.delayed(const Duration(seconds: 2), () {
-                      if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DiagnosticResultScreen(
-                            wrongCount: wrongCount,
-                            correctCount: correctCount,
-                            totalQuestions: provider.alldiagnostics.length,
-                            score: score,
-                            passscore: passscore,
-                            seconds: seconds,
-                            wrongQuestionIds: wrongQuestionIds,
-                            exid: provider.exid,
-                          ),
-                        ),
-                      );
-                    });
-                  },
-                  child:
-                      const Text('OK', style: TextStyle(color: Colors.white)),
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(color: Colors.white),
+                        ))
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       );
@@ -354,14 +375,14 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                   child: Row(
                     children: [
                       const Icon(Icons.timer, color: Colors.white),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       Text(
                         '$minutes:${seconds < 10 ? '0$seconds' : seconds}',
                         style:
                             const TextStyle(fontSize: 16, color: Colors.white),
                       ),
-                      const SizedBox(
-                        width: 120,
+                      SizedBox(
+                        width: 120.w,
                       ),
                       Text(
                         'Answered: $answeredCount/${allDiagnostics.length}',
@@ -371,7 +392,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -380,18 +401,18 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10.h),
                     if (currentQuestion['q_url'] != null)
                       Image.network(currentQuestion['q_url'], height: 200),
                     Column(
                       children:
                           List.generate(currentQuestion['mcq'].length, (index) {
                         final mcq = currentQuestion['mcq'][index];
-                        return RadioListTile<String>(
+                        return RadioListTile(
                           title: Text('${mcq['mcq_num']}.'),
-                          value: mcq['mcq_ans'],
+                          value: index,
                           groupValue: currentQuestion['selectedAnswer'],
-                          onChanged: (String? value) {
+                          onChanged: (value) {
                             setState(() {
                               // Update the selectedAnswer for the current question only
                               currentQuestion['selectedAnswer'] = value;
@@ -400,7 +421,7 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
                         );
                       }),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [

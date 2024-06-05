@@ -1,7 +1,6 @@
-// ignore_for_file: use_super_parameters, avoid_print, use_build_context_synchronously
+// ignore_for_file: use_super_parameters, avoid_print, use_build_context_synchronously, unused_field
 
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/training.dart';
@@ -21,17 +20,16 @@ class DiagnosticFilterScreen extends StatefulWidget {
 class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
   String? _selectedCategory;
   String? _selectedCourse;
+  int? _selectedCourseId;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<DiagnosticFilterationProvider>(context, listen: false)
-        .fetchdiagdata(context);
+    Provider.of<DiagnosticFilterationProvider>(context, listen: false).fetchdiagdata(context);
   }
 
   Future<void> sendFiltersDiagnosticToServers() async {
     if (_selectedCategory == null || _selectedCourse == null) {
-      // If either category or course is not selected, show a Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('You must fill both category and course!'),
@@ -43,40 +41,39 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
-    final provider =
-        Provider.of<DiagnosticFilterationProvider>(context, listen: false);
+    final provider = Provider.of<DiagnosticFilterationProvider>(context, listen: false);
     final selectedCourse = _selectedCourse;
 
     final selectedCourseId = provider.courseIds.firstWhere(
       (courseId) => selectedCourse == provider.courseData[courseId - 15],
-      orElse: () => -1, // Return a default value if not found
+      orElse: () => -1,
     );
 
     if (selectedCourseId == -1) {
-      // Handle the case where the course is not found
-      // You can show an error message or handle it accordingly
-      print('Selected course not found!');
+      log('Selected course not found!');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Selected course not found!'),
+        ),
+      );
       return;
     }
 
-// Use selectedCourseId as needed
-    print('Selected Course ID: $selectedCourseId');
-// Adjusted index here
+    setState(() {
+      _selectedCourseId = selectedCourseId;
+    });
 
     log("selected course id: $selectedCourseId");
 
-    // Construct the URL with the selected course ID
     final url = Uri.parse(
         'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam/$selectedCourseId');
 
-    // Construct the request body with selected filter values
     final Map<String, dynamic> requestBody = {
       'category': _selectedCategory,
       'course': selectedCourseId.toString(),
     };
 
     try {
-      // Send a POST request to the server
       final response = await http.post(
         url,
         body: jsonEncode(requestBody),
@@ -84,33 +81,36 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
-          // Add any additional headers if required
         },
       );
 
-      // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
-        // Request was successful, handle the response here
-        print('Filters sent successfully!');
-        print('Response body: ${response.body}');
+        log('Filters sent successfully!');
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const DiagnosticExamScreen(),
+            builder: (context) =>  DiagnosticExamScreen(selectedCourseId: selectedCourseId,),
           ),
         );
       } else {
-        // Request failed, handle error here
-        print('Failed to send filters. Status code: ${response.statusCode}');
+        log('Failed to send filters. Status code: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to send filters. Status code: ${response.statusCode}'),
+          ),
+        );
       }
     } catch (error) {
-      // Handle any errors that occur during the HTTP request
-      print('Error sending filters: $error');
+      log('Error sending filters: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error sending filters: $error'),
+        ),
+      );
     }
   }
 
-  Widget _buildDropdownContainer(
-      {required String hint, required Widget child}) {
+  Widget _buildDropdownContainer({required String hint, required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -146,8 +146,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
       ),
       body: Consumer<DiagnosticFilterationProvider>(
         builder: (context, provider, _) {
-          List<String> uniqueCategories =
-              provider.categoryData.toSet().toList();
+          List<String> uniqueCategories = provider.categoryData.toSet().toList();
           List<String> uniqueCourses = provider.courseData.toSet().toList();
           return provider.courseData.isEmpty || provider.categoryData.isEmpty
               ? const Center(
@@ -182,7 +181,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 20), // Adjust as needed
+                      const SizedBox(height: 20),
                       _buildDropdownContainer(
                         hint: "Select Course",
                         child: DropdownButtonFormField<String>(
@@ -194,7 +193,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                                 value: course,
                                 child: Row(
                                   children: [
-                                    Text(course), // Customize arrow color here
+                                    Text(course),
                                   ],
                                 ),
                               ),
