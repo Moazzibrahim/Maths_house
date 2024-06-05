@@ -7,6 +7,8 @@ class CustomPackage extends StatelessWidget {
   final String text2;
   final String text3;
   final String text4;
+  final String text5;
+
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -16,6 +18,7 @@ class CustomPackage extends StatelessWidget {
     required this.text2,
     required this.text3,
     required this.text4,
+    required this.text5,
     required this.isSelected,
     required this.onTap,
   });
@@ -49,6 +52,10 @@ class CustomPackage extends StatelessWidget {
                 ),
                 Text(
                   'Duration: $text3',
+                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                ),
+                Text(
+                  'number: $text5',
                   style: const TextStyle(fontSize: 18, color: Colors.black54),
                 ),
                 Text(

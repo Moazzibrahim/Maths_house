@@ -5,12 +5,15 @@ import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChapterDurationScreen extends StatefulWidget {
-  const ChapterDurationScreen(
-      {super.key,
-      required this.chapterActiveStatus,
-      required this.chaptersList});
+  const ChapterDurationScreen({
+    super.key,
+    required this.chapterActiveStatus,
+    required this.chaptersList,
+    required this.courseid,
+  });
   final List<bool> chapterActiveStatus;
   final List<ChapterWithPrice> chaptersList;
+  final int courseid;
 
   @override
   State<ChapterDurationScreen> createState() => _ChapterDurationScreenState();
@@ -105,9 +108,11 @@ class _ChapterDurationScreenState extends State<ChapterDurationScreen> {
                 child: ElevatedButton(
                   onPressed: totalPrice != 0.0
                       ? () {
+                          print('hamo:$totalPrice');
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (ctx) => CheckoutChapterScreen(
+                                courseid: widget.courseid,
                                 id: ids,
                                 price: totalPrice,
                                 type: 'Chapter',

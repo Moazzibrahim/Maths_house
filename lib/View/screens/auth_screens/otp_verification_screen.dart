@@ -169,7 +169,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 child: Pinput(
-                  length: 5,
+                  length: 6,
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: defaultPinTheme.copyWith(
                     decoration: defaultPinTheme.decoration!.copyWith(

@@ -185,7 +185,13 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                         } else {
                           if (chapterActiveStatus.contains(false)) {
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (ctx)=> ChapterDurationScreen(chapterActiveStatus: chapterActiveStatus,chaptersList: chaptersList,))
+                              MaterialPageRoute(
+                                builder: (ctx) => ChapterDurationScreen(
+                                  chapterActiveStatus: chapterActiveStatus,
+                                  chaptersList: chaptersList,
+                                  courseid: widget.course.id,
+                                ),
+                              ),
                             );
                           } else {
                             log('$selectedPrice');

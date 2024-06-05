@@ -1,3 +1,4 @@
+// live_model.dart
 import 'package:flutter/material.dart';
 
 class SessionResponse with ChangeNotifier {
@@ -15,11 +16,11 @@ class SessionResponse with ChangeNotifier {
 }
 
 class Session {
-  int id;
-  int sessionId;
-  int userId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? id;
+  int? sessionId;
+  int? userId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   SessionData session;
 
   Session({
@@ -36,31 +37,35 @@ class Session {
       id: json['id'],
       sessionId: json['session_id'],
       userId: json['user_id'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
       session: SessionData.fromJson(json['session']),
     );
   }
 }
 
 class SessionData {
-  int id;
-  String name;
-  DateTime date;
-  String link;
+  int? id;
+  String? name;
+  DateTime? date;
+  String? link;
   String? materialLink;
   String from;
   String to;
-  int duration;
+  int? duration;
   int lessonId;
   int teacherId;
   int groupId;
   String type;
   int? price;
   int? accessDays;
-  String repeat;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String? repeat;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   SessionData({
     required this.id,
@@ -70,14 +75,14 @@ class SessionData {
     this.materialLink,
     required this.from,
     required this.to,
-    required this.duration,
+    this.duration,
     required this.lessonId,
     required this.teacherId,
     required this.groupId,
     required this.type,
     this.price,
     this.accessDays,
-    required this.repeat,
+    this.repeat,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -85,22 +90,27 @@ class SessionData {
   factory SessionData.fromJson(Map<String, dynamic> json) {
     return SessionData(
       id: json['id'],
-      name: json['name'],
-      date: DateTime.parse(json['date']),
-      link: json['link'],
+      name: json['name'] ?? '',
+      date:
+          json['date'] != null ? DateTime.parse(json['date']) : DateTime.now(),
+      link: json['link'] ?? '',
       materialLink: json['material_link'],
-      from: json['from'],
-      to: json['to'],
+      from: json['from'] ?? '',
+      to: json['to'] ?? '',
       duration: json['duration'],
-      lessonId: json['lesson_id'],
-      teacherId: json['teacher_id'],
-      groupId: json['group_id'],
-      type: json['type'],
+      lessonId: json['lesson_id'] ?? 0,
+      teacherId: json['teacher_id'] ?? 0,
+      groupId: json['group_id'] ?? 0,
+      type: json['type'] ?? '',
       price: json['price'],
-      accessDays: json['access_days'],
+      accessDays: json['access_dayes'],
       repeat: json['repeat'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
     );
   }
 }

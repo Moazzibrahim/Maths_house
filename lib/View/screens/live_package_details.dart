@@ -47,6 +47,7 @@ class _livePackageDetailsState extends State<LivePackageDetails> {
                       text2: live.module,
                       text3: live.duration.toString(),
                       text4: live.price.toString(),
+                      text5: live.number.toString(),
                       isSelected: selectedIndex == index,
                       onTap: () {
                         setState(() {
@@ -72,7 +73,7 @@ class _livePackageDetailsState extends State<LivePackageDetails> {
                                     .alllivepackage[selectedIndex].name,
                                 price: packageProvider
                                     .alllivepackage[selectedIndex].price,
-                                     duration: packageProvider
+                                duration: packageProvider
                                     .alllivepackage[selectedIndex].duration,
                               )),
                     );
