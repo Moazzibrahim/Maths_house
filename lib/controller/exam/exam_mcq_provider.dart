@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'dart:convert';
@@ -10,7 +11,7 @@ import 'dart:async';
 
 class ExamMcqProvider with ChangeNotifier {
   Future<List<QuestionWithAnswers>> fetchExamDataFromApi(
-      BuildContext context) async {
+      BuildContext context,int id) async {
     final startExamProvider =
         Provider.of<StartExamProvider>(context, listen: false);
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -20,16 +21,13 @@ class ExamMcqProvider with ChangeNotifier {
     const int maxRetries = 5;
     const int initialDelay = 1000; // Initial delay in milliseconds
 
+    // ignore: unused_local_variable
     for (var examItem in startExamProvider.examData) {
-      final examId = examItem.examid;
-
-      if (examId == null) {
-        debugPrint('Exam ID is null for an exam item');
-        continue;
-      }
 
       final url =
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$examId';
+          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$id';
+      log("url: $url");
+      log("exaamid: $id");
 
       try {
         final response =
@@ -42,7 +40,7 @@ class ExamMcqProvider with ChangeNotifier {
               jsonData['exam']['questionExam'] != null) {
             debugPrint('Exam data exists, parsing...');
             final examData = jsonData['exam']['questionExam'];
-            log('Exam data: $examData');
+            //log('Exam data: $examData');
             for (var element in examData) {
               final question = Question.fromJson(element['question']);
               final answers = (element['Answers'] as List)
@@ -59,9 +57,9 @@ class ExamMcqProvider with ChangeNotifier {
                       .map((answer) => answer.mcqAns!)
                       .toList(),
                 ));
-                log("Aggregated allQuestionsWithAnswers: $allQuestionsWithAnswers");
+                //  log("Aggregated allQuestionsWithAnswers: $allQuestionsWithAnswers");
               } else {
-                debugPrint('No answers found for exam ID $examId');
+                debugPrint('No answers found for exam ID $id');
               }
             }
           }
@@ -71,7 +69,7 @@ class ExamMcqProvider with ChangeNotifier {
       } catch (e) {
         debugPrint('Error: $e');
         debugPrint(
-            'Max retries reached. Failed to fetch exam data for exam ID $examId');
+            'Max retries reached. Failed to fetch exam data for exam ID $id');
       }
     }
 

@@ -60,7 +60,7 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                       ),
                       DataColumn(
                         label: Text(
-                          'Q.num',
+                          'Actions',
                         ),
                         numeric: true,
                       ),
@@ -78,7 +78,7 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                       ),
                       DataColumn(
                         label: Text(
-                          'Actions',
+                          'Q.num',
                         ),
                         numeric: true,
                       ),
@@ -89,28 +89,47 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                           cells: [
                             DataCell(Text(e.date)),
                             DataCell(
-                              Column(
-                                children: [
-                                  Text('Course: ${e.courseName}'),
-                                  Text('Chapter: ${e.chapterName}'),
-                                  Text('Lesson: ${e.lessonName}')
-                                ],
+                              ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Details'),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text('Course: ${e.courseName}'),
+                                            Text('Chapter: ${e.chapterName}'),
+                                            Text('Lesson: ${e.lessonName}'),
+                                          ],
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Close'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 7, horizontal: 5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor: Colors.redAccent[700],
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('View Details'),
                               ),
                             ),
                             DataCell(Text(e.quizName)),
                             DataCell(Text(e.score.toString())),
-                            DataCell(
-                              Text(e.questions.length.toString()),
-                            ),
-                            DataCell(
-                              Column(
-                                children: [
-                                  Text('right answers: ${e.rightCount.toString()}'),
-                                  Text('wrong answers: ${e.questions.length - e.rightCount}'),
-                                ],
-                              ),
-                            ),
-                            DataCell(Text(e.time)),
                             DataCell(
                               ElevatedButton(
                                 onPressed: () {
@@ -163,6 +182,21 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                 child: const Text('View Mistake'),
                               ),
                             ),
+                            DataCell(
+                              Text(e.questions.length.toString()),
+                            ),
+                            DataCell(
+                              Column(
+                                children: [
+                                  Text(
+                                      'right answers: ${e.rightCount.toString()}'),
+                                  Text(
+                                      'wrong answers: ${e.questions.length - e.rightCount}'),
+                                ],
+                              ),
+                            ),
+                            DataCell(Text(e.time)),
+                            
                           ],
                         ),
                     ],
