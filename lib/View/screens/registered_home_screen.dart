@@ -22,11 +22,11 @@ class RegisteredHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading:  Column(
+        leading: Column(
           children: [
             CircleAvatar(
               radius: 21.r,
-              backgroundImage:const AssetImage('assets/images/logo.jpg'),
+              backgroundImage: const AssetImage('assets/images/logo.jpg'),
             ),
           ],
         ),
@@ -61,7 +61,9 @@ class RegisteredHomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10,)
+                        const SizedBox(
+                          height: 10,
+                        )
                       ],
                     );
                   }
