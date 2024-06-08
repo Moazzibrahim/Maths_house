@@ -170,7 +170,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
     if (chapterDetails.isEmpty) {
       return const Text(
         "No chapters available",
-        style: TextStyle(fontSize: 16, color: Colors.red),
+        style: TextStyle(fontSize: 16, color: Colors.black),
       );
     }
 

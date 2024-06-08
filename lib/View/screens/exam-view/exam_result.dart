@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam/get_exam_provider.dart';
 import 'package:provider/provider.dart';
@@ -101,7 +101,9 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const RegisteredHomeScreen(),
+              builder: (context) => const TabsScreen(
+                isLoggedIn: false,
+              ),
             ));
           },
           icon: const Icon(

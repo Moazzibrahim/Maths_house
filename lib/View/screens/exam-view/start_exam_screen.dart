@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/widgets/Exams/start_exam_widget.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -33,7 +34,8 @@ class ExamScreenstart extends StatelessWidget {
               color: faceBookColor,
             ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => const TabsScreen(isLoggedIn: false)));
             }),
       ),
       body: ListView.builder(
