@@ -76,4 +76,10 @@ class StartExamProvider with ChangeNotifier {
 
     throw Exception('Failed to load data after $maxRetries attempts');
   }
+
+  void clearExamData() {
+    examData.clear();
+    examIds.clear();
+    notifyListeners();
+  }
 }

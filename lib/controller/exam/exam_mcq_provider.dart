@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'dart:convert';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -12,8 +11,8 @@ import 'dart:async';
 class ExamMcqProvider with ChangeNotifier {
   Future<List<QuestionWithAnswers>> fetchExamDataFromApi(
       BuildContext context, int id) async {
-    final startExamProvider =
-        Provider.of<StartExamProvider>(context, listen: false);
+    // final startExamProvider =
+    //     Provider.of<StartExamProvider>(context, listen: false);
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
