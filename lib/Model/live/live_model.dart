@@ -1,4 +1,3 @@
-// live_model.dart
 import 'package:flutter/material.dart';
 
 class SessionResponse with ChangeNotifier {
@@ -39,10 +38,10 @@ class Session {
       userId: json['user_id'],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+          : null,
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
-          : DateTime.now(),
+          : null,
       session: SessionData.fromJson(json['session']),
     );
   }
@@ -91,8 +90,7 @@ class SessionData {
     return SessionData(
       id: json['id'],
       name: json['name'] ?? '',
-      date:
-          json['date'] != null ? DateTime.parse(json['date']) : DateTime.now(),
+      date: json['date'] != null ? DateTime.parse(json['date']) : null,
       link: json['link'] ?? '',
       materialLink: json['material_link'],
       from: json['from'] ?? '',
@@ -107,10 +105,10 @@ class SessionData {
       repeat: json['repeat'],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
+          : null,
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
-          : DateTime.now(),
+          : null,
     );
   }
 }
