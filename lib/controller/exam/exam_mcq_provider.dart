@@ -11,7 +11,7 @@ import 'dart:async';
 
 class ExamMcqProvider with ChangeNotifier {
   Future<List<QuestionWithAnswers>> fetchExamDataFromApi(
-      BuildContext context,int id) async {
+      BuildContext context, int id) async {
     final startExamProvider =
         Provider.of<StartExamProvider>(context, listen: false);
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -22,55 +22,53 @@ class ExamMcqProvider with ChangeNotifier {
     const int initialDelay = 1000; // Initial delay in milliseconds
 
     // ignore: unused_local_variable
-    for (var examItem in startExamProvider.examData) {
 
-      final url =
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$id';
-      log("url: $url");
-      log("exaamid: $id");
+    final url =
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_exam/$id';
+    log("url: $url");
+    log("exaamid: $id");
 
-      try {
-        final response =
-            await _fetchWithRetry(url, token!, maxRetries, initialDelay);
+    try {
+      final response =
+          await _fetchWithRetry(url, token!, maxRetries, initialDelay);
 
-        if (response.statusCode == 200) {
-          final jsonData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
 
-          if (jsonData['exam'] != null &&
-              jsonData['exam']['questionExam'] != null) {
-            debugPrint('Exam data exists, parsing...');
-            final examData = jsonData['exam']['questionExam'];
-            //log('Exam data: $examData');
-            for (var element in examData) {
-              final question = Question.fromJson(element['question']);
-              final answers = (element['Answers'] as List)
-                  .map((answer) => Answer.fromJson(answer))
-                  .toList();
+        if (jsonData['exam'] != null &&
+            jsonData['exam']['questionExam'] != null) {
+          debugPrint('Exam data exists, parsing...');
+          final examData = jsonData['exam']['questionExam'];
+          //log('Exam data: $examData');
+          for (var element in examData) {
+            final question = Question.fromJson(element['question']);
+            final answers = (element['Answers'] as List)
+                .map((answer) => Answer.fromJson(answer))
+                .toList();
 
-              if (answers.isNotEmpty) {
-                allQuestionsWithAnswers.add(QuestionWithAnswers(
-                  question: question,
-                  questiondata: [question],
-                  answers: answers,
-                  mcqOptions: answers
-                      .where((answer) => answer.mcqAns != null)
-                      .map((answer) => answer.mcqAns!)
-                      .toList(),
-                ));
-                //  log("Aggregated allQuestionsWithAnswers: $allQuestionsWithAnswers");
-              } else {
-                debugPrint('No answers found for exam ID $id');
-              }
+            if (answers.isNotEmpty) {
+              allQuestionsWithAnswers.add(QuestionWithAnswers(
+                question: question,
+                questiondata: [question],
+                answers: answers,
+                mcqOptions: answers
+                    .where((answer) => answer.mcqAns != null)
+                    .map((answer) => answer.mcqAns!)
+                    .toList(),
+              ));
+              //  log("Aggregated allQuestionsWithAnswers: $allQuestionsWithAnswers");
+            } else {
+              debugPrint('No answers found for exam ID $id');
             }
           }
-        } else {
-          debugPrint('Failed to fetch data: ${response.statusCode}');
         }
-      } catch (e) {
-        debugPrint('Error: $e');
-        debugPrint(
-            'Max retries reached. Failed to fetch exam data for exam ID $id');
+      } else {
+        debugPrint('Failed to fetch data: ${response.statusCode}');
       }
+    } catch (e) {
+      debugPrint('Error: $e');
+      debugPrint(
+          'Max retries reached. Failed to fetch exam data for exam ID $id');
     }
 
     notifyListeners(); // Notify listeners to update the UI
