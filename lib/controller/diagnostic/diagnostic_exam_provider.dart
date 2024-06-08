@@ -14,16 +14,13 @@ class DiagExamProvider with ChangeNotifier {
   int passscore = 0;
   int score = 0;
 
-  Future<void> fetchDataFromApi(BuildContext context) async {
+  Future<void> fetchDataFromApi(BuildContext context, int selectedCourseId) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
     try {
-      final diagnosticFilterationProvider =
-          Provider.of<DiagnosticFilterationProvider>(context, listen: false);
+      final diagnosticFilterationProvider = Provider.of<DiagnosticFilterationProvider>(context, listen: false);
       await diagnosticFilterationProvider.fetchdiagdata(context);
-
-      final selectedCourseId = diagnosticFilterationProvider.courseIds.first;
 
       const int maxRetries = 5;
       int retryCount = 0;
@@ -42,7 +39,9 @@ class DiagExamProvider with ChangeNotifier {
 
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
-          if (data != null && data['exam'] != null && data['exam']['question_with_ans'] != null) {
+          if (data != null &&
+              data['exam'] != null &&
+              data['exam']['question_with_ans'] != null) {
             final List<dynamic> questions = data['exam']['question_with_ans'];
             exid = data['exam']['id'] ?? 0;
             passscore = data['exam']['pass_score'] ?? 0;
@@ -64,7 +63,7 @@ class DiagExamProvider with ChangeNotifier {
                         };
                       }).toList()
                     : [],
-                'g_ans': question['g_ans'] ?? '',
+                'g_ans': question['g_ans'] ?? [],
                 'selectedAnswer': null,
               };
               alldiagnostics.add(questionMap);

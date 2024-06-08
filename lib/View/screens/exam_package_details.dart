@@ -47,6 +47,7 @@ class _ExamPackageDetailsState extends State<ExamPackageDetails> {
                       text2: exam.module,
                       text3: exam.duration.toString(),
                       text4: exam.price.toString(),
+                      text5: exam.number.toString(),
                       isSelected: selectedIndex == index,
                       onTap: () {
                         setState(() {

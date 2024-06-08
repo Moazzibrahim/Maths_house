@@ -46,6 +46,7 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
                       text2: question.module,
                       text3: question.duration.toString(),
                       text4: question.price.toString(),
+                      text5: question.number.toString(),
                       isSelected: selectedIndex == index,
                       onTap: () {
                         setState(() {

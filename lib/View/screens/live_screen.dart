@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, library_private_types_in_public_api
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live_model.dart';
@@ -26,9 +26,12 @@ class _LiveScreenState extends State<LiveScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Live Sessions',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: const Text(
+            'Live Sessions',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         leading: IconButton(
           color: faceBookColor,
@@ -42,114 +45,128 @@ class _LiveScreenState extends State<LiveScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Consumer<LiveProvider>(
           builder: (context, liveProvider, _) {
-            if (liveProvider.allsessions.isEmpty) {
-              return const Center(
-                child: Text("No live sessions available"),
-              );
-            } else {
-              return ListView(
+            return DefaultTabController(
+              length: 2,
+              child: Column(
                 children: [
-                  _buildSectionUpcoming(
-                    "Upcoming Sessions",
-                    liveProvider.allsessions
-                        .where((session) =>
-                            session.session.date.isAfter(DateTime.now()))
-                        .toList(),
-                  ), // Filter upcoming sessions
-                  _buildSectionHistory(
-                    "History",
-                    liveProvider.allsessions
-                        .where((session) =>
-                            session.session.date.isBefore(DateTime.now()))
-                        .toList(),
-                  ), // Filter past sessions
+                  TabBar(
+                    indicator: BoxDecoration(
+                      color: Colors.redAccent[700],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.redAccent[700],
+                    tabs: const [
+                      _CustomTab(text: 'Upcoming Sessions'),
+                      _CustomTab(text: 'History'),
+                    ],
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        _buildSessionsList(
+                          liveProvider,
+                          liveProvider.allsessions
+                              .where((session) =>
+                                  session.session.date!.isAfter(DateTime.now()))
+                              .toList(),
+                          isUpcoming: true,
+                        ),
+                        _buildSessionsList(
+                          liveProvider,
+                          liveProvider.allsessions
+                              .where((session) => session.session.date!
+                                  .isBefore(DateTime.now()))
+                              .toList(),
+                          isUpcoming: false,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
-              );
-            }
+              ),
+            );
           },
         ),
       ),
     );
   }
 
-  Widget _buildSectionUpcoming(String title, List<Session> sessions) {
+  Widget _buildSessionsList(LiveProvider liveProvider, List<Session> sessions,
+      {required bool isUpcoming}) {
     final dateFormat = DateFormat('dd MMMM yyyy');
+    final currentTime = DateTime.now();
 
-    return ExpansionTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-      ),
-      children: sessions.map((session) {
+    if (liveProvider.mustBuyNewPackage && isUpcoming) {
+      return Center(
+        child: Text(
+          'Sorry: You Must Buy New Package',
+          style: TextStyle(fontSize: 20, color: Colors.red),
+        ),
+      );
+    }
+
+    if (sessions.isEmpty) {
+      return Center(
+        child: Text(
+          isUpcoming ? 'No upcoming sessions' : 'No past sessions',
+          style: TextStyle(fontSize: 20, color: Colors.grey),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: sessions.length,
+      itemBuilder: (context, index) {
+        final session = sessions[index];
+        final sessionTime = session.session.date!;
+        final isBeforeStart =
+            currentTime.isBefore(sessionTime.subtract(Duration(minutes: 10)));
+        final isDuringSession = currentTime.isAfter(sessionTime) &&
+            currentTime.isBefore(sessionTime
+                .add(Duration(hours: 1))); // Assuming session lasts for 1 hour
+
         return ListTile(
-          title: Text(session.session.name),
+          title: Text(
+            session.session.name ?? 'No Name',
+            style: TextStyle(fontSize: 20),
+          ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  "Date: ${dateFormat.format(session.session.date)}"), // Format date here
+                "Date: ${dateFormat.format(sessionTime)}",
+                style: TextStyle(),
+              ),
               Text("From: ${session.session.from}"),
               Text("To: ${session.session.to}"),
-              GestureDetector(
-                child: Text(
-                  "link: ${session.session.link}",
-                  style: const TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-                onTap: () => _launchURL(session.session.link),
-              ),
             ],
           ),
-          trailing: ElevatedButton(
-            onPressed: () {
-              // Handle attend button press
-            },
-            child: const Text("Attend"),
-          ),
-          onTap: () {
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(builder: (ctx) => ChaptersScreen(title: session.session.name, course: session,))
-            // );
-          },
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildSectionHistory(String title, List<Session> sessions) {
-    final dateFormat = DateFormat('dd MMMM yyyy');
-
-    return ExpansionTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-      ),
-      children: sessions.map((session) {
-        return ListTile(
-          title: Text(session.session.name),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                  "Date: ${dateFormat.format(session.session.date)}"), // Format date here
-              Text("From: ${session.session.from}"),
-              Text("To: ${session.session.to}"),
-              GestureDetector(
-                child: Text(
-                  "link: ${session.session.link}",
-                  style: const TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
+          trailing: isUpcoming
+              ? ElevatedButton(
+                  onPressed: isBeforeStart
+                      ? () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: faceBookColor,
+                              content:
+                                  Text("It's too early to attend the session!"),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      : isDuringSession
+                          ? () => _launchURL(session.session.link!)
+                          : null, // Attend button should be null if the session is not during the session time
+                  child: const Text(
+                    "Attend",
+                    style: TextStyle(
+                        color: faceBookColor, fontWeight: FontWeight.bold),
                   ),
-                ),
-                onTap: () => _launchURL(session.session.link),
-              ),
-            ],
-          ),
+                )
+              : null,
         );
-      }).toList(),
+      },
     );
   }
 
@@ -159,5 +176,23 @@ class _LiveScreenState extends State<LiveScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+}
+
+class _CustomTab extends StatelessWidget {
+  final String text;
+
+  const _CustomTab({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 16),
+      ),
+    );
   }
 }

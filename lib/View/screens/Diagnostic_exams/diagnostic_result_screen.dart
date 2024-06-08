@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/controller/diagnostic/get_course_provider.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart'; // Import ExamDuration screen
 import 'package:provider/provider.dart';
@@ -55,6 +55,8 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
               int? grade = snapshot.data!['score'] as int?;
               chapterDetails =
                   (snapshot.data!['recommandition'] as List<dynamic>)
+                      .where((recommendation) =>
+                          recommendation['chapter_name'] != null)
                       .map((recommendation) {
                 return {
                   'chapterName': recommendation['chapter_name'],
@@ -64,6 +66,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                   'duration': (recommendation['price'][0]['duration'] ?? 0),
                 };
               }).toList();
+
               return _buildResultScreen(
                 context,
                 grade,
@@ -97,7 +100,9 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const RegisteredHomeScreen(),
+                builder: (context) => const TabsScreen(
+                  isLoggedIn: false,
+                ),
               ),
             );
           },
@@ -105,58 +110,70 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildInfoRow("Total Score", "${widget.score}"),
-            const SizedBox(height: 15),
-            _buildInfoRow("Grade", "$grade"),
-            const SizedBox(height: 15),
-            _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
-            const SizedBox(height: 15),
-            _buildInfoRow("Correct Questions", "${widget.correctCount}"),
-            const SizedBox(height: 15),
-            _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
-            const SizedBox(height: 25),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-              onPressed: () {
-                setState(() {
-                  showRecommendation = !showRecommendation;
-                });
-              },
-              child: const Text(
-                "Recommended",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            if (showRecommendation) ...[
-              const SizedBox(height: 10),
-              _buildRecommendationSection(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildInfoRow("Total Score", "${widget.score}"),
+              const SizedBox(height: 15),
+              _buildInfoRow("Grade", "$grade"),
+              const SizedBox(height: 15),
+              _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
+              const SizedBox(height: 15),
+              _buildInfoRow("Correct Questions", "${widget.correctCount}"),
+              const SizedBox(height: 15),
+              _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
+              const SizedBox(height: 25),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisteredHomeScreen(),
-                    ),
-                  );
+                  setState(() {
+                    showRecommendation = !showRecommendation;
+                  });
                 },
                 child: const Text(
-                  "Home",
+                  "Recommended",
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              const SizedBox(height: 15),
+              if (showRecommendation) ...[
+                const SizedBox(height: 10),
+                _buildRecommendationSection(),
+                ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TabsScreen(
+                          isLoggedIn: false,
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Home",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 15),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildRecommendationSection() {
+    if (chapterDetails.isEmpty) {
+      return const Text(
+        "No chapters available",
+        style: TextStyle(fontSize: 16, color: Colors.red),
+      );
+    }
+
     return Column(
       children: [
         ...chapterDetails.map((chapter) {

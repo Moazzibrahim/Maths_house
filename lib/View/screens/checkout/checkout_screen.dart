@@ -182,17 +182,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         100;
                               });
                               print('Coupon applied successfully');
+
+                              // Show success snackbar
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Coupon applied successfully'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
                             } else {
                               // Handle failure response
+                              final errorMessage =
+                                  json.decode(response.body)['message'];
                               print(
                                   'Failed to apply coupon. Status code: ${response.statusCode}');
+                              print('Error message: $errorMessage');
+
+                              // Show error message in an AlertDialog
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
                                   title:
                                       const Text('Coupon Application Failed'),
-                                  content: const Text(
-                                      'Failed to apply coupon. Please try again.'),
+                                  content: Text(errorMessage),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -254,11 +266,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         'duration': widget.duration,
                                       }),
                                     );
-
                                     if (response.statusCode == 200) {
                                       print(response.body);
-                                      // Handle success response
                                       print('Data sent successfully');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text('Your Operation is done'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

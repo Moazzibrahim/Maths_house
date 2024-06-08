@@ -16,6 +16,7 @@ class DiagnosticFilterationProvider with ChangeNotifier {
   Future<void> fetchdiagdata(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
+
     try {
       final response = await http.get(
         Uri.parse(
@@ -26,27 +27,10 @@ class DiagnosticFilterationProvider with ChangeNotifier {
           'Authorization': 'Bearer $token',
         },
       );
+
       if (response.statusCode == 200) {
         Map<String, dynamic> data = json.decode(response.body);
-        print(data);
-
-        for (var category in data['categories']) {
-          categoryData.add(category['cate_name'] ?? '');
-        }
-        categoryData = categoryData.toSet().toList();
-
-        for (var course in data['courses']) {
-          courseData.add(course['course_name'] ?? '');
-          courseIds.add(course['id'] ?? 0);
-        }
-        courseData = courseData.toSet().toList();
-        final courseidsss = courseIds.toSet().toList();
-        log("category: $categoryData");
-        log("course data: $courseData");
-        log("course ids: $courseidsss");
-
-        diagfilters.addAll(categoryData);
-        diagfilters.addAll(courseData);
+        _processData(data);
         notifyListeners();
       } else {
         print('Failed to load data: ${response.statusCode}');
@@ -54,5 +38,31 @@ class DiagnosticFilterationProvider with ChangeNotifier {
     } catch (e) {
       print('Error fetching data: $e');
     }
+  }
+
+  void _processData(Map<String, dynamic> data) {
+    // Process categories
+    for (var category in data['categories']) {
+      categoryData.add(category['cate_name'] ?? '');
+    }
+    categoryData = categoryData.toSet().toList(); // Remove duplicates
+
+    // Process courses
+    for (var course in data['courses']) {
+      courseData.add(course['course_name'] ?? '');
+      courseIds.add(course['id'] ?? 0);
+    }
+    courseData = courseData.toSet().toList(); // Remove duplicates
+    courseIds = courseIds.toSet().toList(); // Remove duplicates
+
+    // Log the processed data
+    log("Categories: $categoryData");
+    log("Courses: $courseData");
+    log("Course IDs: $courseIds");
+
+    // Combine category and course data
+    diagfilters.addAll(categoryData);
+    diagfilters.addAll(courseData);
+    notifyListeners();
   }
 }
