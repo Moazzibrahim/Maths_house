@@ -21,12 +21,13 @@ class StartQuiz extends StatefulWidget {
 class _StartQuizState extends State<StartQuiz> {
   late Timer _timer;
   TextEditingController ansText = TextEditingController();
-  int indexOfUnsolvedQuestion = 0;
+  List<int> indexOfUnsolvedQuestions = [];
   int _secondsElapsed = 0;
   int currentQuestionIndex = 0;
   List<String?> selectedAnswers = [];
   Set<QuestionsQuiz> correctAnswers = {};
   Set<int> wrongAnswers = {};
+  Set<int> missedQuestions = {};
 
   @override
   void initState() {
@@ -158,56 +159,64 @@ class _StartQuizState extends State<StartQuiz> {
                     width: 50.w,
                   ),
                   GestureDetector(
-                      onTap: () {
-                        if (selectedAnswers[currentQuestionIndex] != null) {
-                          if (selectedAnswers[currentQuestionIndex] ==
-                              currentQuestion.mcqQuizList[0].answer) {
-                            correctAnswers.add(currentQuestion);
-                            log('correct added : ${correctAnswers.length}');
-                          } else {
-                            wrongAnswers.add(currentQuestion.questionId);
-                            log('wrong added : ${wrongAnswers.length}');
+                    onTap: () {
+                      if (selectedAnswers[currentQuestionIndex] != null) {
+                        if (selectedAnswers[currentQuestionIndex] ==
+                            currentQuestion.mcqQuizList[0].answer) {
+                          if (wrongAnswers.contains(currentQuestion.questionId)) {
+                            wrongAnswers.remove(currentQuestion.questionId);
                           }
+                          correctAnswers.add(currentQuestion);
+                          log('correct added : ${correctAnswers.length}');
+                        } else {
+                          if (correctAnswers.contains(currentQuestion)) {
+                            correctAnswers.remove(currentQuestion);
+                          }
+                          wrongAnswers.add(currentQuestion.questionId);
+                          log('wrong added : ${wrongAnswers.length}');
                         }
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SimpleDialog(
-                              title: const Text('Go to Question'),
-                              children: List.generate(
-                                widget.quiz.questionQuizList.length,
-                                (index) => Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('Question ${index + 1}'),
-                                      ElevatedButton(onPressed: (){
+                      }
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SimpleDialog(
+                            title: const Text('Go to Question'),
+                            children: List.generate(
+                              widget.quiz.questionQuizList.length,
+                              (index) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Question ${index + 1}'),
+                                    ElevatedButton(
+                                      onPressed: () {
                                         setState(() {
-                                        currentQuestionIndex = index;
-                                      });
-                                      Navigator.pop(context);
+                                          currentQuestionIndex = index;
+                                        });
+                                        Navigator.pop(context);
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.redAccent[700],
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
-                                      ),
-                                      child: const Text('View Question'))
-                                    ],
-                                  ),
+                                          backgroundColor: Colors.redAccent[700],
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12))),
+                                      child: const Text('View Question')),
+                                  ],
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      child: Text(
-                        'Question ${currentQuestionIndex + 1}',
-                        style: TextStyle(
-                            fontSize: 14.sp, color: Colors.redAccent[700]),
-                      ),
-                      ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Text(
+                      'Question ${currentQuestionIndex + 1}',
+                      style: TextStyle(
+                          fontSize: 14.sp, color: Colors.redAccent[700]),
+                    ),
+                  ),
                   SizedBox(
                     width: 45.w,
                   ),
@@ -218,8 +227,7 @@ class _StartQuizState extends State<StartQuiz> {
                           if (selectedAnswers[currentQuestionIndex] != null) {
                             if (selectedAnswers[currentQuestionIndex] ==
                                 currentQuestion.mcqQuizList[0].answer) {
-                              if (wrongAnswers
-                                  .contains(currentQuestion.questionId)) {
+                              if (wrongAnswers.contains(currentQuestion.questionId)) {
                                 wrongAnswers.remove(currentQuestion.questionId);
                               }
                               correctAnswers.add(currentQuestion);
@@ -234,6 +242,7 @@ class _StartQuizState extends State<StartQuiz> {
                               nextQuestion();
                             }
                           } else {
+                            missedQuestions.add(currentQuestion.questionId);
                             nextQuestion();
                           }
                         } else {
@@ -246,13 +255,14 @@ class _StartQuizState extends State<StartQuiz> {
                               wrongAnswers.add(currentQuestion.questionId);
                               log('wrong added : ${wrongAnswers.length}');
                             }
+                          } else {
+                            missedQuestions.add(currentQuestion.questionId);
                           }
                           if (selectedAnswers.contains(null)) {
                             for (var e in selectedAnswers) {
                               if (e == null) {
                                 setState(() {
-                                  indexOfUnsolvedQuestion =
-                                      selectedAnswers.indexOf(e);
+                                  indexOfUnsolvedQuestions.add(selectedAnswers.indexOf(e));
                                 });
                               }
                             }
@@ -262,7 +272,7 @@ class _StartQuizState extends State<StartQuiz> {
                                 return AlertDialog(
                                   title: const Text('Submit Quiz'),
                                   content: Text(
-                                      'you have not answered q.num: ${indexOfUnsolvedQuestion + 1}, are you sure you want to submit?'),
+                                      'you have not answered q.num: $indexOfUnsolvedQuestions, are you sure you want to submit?'),
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
@@ -276,14 +286,15 @@ class _StartQuizState extends State<StartQuiz> {
                                                             correctAnswers,
                                                         wrongAnswers:
                                                             wrongAnswers,
+                                                        missedQuestionsNumber:
+                                                            missedQuestions.length,
                                                       )));
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 Colors.redAccent[700],
                                             foregroundColor: Colors.white),
-                                        child: const Text('Yes')
-                                        ),
+                                        child: const Text('Yes')),
                                     ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(context);
@@ -292,8 +303,7 @@ class _StartQuizState extends State<StartQuiz> {
                                             backgroundColor:
                                                 Colors.redAccent[700],
                                             foregroundColor: Colors.white),
-                                        child: const Text('No'),
-                                        ),
+                                        child: const Text('No')),
                                   ],
                                 );
                               },
@@ -306,14 +316,18 @@ class _StartQuizState extends State<StartQuiz> {
                               rightQuestion: correctAnswers.length,
                               timer: _secondsElapsed / 60.ceil(),
                               score: correctAnswers.length,
-                              mistakes: wrongAnswers.toList(),
+                              mistakes: wrongAnswers.toList() +
+                                  missedQuestions.toList(),
                             );
+
                             Navigator.of(context)
                                 .pushReplacement(MaterialPageRoute(
                                     builder: (ctx) => QuizScoreScreen(
                                           quiz: widget.quiz,
                                           correctAnswers: correctAnswers,
                                           wrongAnswers: wrongAnswers,
+                                          missedQuestionsNumber:
+                                              missedQuestions.length,
                                         )));
                           }
                         }
