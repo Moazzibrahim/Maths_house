@@ -1,106 +1,110 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/controller/live_provider.dart';
+import 'package:flutter_application_1/controller/live_filter_service.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
-class AllSessionsScreen extends StatelessWidget {
+class AllSessionsScreen extends StatefulWidget {
+  @override
+  _AllSessionsScreenState createState() => _AllSessionsScreenState();
+}
 
-  const AllSessionsScreen({super.key});
+class _AllSessionsScreenState extends State<AllSessionsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _fetchSessions();
+  }
+
+  Future<void> _fetchSessions() async {
+    final provider = Provider.of<LiveFilterProvider>(context, listen: false);
+    // Sample filter parameters, replace with actual values or dynamic inputs
+    await provider.filterLiveSessions(
+        1, 1, '2023-01-01', '2023-12-31', context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final liveProvider = Provider.of<LiveProvider>(context);
+    final sessions = Provider.of<LiveFilterProvider>(context).allSessions;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Custom Design Screen'),
+        title: const Text('All Sessions'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: _buildCustomDesign(liveProvider),
+        child: sessions.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: sessions.length,
+                itemBuilder: (context, index) {
+                  final session = sessions[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            session.date,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            session.sessionName,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${session.dateFrom} - ${session.dateTo}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "Mr. Amir hemida",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Course: ${session.sessionName}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Chapter: ${session.sessionName}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Lesson: ${session.sessionName}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
-    );
-  }
-
-  Widget _buildCustomDesign(LiveProvider liveProvider) {
-    final sessions =
-        liveProvider.allsessions; // Use all sessions for custom design
-
-    return ListView.builder(
-      itemCount: sessions.length,
-      itemBuilder: (context, index) {
-        final session = sessions[index];
-        final sessionDate = session.session.date!;
-        final dayOfWeek = DateFormat('EEEE').format(sessionDate);
-        final monthDay = DateFormat('MMMM dd').format(sessionDate);
-        final timeRange = "${session.session.from} / ${session.session.to}";
-
-        return Card(
-          margin: EdgeInsets.symmetric(vertical: 8.0),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  monthDay,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  dayOfWeek,
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  timeRange,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "Mr. Ahmed Al-Basha",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "Course: History",
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "Chapter: 1",
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  "Lesson: 3",
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

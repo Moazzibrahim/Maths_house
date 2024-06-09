@@ -8,32 +8,55 @@ import 'package:provider/provider.dart';
 
 class LiveFilterProvider with ChangeNotifier {
   late LiveFilter _liveFilterData;
+  List<SessionLive> _allSessions = [];
+
   LiveFilter get liveFilterData => _liveFilterData;
-  Future<void> filterLiveSessions(int catId,int courseId,String dateFrom,String dateTo,BuildContext context) async{
+  List<SessionLive> get allSessions => _allSessions;
+
+  Future<void> filterLiveSessions(int catId, int courseId, String dateFrom,
+      String dateTo, BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
     final body = jsonEncode({
-      'category_id' : catId,
-      'course_id' : courseId,
-      // kamlha nta a ahmed 3shan ziad masha w msh m3aya el keys ... a7la hamo
+      'category_id': catId,
+      'course_id': courseId,
+      'start_date': dateFrom,
+      'end_date': dateTo,
     });
-    try{
+
+    try {
       final response = await http.post(
-        Uri.parse('https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/session_live'),
+        Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/session_live'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: body
+        body: body,
       );
-      if(response.statusCode == 200){
-        Map<String,dynamic> responseData = jsonDecode(response.body);
-        _liveFilterData = LiveFilter.fromJson(responseData);
-        notifyListeners();
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        print(responseData);
+
+        // Ensure responseData is not null and has expected structure
+        if (responseData != null) {
+          _liveFilterData = LiveFilter.fromJson(responseData);
+          _allSessions = _liveFilterData.courseLiveList
+              .expand((course) => course.chapterLiveList)
+              .expand((chapter) => chapter.lessonLiveList)
+              .expand((lesson) => lesson.sessionLiveList)
+              .toList();
+          notifyListeners();
+        } else {
+          log('error: Response data is null or does not contain expected data');
+        }
+      } else {
+        log('error: HTTP ${response.statusCode} - ${response.reasonPhrase}');
       }
-    }catch(e){
+    } catch (e) {
       log('error: $e');
     }
   }
-} 
+}
