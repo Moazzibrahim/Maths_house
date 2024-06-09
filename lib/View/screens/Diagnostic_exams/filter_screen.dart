@@ -25,7 +25,8 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<DiagnosticFilterationProvider>(context, listen: false).fetchdiagdata(context);
+    Provider.of<DiagnosticFilterationProvider>(context, listen: false)
+        .fetchdiagdata(context);
   }
 
   Future<void> sendFiltersDiagnosticToServers() async {
@@ -41,7 +42,8 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
-    final provider = Provider.of<DiagnosticFilterationProvider>(context, listen: false);
+    final provider =
+        Provider.of<DiagnosticFilterationProvider>(context, listen: false);
     final selectedCourse = _selectedCourse;
 
     final selectedCourseId = provider.courseIds.firstWhere(
@@ -89,14 +91,17 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>  DiagnosticExamScreen(selectedCourseId: selectedCourseId,),
+            builder: (context) => DiagnosticExamScreen(
+              selectedCourseId: selectedCourseId,
+            ),
           ),
         );
       } else {
         log('Failed to send filters. Status code: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send filters. Status code: ${response.statusCode}'),
+            content: Text(
+                'Failed to send filters. Status code: ${response.statusCode}'),
           ),
         );
       }
@@ -110,7 +115,8 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     }
   }
 
-  Widget _buildDropdownContainer({required String hint, required Widget child}) {
+  Widget _buildDropdownContainer(
+      {required String hint, required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -131,103 +137,110 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
           ),
+          title: const Text("Diagnostic Exam filter"),
         ),
-        title: const Text("Diagnostic Exam filter"),
-      ),
-      body: Consumer<DiagnosticFilterationProvider>(
-        builder: (context, provider, _) {
-          List<String> uniqueCategories = provider.categoryData.toSet().toList();
-          List<String> uniqueCourses = provider.courseData.toSet().toList();
-          return provider.courseData.isEmpty || provider.categoryData.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildDropdownContainer(
-                        hint: "Select Category",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedCategory,
-                          items: [
-                            ...uniqueCategories.map(
-                              (category) => DropdownMenuItem<String>(
-                                value: category,
-                                child: Row(
-                                  children: [
-                                    Text(category),
-                                  ],
+        body: Consumer<DiagnosticFilterationProvider>(
+          builder: (context, provider, _) {
+            List<String> uniqueCategories =
+                provider.categoryData.toSet().toList();
+            List<String> uniqueCourses = provider.courseData.toSet().toList();
+            return provider.courseData.isEmpty || provider.categoryData.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildDropdownContainer(
+                          hint: "Select Category",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedCategory,
+                            items: [
+                              ...uniqueCategories.map(
+                                (category) => DropdownMenuItem<String>(
+                                  value: category,
+                                  child: Row(
+                                    children: [
+                                      Text(category),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCategory = value;
-                            });
-                          },
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCategory = value;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      _buildDropdownContainer(
-                        hint: "Select Course",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedCourse,
-                          items: [
-                            ...uniqueCourses.map(
-                              (course) => DropdownMenuItem<String>(
-                                value: course,
-                                child: Row(
-                                  children: [
-                                    Text(course),
-                                  ],
+                        const SizedBox(height: 20),
+                        _buildDropdownContainer(
+                          hint: "Select Course",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedCourse,
+                            items: [
+                              ...uniqueCourses.map(
+                                (course) => DropdownMenuItem<String>(
+                                  value: course,
+                                  child: Row(
+                                    children: [
+                                      Text(course),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCourse = value;
-                            });
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCourse = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            sendFiltersDiagnosticToServers();
+                            print('Category: $_selectedCategory');
+                            print('Course: $_selectedCourse');
                           },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          sendFiltersDiagnosticToServers();
-                          print('Category: $_selectedCategory');
-                          print('Course: $_selectedCourse');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: faceBookColor,
-                          shape: const LinearBorder(),
-                        ),
-                        child: const Text(
-                          "search",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-        },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: faceBookColor,
+                            shape: const LinearBorder(),
+                          ),
+                          child: const Text(
+                            "search",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+          },
+        ),
       ),
     );
   }

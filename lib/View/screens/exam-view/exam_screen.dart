@@ -26,24 +26,30 @@ class ExamScreen extends StatefulWidget {
 class _ExamScreenState extends State<ExamScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Exam"),
-        leading: InkWell(
-          child: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Exam"),
+          leading: InkWell(
+            child: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const TabsScreen(
+                        isLoggedIn: false,
+                      )));
+            },
           ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const TabsScreen(
-                      isLoggedIn: false,
-                    )));
-          },
         ),
-      ),
-      body: ExamBody(
-        fetchedexamids: widget.fetchedexamid,
+        body: ExamBody(
+          fetchedexamids: widget.fetchedexamid,
+        ),
       ),
     );
   }
@@ -132,19 +138,28 @@ class _ExamBodyState extends State<ExamBody> {
     } else if (questionsWithAnswers!.isEmpty) {
       return Center(
         child: AlertDialog(actions: [
-          const Text(
-            "You must buy package first!",
-            style: TextStyle(fontSize: 15, color: faceBookColor),
+          const Center(
+            child: Text(
+              "You must buy package first!",
+              style: TextStyle(fontSize: 15, color: faceBookColor),
+            ),
           ),
           const SizedBox(
             height: 10,
           ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const TabsScreen(isLoggedIn: false)));
-              },
-              child: const Text("ok"))
+          Center(
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          const TabsScreen(isLoggedIn: false)));
+                },
+                child: const Text(
+                  "ok",
+                  style: TextStyle(color: Colors.white),
+                )),
+          )
         ]),
       );
     }

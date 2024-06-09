@@ -95,112 +95,119 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
     List<double> uniqueDiscounts =
         uniqueChapters.values.map((i) => discounts[i]).toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Result"),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const TabsScreen(
-                isLoggedIn: false,
-              ),
-            ));
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Result"),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const TabsScreen(
+                  isLoggedIn: false,
+                ),
+              ));
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildInfoRow("Total Score", totalScore.toString()),
-              const SizedBox(height: 15),
-              _buildInfoRow("Grade", grade.toString()),
-              const SizedBox(height: 15),
-              _buildInfoRow("Pass Score", passScore.toString()),
-              const SizedBox(height: 15),
-              _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
-              const SizedBox(height: 15),
-              _buildInfoRow(
-                  "Correct Questions", "${widget.correctAnswerCount}"),
-              const SizedBox(height: 15),
-              _buildInfoRow(
-                  "Wrong Questions", "${widget.wrongAnswerQuestions}"),
-              const SizedBox(height: 25),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                onPressed: () {
-                  setState(() {
-                    showRecommendation = !showRecommendation;
-                  });
-                },
-                child: const Text("Recommended",
-                    style: TextStyle(color: Colors.white)),
-              ),
-              if (showRecommendation) ...[
-                const SizedBox(height: 10),
-                if (uniqueChapterNames.isEmpty)
-                  const Text("No recommended chapters available",
-                      style: TextStyle(fontSize: 16, color: Colors.black)),
-                for (int i = 0; i < uniqueChapterNames.length; i++) ...[
-                  Text(uniqueChapterNames[i],
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black)),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildCustomButton("Buy", () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            backgroundColor: Colors.black,
-                            content: Text(
-                              "Done",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        );
-                        Future.delayed(const Duration(seconds: 2), () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ExamDuration(
-                                chapterNames: uniqueChapterNames,
-                                discounts: uniqueDiscounts,
-                                ids: uniqueIds,
-                                durations: uniqueDurations,
-                                prices: uniquePrices,
-                              ),
-                            ),
-                          );
-                        });
-                      }),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                ],
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildInfoRow("Total Score", totalScore.toString()),
+                const SizedBox(height: 15),
+                _buildInfoRow("Grade", grade.toString()),
+                const SizedBox(height: 15),
+                _buildInfoRow("Pass Score", passScore.toString()),
+                const SizedBox(height: 15),
+                _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
+                const SizedBox(height: 15),
+                _buildInfoRow(
+                    "Correct Questions", "${widget.correctAnswerCount}"),
+                const SizedBox(height: 15),
+                _buildInfoRow(
+                    "Wrong Questions", "${widget.wrongAnswerQuestions}"),
+                const SizedBox(height: 25),
                 ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ExamHistoryScreen(),
-                      ),
-                    );
+                    setState(() {
+                      showRecommendation = !showRecommendation;
+                    });
                   },
-                  child: const Text("View Mistakes",
+                  child: const Text("Recommended",
                       style: TextStyle(color: Colors.white)),
                 ),
-                const SizedBox(height: 15),
+                if (showRecommendation) ...[
+                  const SizedBox(height: 10),
+                  if (uniqueChapterNames.isEmpty)
+                    const Text("No recommended chapters available",
+                        style: TextStyle(fontSize: 16, color: Colors.black)),
+                  for (int i = 0; i < uniqueChapterNames.length; i++) ...[
+                    Text(uniqueChapterNames[i],
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.black)),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildCustomButton("Buy", () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Colors.black,
+                              content: Text(
+                                "Done",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                          Future.delayed(const Duration(seconds: 2), () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ExamDuration(
+                                  chapterNames: uniqueChapterNames,
+                                  discounts: uniqueDiscounts,
+                                  ids: uniqueIds,
+                                  durations: uniqueDurations,
+                                  prices: uniquePrices,
+                                ),
+                              ),
+                            );
+                          });
+                        }),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ExamHistoryScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text("View Mistakes",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  const SizedBox(height: 15),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
