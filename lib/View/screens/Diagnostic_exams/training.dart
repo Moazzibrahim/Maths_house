@@ -19,40 +19,46 @@ class DiagnosticExamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Diagnostic Exam"),
-        leading: InkWell(
-          child: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Diagnostic Exam"),
+          leading: InkWell(
+            child: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const TabsScreen(
+                        isLoggedIn: false,
+                      )));
+            },
           ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const TabsScreen(
-                      isLoggedIn: false,
-                    )));
-          },
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<DiagExamProvider>(
-          builder: (context, provider, _) {
-            if (provider.alldiagnostics.isEmpty) {
-              // Data not loaded yet, fetch data
-              provider.fetchDataFromApi(context, selectedCourseId);
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
-              // Data loaded, display questions
-              return DiagnosticQuestionsList(
-                exid: provider.exid,
-                score: provider.score,
-              );
-            }
-          },
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Consumer<DiagExamProvider>(
+            builder: (context, provider, _) {
+              if (provider.alldiagnostics.isEmpty) {
+                // Data not loaded yet, fetch data
+                provider.fetchDataFromApi(context, selectedCourseId);
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                // Data loaded, display questions
+                return DiagnosticQuestionsList(
+                  exid: provider.exid,
+                  score: provider.score,
+                );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -203,8 +209,8 @@ class _DiagnosticQuestionsListState extends State<DiagnosticQuestionsList> {
 
     await Future.forEach(provider.alldiagnostics, (currentQuestion) async {
       var selectedAnswerIndex = currentQuestion['selectedAnswer'];
-      final correctAnswerIndex =
-          currentQuestion['mcq'].indexWhere((mcq) => mcq['mcq_answers'] != null);
+      final correctAnswerIndex = currentQuestion['mcq']
+          .indexWhere((mcq) => mcq['mcq_answers'] != null);
       log("selected answer index: $selectedAnswerIndex");
       log("correct answer index: $correctAnswerIndex");
 

@@ -12,6 +12,7 @@ class StartExamProvider with ChangeNotifier {
   Set<ExamItem> examData = {};
   int? examId;
   List<int> examIds = [];
+  
 
   Future<List<ExamItem>> fetchDataFromApi(
       BuildContext context, Map<String, dynamic> my) async {
@@ -75,5 +76,11 @@ class StartExamProvider with ChangeNotifier {
     }
 
     throw Exception('Failed to load data after $maxRetries attempts');
+  }
+
+  void clearExamData() {
+    examData.clear();
+    examIds.clear();
+    notifyListeners();
   }
 }

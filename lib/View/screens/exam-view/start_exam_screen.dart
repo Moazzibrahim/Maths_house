@@ -25,31 +25,37 @@ class ExamScreenstart extends StatelessWidget {
       'Exam 1',
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Exams'),
-        leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: faceBookColor,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const TabsScreen(isLoggedIn: false)));
-            }),
-      ),
-      body: ListView.builder(
-        itemCount: exams.length,
-        itemBuilder: (context, index) {
-          return ExamGridItem(
-            examName: exams[index],
-            categoryid: categoryid,
-            courseid: courseid,
-            examcodeid: examcodeid,
-            months: months,
-            years: years,
-          );
-        },
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Exams'),
+          leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: faceBookColor,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const TabsScreen(isLoggedIn: false)));
+              }),
+        ),
+        body: ListView.builder(
+          itemCount: exams.length,
+          itemBuilder: (context, index) {
+            return ExamGridItem(
+              examName: exams[index],
+              categoryid: categoryid,
+              courseid: courseid,
+              examcodeid: examcodeid,
+              months: months,
+              years: years,
+            );
+          },
+        ),
       ),
     );
   }

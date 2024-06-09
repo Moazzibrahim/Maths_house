@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
@@ -50,8 +51,41 @@ class _ExamGridItemState extends State<ExamGridItem> {
     return Consumer<StartExamProvider>(
       builder: (context, startExamProvider, _) {
         if (startExamProvider.examData.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return AlertDialog(
+            contentPadding: const EdgeInsets.all(20),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "There are no exams with these filters!",
+                  style: TextStyle(fontSize: 16, color: faceBookColor),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const TabsScreen(isLoggedIn: false),
+                    ));
+                  },
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
           );
         }
         final examList = startExamProvider.examData.toList();
@@ -178,7 +212,8 @@ class _ExamGridItemState extends State<ExamGridItem> {
                                             Provider.of<ExamMcqProvider>(
                                                     context,
                                                     listen: false)
-                                                .fetchExamDataFromApi(context,selectedExamId);
+                                                .fetchExamDataFromApi(
+                                                    context, selectedExamId);
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(

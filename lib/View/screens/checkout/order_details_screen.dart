@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,10 +16,12 @@ class OrderDetails extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const RegisteredHomeScreen()));
+                      builder: (context) => const TabsScreen(
+                            isLoggedIn: false,
+                          )));
             },
             icon: const Icon(
-              Icons.arrow_back_ios,
+              Icons.arrow_back,
               color: faceBookColor,
             )),
       ),

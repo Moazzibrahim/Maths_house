@@ -42,9 +42,9 @@ class _WalletScreenState extends State<WalletScreen> {
         builder: (context, walletProvider, _) {
           return Scaffold(
             appBar: AppBar(
-              title: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: const Text(
+              title: const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text(
                   'Wallet',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -55,7 +55,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TabsScreen(isLoggedIn: false),
+                        builder: (context) => const TabsScreen(isLoggedIn: false),
                       ));
                 },
                 icon: const Icon(Icons.arrow_back),
