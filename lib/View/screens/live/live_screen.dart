@@ -13,77 +13,80 @@ class LiveScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, 'Live'),
-      body: GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 20,
-          crossAxisSpacing: 20,
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+          ),
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => UpComingScreen()));
+              },
+              child: GridContainer(
+                text: 'UpComing Live',
+                color: gridHomeColor,
+                styleColor: Colors.redAccent[700],
+                image: 'assets/images/verify.png',
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const HistoryLiveScreen()));
+              },
+              child: GridContainer(
+                text: 'History Live',
+                color: gridHomeColor,
+                styleColor: Colors.redAccent[700],
+                image: 'assets/images/a+.png',
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const AllSessionsScreen()));
+              },
+              child: GridContainer(
+                text: 'All Sessions',
+                color: gridHomeColor,
+                styleColor: Colors.redAccent[700],
+                image: 'assets/images/play-cricle.png',
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const PrivateLiveScreen()));
+              },
+              child: GridContainer(
+                text: 'Private Live',
+                color: gridHomeColor,
+                styleColor: Colors.redAccent[700],
+                image:
+                    'assets/images/290138_document_extension_file_format_paper_icon 1.png',
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => const MyLiveScreen()));
+              },
+              child: GridContainer(
+                text: 'My Live',
+                color: gridHomeColor,
+                styleColor: Colors.redAccent[700],
+                image: 'assets/images/Frame 232.png',
+              ),
+            ),
+          ],
         ),
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) => UpComingScreen()));
-            },
-            child: GridContainer(
-              text: 'UpComing Live',
-              color: gridHomeColor,
-              styleColor: Colors.redAccent[700],
-              image: 'assets/images/verify.png',
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const HistoryLiveScreen()));
-            },
-            child: GridContainer(
-              text: 'History Live',
-              color: gridHomeColor,
-              styleColor: Colors.redAccent[700],
-              image: 'assets/images/a+.png',
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const AllSessionsScreen()));
-            },
-            child: GridContainer(
-              text: 'All Sessions',
-              color: gridHomeColor,
-              styleColor: Colors.redAccent[700],
-              image: 'assets/images/play-cricle.png',
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => const PrivateLiveScreen()));
-            },
-            child: GridContainer(
-              text: 'Private Live',
-              color: gridHomeColor,
-              styleColor: Colors.redAccent[700],
-              image:
-                  'assets/images/290138_document_extension_file_format_paper_icon 1.png',
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const MyLiveScreen()));
-            },
-            child: GridContainer(
-              text: 'My Live',
-              color: gridHomeColor,
-              styleColor: Colors.redAccent[700],
-              image: 'assets/images/Frame 232.png',
-            ),
-          ),
-        ],
       ),
     );
   }
