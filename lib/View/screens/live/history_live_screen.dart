@@ -106,12 +106,12 @@ class _HistoryLiveScreenState extends State<HistoryLiveScreen> {
                                   Row(
                                     children: [
                                       const Icon(Icons.access_time,
-                                          color: Colors.grey, size: 18),
+                                          color: Colors.green, size: 18),
                                       const SizedBox(width: 4),
                                       Text(
                                         'From: ${session.session.from ?? 'No from'}',
                                         style: const TextStyle(
-                                            color: Colors.green),
+                                            color: Colors.black),
                                       ),
                                     ],
                                   ),
@@ -119,12 +119,12 @@ class _HistoryLiveScreenState extends State<HistoryLiveScreen> {
                                   Row(
                                     children: [
                                       const Icon(Icons.access_time,
-                                          color: Colors.grey, size: 18),
+                                          color: Colors.red, size: 18),
                                       const SizedBox(width: 4),
                                       Text(
                                         'To: ${session.session.to ?? 'No to'}',
-                                        style:
-                                            const TextStyle(color: Colors.red),
+                                        style: const TextStyle(
+                                            color: Colors.black),
                                       ),
                                     ],
                                   ),
