@@ -24,22 +24,17 @@ class LiveProvider extends ChangeNotifier {
       );
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        print(response.body);
-        print(jsonResponse); // Log the API response
+        print(jsonResponse);
         if (jsonResponse['message'] == 'Sorry: You Must Buy New Package') {
           mustBuyNewPackage = true;
           allsessions = [];
         } else {
-          print(response.body);
-
           mustBuyNewPackage = false;
           final sessionResponse = SessionResponse.fromJson(jsonResponse);
           allsessions = sessionResponse.sessions;
         }
         notifyListeners();
-        print(response.body);
       } else {
-        print(response.body);
         throw Exception('Failed to load courses');
       }
     } catch (error) {

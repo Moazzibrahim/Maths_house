@@ -53,13 +53,13 @@ class SessionData {
   DateTime? date;
   String? link;
   String? materialLink;
-  String from;
-  String to;
+  String? from;
+  String? to;
   int? duration;
-  int lessonId;
-  int teacherId;
-  int groupId;
-  String type;
+  int? lessonId;
+  int? teacherId;
+  int? groupId;
+  String? type;
   int? price;
   int? accessDays;
   String? repeat;
@@ -67,23 +67,23 @@ class SessionData {
   DateTime? updatedAt;
 
   SessionData({
-    required this.id,
-    required this.name,
-    required this.date,
-    required this.link,
+    this.id,
+    this.name,
+    this.date,
+    this.link,
     this.materialLink,
-    required this.from,
-    required this.to,
+    this.from,
+    this.to,
     this.duration,
-    required this.lessonId,
-    required this.teacherId,
-    required this.groupId,
-    required this.type,
+    this.lessonId,
+    this.teacherId,
+    this.groupId,
+    this.type,
     this.price,
     this.accessDays,
     this.repeat,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory SessionData.fromJson(Map<String, dynamic> json) {

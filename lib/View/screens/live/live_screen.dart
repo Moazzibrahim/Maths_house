@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/Diagnostic_exams/filter_screen.dart';
-import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
-import 'package:flutter_application_1/View/screens/history_screens/history_screen.dart';
 import 'package:flutter_application_1/View/screens/live/all_sessions_screen.dart';
 import 'package:flutter_application_1/View/screens/live/history_live_screen.dart';
 import 'package:flutter_application_1/View/screens/live/my_live_Sceen.dart';
 import 'package:flutter_application_1/View/screens/live/private_live_screen.dart';
 import 'package:flutter_application_1/View/screens/live/upcoming_screen.dart';
-import 'package:flutter_application_1/View/screens/my_courses/courses_screen.dart';
-import 'package:flutter_application_1/View/screens/questions_filter_screen.dart';
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -29,8 +24,8 @@ class LiveScreen extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const UpComingScreen()));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (ctx) => UpComingScreen()));
             },
             child: GridContainer(
               text: 'UpComing Live',
