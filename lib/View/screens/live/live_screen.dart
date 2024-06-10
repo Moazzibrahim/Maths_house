@@ -10,6 +10,7 @@ import 'package:flutter_application_1/constants/widgets.dart';
 
 class LiveScreen extends StatelessWidget {
   const LiveScreen({super.key});
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, 'Live'),
@@ -26,14 +27,14 @@ class LiveScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => UpComingScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const UpComingScreen()));
               },
               child: GridContainer(
                 text: 'UpComing Live',
                 color: gridHomeColor,
                 styleColor: Colors.redAccent[700],
-                image: 'assets/images/verify.png',
+                image: 'assets/images/icons8-tear-off-calendar-50.png',
               ),
             ),
             GestureDetector(
@@ -45,7 +46,7 @@ class LiveScreen extends StatelessWidget {
                 text: 'History Live',
                 color: gridHomeColor,
                 styleColor: Colors.redAccent[700],
-                image: 'assets/images/a+.png',
+                image: 'assets/images/history_red.png',
               ),
             ),
             GestureDetector(
@@ -69,8 +70,7 @@ class LiveScreen extends StatelessWidget {
                 text: 'Private Live',
                 color: gridHomeColor,
                 styleColor: Colors.redAccent[700],
-                image:
-                    'assets/images/290138_document_extension_file_format_paper_icon 1.png',
+                image: 'assets/images/lock_red.png',
               ),
             ),
             GestureDetector(
@@ -82,7 +82,7 @@ class LiveScreen extends StatelessWidget {
                 text: 'My Live',
                 color: gridHomeColor,
                 styleColor: Colors.redAccent[700],
-                image: 'assets/images/Frame 232.png',
+                image: 'assets/images/checked.png',
               ),
             ),
           ],
