@@ -7,21 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LiveFilterProvider with ChangeNotifier {
-  late LiveFilter _liveFilterData;
-  List<SessionLive> _allSessions = [];
+  late Category _categoryData;
 
-  LiveFilter get liveFilterData => _liveFilterData;
-  List<SessionLive> get allSessions => _allSessions;
+  Category get categoryData => _categoryData;
 
-  Future<void> filterLiveSessions(int catId, int courseId, String dateFrom,
-      String dateTo, BuildContext context) async {
+  Future<void> postCategoryData(int categoryId, int courseId, String endDate,
+      BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
+
     final body = jsonEncode({
-      'category_id': catId,
+      'category_id': categoryId,
       'course_id': courseId,
-      'start_date': dateFrom,
-      'end_date': dateTo,
+      'end_date': endDate,
     });
 
     try {
@@ -40,14 +38,10 @@ class LiveFilterProvider with ChangeNotifier {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         print(responseData);
 
-        // Ensure responseData is not null and has expected structure
-        if (responseData != null) {
-          _liveFilterData = LiveFilter.fromJson(responseData);
-          _allSessions = _liveFilterData.courseLiveList
-              .expand((course) => course.chapterLiveList)
-              .expand((chapter) => chapter.lessonLiveList)
-              .expand((lesson) => lesson.sessionLiveList)
-              .toList();
+        if (responseData != null &&
+            responseData['success'] != null &&
+            responseData['liveRequest'] != null) {
+          _categoryData = Category.fromJson(responseData);
           notifyListeners();
         } else {
           log('error: Response data is null or does not contain expected data');
