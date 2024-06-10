@@ -1,14 +1,11 @@
-// ignore_for_file: unused_element, unused_field, use_build_context_synchronously, avoid_print
-
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/diagnostic_exams/diagnostic_filteration.dart';
 import 'package:flutter_application_1/Model/live/live_filteration_model.dart';
 import 'package:flutter_application_1/Model/live/private_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/live/get_private_data_screen.dart';
+import 'package:flutter_application_1/View/screens/live/get_all_session_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +17,7 @@ class AllSessionsliveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, 'Private Live'),
+      appBar: buildAppBar(context, 'All Live'),
       body: _DropdownsAndButton(
         onCategoryChanged: (value) {},
         onCourseChanged: (value) {},
@@ -124,7 +121,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
 
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => SessionDataScreen(
+            builder: (context) => AllSessionDataScreen(
               sessionData: apiResponse.liveRequest[0],
             ),
           ),

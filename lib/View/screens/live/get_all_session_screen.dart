@@ -1,8 +1,7 @@
-// session_data_screen.dart
+// all_session_data_screen.dart
+
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/private_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -11,10 +10,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SessionDataScreen extends StatelessWidget {
+class AllSessionDataScreen extends StatelessWidget {
   final List<LiveRequest> sessionData;
 
-  const SessionDataScreen({super.key, required this.sessionData});
+  const AllSessionDataScreen({super.key, required this.sessionData});
 
   Future<void> checkAndLaunchUrl(String url, BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
