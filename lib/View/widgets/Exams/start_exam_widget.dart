@@ -59,10 +59,27 @@ class _ExamGridItemState extends State<ExamGridItem> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "There are no exams with these filters!",
-                  style: TextStyle(fontSize: 16, color: faceBookColor),
-                  textAlign: TextAlign.center,
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 80,
+                        color: Colors.redAccent[700],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        'No Exams for this data',
+                        style: TextStyle(
+                            color: Colors.redAccent[700],
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
