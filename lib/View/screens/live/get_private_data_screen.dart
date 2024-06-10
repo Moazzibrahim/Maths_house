@@ -19,14 +19,14 @@ class SessionDataScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final session = sessionData[index];
           return ListTile(
-            title: Text(session.lessonSessions),
-            subtitle: Text(session.chapter),
+            // title: Text(session.lessonSessions),
+            // subtitle: Text(session.chapter),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text(session.lessonSessions),
+                    // title: Text(session.lessonSessions),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [

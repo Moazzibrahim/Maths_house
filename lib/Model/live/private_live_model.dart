@@ -1,6 +1,6 @@
 class ApiResponse {
-  final String success;
-  final String category;
+  final String? success;
+  final String? category;
   final List<List<LiveRequest>> liveRequest;
 
   ApiResponse({
@@ -13,8 +13,9 @@ class ApiResponse {
     return ApiResponse(
       success: json['success'],
       category: json['category'],
-      liveRequest: (json['liveRequest'] as List).map((i) =>
-          (i as List).map((j) => LiveRequest.fromJson(j)).toList()).toList(),
+      liveRequest: (json['liveRequest'] as List)
+          .map((i) => (i as List).map((j) => LiveRequest.fromJson(j)).toList())
+          .toList(),
     );
   }
 
@@ -22,14 +23,15 @@ class ApiResponse {
     return {
       'success': success,
       'category': category,
-      'liveRequest': liveRequest.map((i) => i.map((j) => j.toJson()).toList()).toList(),
+      'liveRequest':
+          liveRequest.map((i) => i.map((j) => j.toJson()).toList()).toList(),
     };
   }
 }
 
 class LiveRequest {
-  final String chapter;
-  final String lessonSessions;
+  final String? chapter;
+  final String? lessonSessions;
   final SessionData sessionData;
 
   LiveRequest({
@@ -56,42 +58,42 @@ class LiveRequest {
 }
 
 class SessionData {
-  final int id;
-  final String name;
-  final String date;
-  final String link;
-  final String materialLink;
-  final String from;
-  final String to;
+  final int? id;
+  final String? name;
+  final String? date;
+  final String? link;
+  final String? materialLink;
+  final String? from;
+  final String? to;
   final dynamic duration;
-  final int lessonId;
-  final int teacherId;
-  final int groupId;
-  final String type;
+  final int? lessonId;
+  final int? teacherId;
+  final int? groupId;
+  final String? type;
   final dynamic price;
   final dynamic accessDayes;
   final dynamic repeat;
-  final String createdAt;
-  final String updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
 
   SessionData({
-    required this.id,
-    required this.name,
-    required this.date,
-    required this.link,
-    required this.materialLink,
-    required this.from,
-    required this.to,
+    this.id,
+    this.name,
+    this.date,
+    this.link,
+    this.materialLink,
+    this.from,
+    this.to,
     this.duration,
-    required this.lessonId,
-    required this.teacherId,
-    required this.groupId,
-    required this.type,
+    this.lessonId,
+    this.teacherId,
+    this.groupId,
+    this.type,
     this.price,
     this.accessDayes,
     this.repeat,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory SessionData.fromJson(Map<String, dynamic> json) {
