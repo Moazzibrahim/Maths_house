@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/live/all_sessions_screen.dart';
+import 'package:flutter_application_1/View/screens/live/all_sessions_live_screen.dart';
 import 'package:flutter_application_1/View/screens/live/history_live_screen.dart';
 import 'package:flutter_application_1/View/screens/live/my_live_Sceen.dart';
 import 'package:flutter_application_1/View/screens/live/private_live_screen.dart';
@@ -51,7 +51,7 @@ class LiveScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => const AllSessionsScreen()));
+                    builder: (ctx) => const AllSessionsLiveScreen()));
               },
               child: GridContainer(
                 text: 'All Sessions',
