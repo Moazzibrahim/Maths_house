@@ -1,18 +1,21 @@
+// ignore_for_file: unused_element, unused_field, use_build_context_synchronously, avoid_print
+
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/diagnostic_exams/diagnostic_filteration.dart';
 import 'package:flutter_application_1/Model/live/live_filteration_model.dart';
-import 'package:flutter_application_1/Model/live_filter_model.dart';
+import 'package:flutter_application_1/Model/live/private_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/live/aaa.dart';
+import 'package:flutter_application_1/View/screens/live/get_private_data_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-class AllSessionsLiveScreen extends StatelessWidget {
-  const AllSessionsLiveScreen({super.key});
+class AllSessionsliveScreen extends StatelessWidget {
+  const AllSessionsliveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,7 @@ class AllSessionsLiveScreen extends StatelessWidget {
     );
   }
 }
+
 class _DropdownsAndButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final ValueChanged<DiagnosticCategory?> onCategoryChanged;
@@ -86,7 +90,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && mounted) {
+    if (picked != null) {
       setState(() {
         _selectedEndDate = DateFormat('yyyy-MM-dd').format(picked);
         widget.onEndDateChanged(_selectedEndDate);
@@ -114,36 +118,39 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
     try {
       final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
-        log("response body:${response.body}");
-        final responseData = jsonDecode(response.body);
-        final liveRequest = LiveRequest.fromJson(responseData);
+        final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+        print("response body:$responseData");
+        final apiResponse = ApiResponse.fromJson(responseData);
 
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LiveSessionDetailsScreen(
-                liveRequest: liveRequest,
-              ),
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SessionDataScreen(
+              sessionData: apiResponse.liveRequest[0],
             ),
-          );
-        }
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Session data posted successfully!')),
+        );
       } else {
         // Handle error response
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to post session data!')),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to post session data!')),
+        );
+        print("status code:${response.statusCode}");
       }
     } catch (e) {
       // Handle network or other errors
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('An error occurred: $e')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
     }
+  }
+
+  bool _isAllFieldsSelected() {
+    return _selectedCategory != null &&
+        _selectedCourse != null &&
+        _selectedEndDate != null;
   }
 
   @override
@@ -160,7 +167,9 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Select Diagnostic Category'),
+              const Text(
+                'Select Diagnostic Category',
+              ),
               const SizedBox(height: 10),
               Consumer<LiveFilterationProvider>(
                 builder: (context, liveFilterationProvider, _) {
@@ -188,7 +197,9 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                 },
               ),
               const SizedBox(height: 20),
-              const Text('Select Diagnostic Course'),
+              const Text(
+                'Select Diagnostic Course',
+              ),
               const SizedBox(height: 10),
               Consumer<LiveFilterationProvider>(
                 builder: (context, liveFilterationProvider, _) {
@@ -216,7 +227,9 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                 },
               ),
               const SizedBox(height: 20),
-              const Text('Select End Date'),
+              const Text(
+                'Select End Date',
+              ),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: () => _selectEndDate(context),
@@ -237,12 +250,19 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    _postSessionData();
+                    _isAllFieldsSelected()
+                        ? _postSessionData()
+                        : ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('All the fields are required')),
+                          );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent[700],
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 15),
+                      horizontal: 30,
+                      vertical: 15,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

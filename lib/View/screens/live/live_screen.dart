@@ -52,7 +52,7 @@ class LiveScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => const AllSessionsLiveScreen()));
+                    builder: (ctx) => const AllSessionsliveScreen()));
               },
               child: GridContainer(
                 text: 'All Sessions',
