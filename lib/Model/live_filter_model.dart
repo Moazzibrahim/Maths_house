@@ -1,68 +1,32 @@
-class Category {
-  final String success;
-  final List<Chapter> liveRequest;
-
-  Category({required this.success, required this.liveRequest});
-
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      success: json['success'],
-      liveRequest: (json['liveRequest'] as List)
-          .map((chapter) => Chapter.fromJson(chapter))
-          .toList(),
-    );
-  }
-}
-
-class Chapter {
-  final String chapter;
-  final String lessonSessions;
-  final List<SessionData> sessionData;
-
-  Chapter({required this.chapter, required this.lessonSessions, required this.sessionData});
-
-  factory Chapter.fromJson(Map<String, dynamic> json) {
-    return Chapter(
-      chapter: json['chapter'],
-      lessonSessions: json['lessonSessions'],
-      sessionData: (json['sessionData'] as List)
-          .map((session) => SessionData.fromJson(session))
-          .toList(),
-    );
-  }
-}
-
-class SessionData {
+class LessonSession {
   final int id;
   final String name;
   final String date;
   final String link;
-  final String? materialLink;
+  final String materialLink;
   final String from;
   final String to;
-  final int duration;
   final int lessonId;
   final int teacherId;
-  final int? groupId;
+  final int groupId;
   final String type;
-  final int price;
-  final int accessDays;
-  final String repeat;
+  final dynamic price;
+  final dynamic accessDays;
+  final dynamic repeat;
   final String createdAt;
   final String updatedAt;
 
-  SessionData({
+  LessonSession({
     required this.id,
     required this.name,
     required this.date,
     required this.link,
-    this.materialLink,
+    required this.materialLink,
     required this.from,
     required this.to,
-    required this.duration,
     required this.lessonId,
     required this.teacherId,
-    this.groupId,
+    required this.groupId,
     required this.type,
     required this.price,
     required this.accessDays,
@@ -71,8 +35,8 @@ class SessionData {
     required this.updatedAt,
   });
 
-  factory SessionData.fromJson(Map<String, dynamic> json) {
-    return SessionData(
+  factory LessonSession.fromJson(Map<String, dynamic> json) {
+    return LessonSession(
       id: json['id'],
       name: json['name'],
       date: json['date'],
@@ -80,7 +44,6 @@ class SessionData {
       materialLink: json['material_link'],
       from: json['from'],
       to: json['to'],
-      duration: json['duration'],
       lessonId: json['lesson_id'],
       teacherId: json['teacher_id'],
       groupId: json['group_id'],
@@ -90,6 +53,50 @@ class SessionData {
       repeat: json['repeat'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+    );
+  }
+}
+
+class LessonData {
+  final String chapter;
+  final String lessonSessions;
+  final LessonSession sessionData;
+
+  LessonData({
+    required this.chapter,
+    required this.lessonSessions,
+    required this.sessionData,
+  });
+
+  factory LessonData.fromJson(Map<String, dynamic> json) {
+    return LessonData(
+      chapter: json['chapter'],
+      lessonSessions: json['lessonSessions'],
+      sessionData: LessonSession.fromJson(json['sessionData']),
+    );
+  }
+}
+
+class LiveRequest {
+  final String success;
+  final String category;
+  final List<LessonData> liveRequest;
+
+  LiveRequest({
+    required this.success,
+    required this.category,
+    required this.liveRequest,
+  });
+
+  factory LiveRequest.fromJson(Map<String, dynamic> json) {
+    return LiveRequest(
+      success: json['success'],
+      category: json['category'],
+      liveRequest: List<LessonData>.from(
+        json['liveRequest'].map(
+          (lessonData) => LessonData.fromJson(lessonData),
+        ),
+      ),
     );
   }
 }
