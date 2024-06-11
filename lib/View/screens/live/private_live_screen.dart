@@ -171,6 +171,11 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
               const SizedBox(height: 10),
               Consumer<LiveFilterationProvider>(
                 builder: (context, liveFilterationProvider, _) {
+                  final categories = liveFilterationProvider.categoryData;
+                  if (categories.isEmpty ||
+                      !categories.contains(_selectedCategory)) {
+                    _selectedCategory = null;
+                  }
                   return DropdownButtonFormField<DiagnosticCategory>(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -179,7 +184,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                     ),
                     value: _selectedCategory,
                     hint: const Text('Select Category'),
-                    items: liveFilterationProvider.categoryData.map((category) {
+                    items: categories.map((category) {
                       return DropdownMenuItem<DiagnosticCategory>(
                         value: category,
                         child: Text(category.categoryName),
@@ -201,6 +206,10 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
               const SizedBox(height: 10),
               Consumer<LiveFilterationProvider>(
                 builder: (context, liveFilterationProvider, _) {
+                  final courses = liveFilterationProvider.courseData;
+                  if (courses.isEmpty || !courses.contains(_selectedCourse)) {
+                    _selectedCourse = null;
+                  }
                   return DropdownButtonFormField<DiagnosticCourse>(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -209,7 +218,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                     ),
                     value: _selectedCourse,
                     hint: const Text('Select Course'),
-                    items: liveFilterationProvider.courseData.map((course) {
+                    items: courses.map((course) {
                       return DropdownMenuItem<DiagnosticCourse>(
                         value: course,
                         child: Text(course.courseName),
