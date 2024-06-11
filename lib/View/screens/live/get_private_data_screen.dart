@@ -1,6 +1,9 @@
 // session_data_screen.dart
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'dart:convert';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -36,24 +39,24 @@ class SessionDataScreen extends StatelessWidget {
           await launch(url);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not launch URL')),
+            const SnackBar(content: Text('Could not launch URL')),
           );
         }
       } else if (responseData['Sorry'] == 'You Must Buy New Package') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('You must buy a new package'),
             backgroundColor: Colors.red,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unexpected response from server')),
+          const SnackBar(content: Text('Unexpected response from server')),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to connect to server')),
+        const SnackBar(content: Text('Failed to connect to server')),
       );
     }
   }
@@ -83,74 +86,74 @@ class SessionDataScreen extends StatelessWidget {
                 children: [
                   Text(
                     session.lessonSessions ?? 'No session name',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
+                      fontSize: 18.0.sp,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     session.chapter ?? 'No chapter',
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 16.sp,
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Row(
                     children: [
                       Icon(Icons.person, color: Colors.red[600]),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       Text(
                         session.sessionData.name ?? 'No name',
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16.sp),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Row(
                     children: [
                       Icon(Icons.calendar_today, color: Colors.red[600]),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       Text(
                         session.sessionData.date != null
                             ? DateFormat('yyyy-MM-dd').format(
                                 DateTime.parse(session.sessionData.date!))
                             : 'No date',
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16.sp),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Row(
                     children: [
                       Icon(Icons.access_time, color: Colors.red[600]),
                       const SizedBox(width: 5),
                       Text(
                         'From: ${session.sessionData.from ?? 'No from'}',
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16.sp),
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       Text(
                         'To: ${session.sessionData.to ?? 'No to'}',
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16.sp),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
                   Row(
                     children: [
                       Icon(Icons.info, color: Colors.red[600]),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5.w),
                       Text(
                         'Type: ${session.sessionData.type ?? 'No type'}',
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16.sp),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 36.h),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
                         onPressed: () {
@@ -162,10 +165,10 @@ class SessionDataScreen extends StatelessWidget {
                             final fromDateTime =
                                 DateTime.parse('$sessionDateString $fromTime');
 
-                            if (fromDateTime
-                                .isAfter(now.add(Duration(minutes: 10)))) {
+                            if (fromDateTime.isAfter(
+                                now.add(const Duration(minutes: 10)))) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text(
                                       'It is too early to join the session'),
                                   backgroundColor: Colors.red,
@@ -177,23 +180,32 @@ class SessionDataScreen extends StatelessWidget {
                                 checkAndLaunchUrl(url, context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('No link available')),
+                                  const SnackBar(
+                                      content: Text('No link available')),
                                 );
                               }
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                   content:
                                       Text('No from time or date available')),
                             );
                           }
                         },
-                        child: const Text('Attend'),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: faceBookColor, // Text color
                         ),
+                        child: const Text('Attend'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: faceBookColor, // Text color
+                        ),
+                        child: const Text('Book'),
                       ),
                     ],
                   ),

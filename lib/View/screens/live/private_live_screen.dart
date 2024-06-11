@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element, unused_field, use_build_context_synchronously, avoid_print
+// ignore_for_file: unused_element, unused_field, use_build_context_synchronously, avoid_print, deprecated_member_use
 
 import 'dart:convert';
 import 'dart:developer';
@@ -97,7 +97,8 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
       });
     }
   }
- Future<void> _postSessionData() async {
+
+  Future<void> _postSessionData() async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
     final url = Uri.parse(
@@ -128,9 +129,6 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
               sessionData: apiResponse.liveRequest[0],
             ),
           ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Session data posted successfully!')),
         );
       } else {
         // Handle error response
