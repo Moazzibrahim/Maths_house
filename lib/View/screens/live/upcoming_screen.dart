@@ -147,6 +147,16 @@ class _UpComingScreenState extends State<UpComingScreen> {
                             ),
                           ],
                         ),
+                        Row(
+                          children: [
+                            Icon(Icons.info, color: Colors.red[600]),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Type: ${session.session.type ?? 'No type'}',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     trailing: ElevatedButton(
