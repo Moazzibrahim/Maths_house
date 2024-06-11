@@ -1,6 +1,7 @@
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/confirm_password.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -66,7 +67,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       _isLoading = true;
     });
 
-    final String url = 'https://login.mathshouse.net/api/confirm_code';
+    const String url = 'https://login.mathshouse.net/api/confirm_code';
 
     try {
       final response = await http.post(
