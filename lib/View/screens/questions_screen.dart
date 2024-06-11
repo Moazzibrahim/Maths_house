@@ -32,6 +32,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   Color? containerColor;
   int correctAnswerIndex = -1; // Index of the correct answer
   bool answerSubmitted = false;
+  bool showAnswerButton = false; // Flag to show the answer button
 
   @override
   void initState() {
@@ -170,17 +171,23 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                   correctAnswer.codeUnitAt(0) - 65;
                               setState(() {
                                 answerSubmitted = true;
+                                showAnswerButton = true;
                               });
-                            }else if(question[0].mcqAnswerList[0].mcqAnswer == answerController.text){
+                            } else if (question[0].mcqAnswerList[0].mcqAnswer ==
+                                answerController.text) {
                               setState(() {
                                 textAnswer = true;
+                                showAnswerButton = true;
                               });
-                            }else if(question[0].mcqAnswerList[0].mcqAnswer != answerController.text){
+                            } else if (question[0]
+                                    .mcqAnswerList[0]
+                                    .mcqAnswer !=
+                                answerController.text) {
                               setState(() {
                                 textAnswer = false;
+                                showAnswerButton = true;
                               });
-                            }
-                            else {
+                            } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Please select an answer'),
@@ -204,12 +211,42 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                           ),
                         ),
                         const SizedBox(height: 20,),
-                        if(textAnswer == null)
-                          const Text('')
-                        else if(textAnswer!)
-                          Text('Correct Answer',style: TextStyle(color: Colors.greenAccent[700],fontSize: 20),)
-                        else
-                          Text('Wrong answer',style: TextStyle(color: Colors.redAccent[700],fontSize: 20),)
+                        if (showAnswerButton)
+                          ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Are you sure you want to view the answer for this question?"),
+                                    content: Text(question[0].mcqList[0].answer!),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.greenAccent[700],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 60,
+                              ),
+                            ),
+                            child: const Text(
+                              'Show Answer',
+                              style: TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -222,5 +259,3 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     );
   }
 }
-
-

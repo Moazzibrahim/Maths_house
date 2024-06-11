@@ -68,7 +68,7 @@ class Mcq {
   Mcq({required this.text, required this.answer});
 
   factory Mcq.fromJson(Map<String, dynamic> json) => Mcq(
-        text: json['mcq_ans'] ?? '',
+        text: json['mcq_num'] ?? '',
         answer: json['mcq_answers']?? '',
       );
 }
