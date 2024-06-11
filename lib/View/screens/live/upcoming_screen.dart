@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/constants/colors.dart';

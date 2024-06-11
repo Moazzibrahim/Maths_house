@@ -1,23 +1,19 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/diagnostic_exams/diagnostic_filteration.dart';
 import 'package:flutter_application_1/Model/live/live_filteration_model.dart';
-import 'package:flutter_application_1/Model/live/private_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/live/get_all_session_screen.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-class AllSessionsliveScreen extends StatelessWidget {
-  const AllSessionsliveScreen({super.key});
+class AllSessionsLiveScreen extends StatelessWidget {
+  const AllSessionsLiveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context, 'All Live'),
+      appBar: AppBar(title: const Text('All Live')),
       body: _DropdownsAndButton(
         onCategoryChanged: (value) {},
         onCourseChanged: (value) {},
@@ -110,22 +106,11 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
       'course_id': _selectedCourse?.id,
       'end_date': _selectedEndDate,
     });
-    log("body:$body");
 
     try {
       final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body) as Map<String, dynamic>;
-        print("response body:$responseData");
-        final apiResponse = ApiResponse.fromJson(responseData);
-
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => AllSessionDataScreen(
-              sessionData: apiResponse.liveRequest[0],
-            ),
-          ),
-        );
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Session data posted successfully!')),
         );
@@ -134,7 +119,6 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to post session data!')),
         );
-        print("status code:${response.statusCode}");
       }
     } catch (e) {
       // Handle network or other errors
@@ -164,9 +148,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Select Diagnostic Category',
-              ),
+              const Text('Select Category'),
               const SizedBox(height: 10),
               Consumer<LiveFilterationProvider>(
                 builder: (context, liveFilterationProvider, _) {
@@ -176,7 +158,10 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    value: _selectedCategory,
+                    value: liveFilterationProvider.categoryData
+                            .contains(_selectedCategory)
+                        ? _selectedCategory
+                        : null,
                     hint: const Text('Select Category'),
                     items: liveFilterationProvider.categoryData.map((category) {
                       return DropdownMenuItem<DiagnosticCategory>(
@@ -188,15 +173,15 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                       setState(() {
                         _selectedCategory = value;
                         widget.onCategoryChanged(value);
+                        _selectedCourse =
+                            null; // Reset course selection if category changes
                       });
                     },
                   );
                 },
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Select Diagnostic Course',
-              ),
+              const Text('Select Course'),
               const SizedBox(height: 10),
               Consumer<LiveFilterationProvider>(
                 builder: (context, liveFilterationProvider, _) {
@@ -206,7 +191,10 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    value: _selectedCourse,
+                    value: liveFilterationProvider.courseData
+                            .contains(_selectedCourse)
+                        ? _selectedCourse
+                        : null,
                     hint: const Text('Select Course'),
                     items: liveFilterationProvider.courseData.map((course) {
                       return DropdownMenuItem<DiagnosticCourse>(
@@ -224,9 +212,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                 },
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Select End Date',
-              ),
+              const Text('Select End Date'),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: () => _selectEndDate(context),
