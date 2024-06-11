@@ -61,6 +61,42 @@ class SessionDataScreen extends StatelessWidget {
     }
   }
 
+  Future<void> bookSession(int sessionId, BuildContext context) async {
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+    print('Booking session with ID: $sessionId'); // Log the session ID
+    final response = await http.post(
+      Uri.parse(
+          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/booking_private_session'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode({'session': sessionId}),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      if (responseData['success'] == 'You Are Booking Success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Session booked successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to book session: ${responseData['message']}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to connect to server')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -73,6 +109,7 @@ class SessionDataScreen extends StatelessWidget {
         itemCount: sessionData.length,
         itemBuilder: (context, index) {
           final session = sessionData[index];
+          final int? sessionId = session.sessionData.id;
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             elevation: 4.0,
@@ -200,7 +237,20 @@ class SessionDataScreen extends StatelessWidget {
                         child: const Text('Attend'),
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (sessionId != null) {
+                            print(
+                                'Selected session ID: $sessionId'); // Log the selected session ID
+                            bookSession(sessionId, context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Invalid session ID'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: faceBookColor, // Text color
