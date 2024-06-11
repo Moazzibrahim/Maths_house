@@ -33,53 +33,37 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                 children: [
                   DataTable(
                     dataRowMaxHeight: 55.h,
-                    columnSpacing: 25,
+                    columnSpacing: 25.w,
                     columns: const <DataColumn>[
                       DataColumn(
-                        label: Text(
-                          'Date',
-                        ),
+                        label: Text('Date'),
                         numeric: true,
                       ),
                       DataColumn(
-                        label: Text(
-                          'Quiz Details',
-                        ),
+                        label: Text('Quiz Details'),
                         numeric: true,
                       ),
                       DataColumn(
-                        label: Text(
-                          'Quiz',
-                        ),
+                        label: Text('Quiz'),
                       ),
                       DataColumn(
-                        label: Text(
-                          'Score',
-                        ),
+                        label: Text('Score'),
                         numeric: true,
                       ),
                       DataColumn(
-                        label: Text(
-                          'Actions',
-                        ),
+                        label: Text('Actions'),
                         numeric: true,
                       ),
                       DataColumn(
-                        label: Text(
-                          'Score Details',
-                        ),
+                        label: Text('Score Details'),
                         numeric: true,
                       ),
                       DataColumn(
-                        label: Text(
-                          'Time',
-                        ),
+                        label: Text('Time'),
                         numeric: true,
                       ),
                       DataColumn(
-                        label: Text(
-                          'Q.num',
-                        ),
+                        label: Text('No. of Questions'),
                         numeric: true,
                       ),
                     ],
@@ -117,10 +101,10 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 7, horizontal: 5),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 7.h, horizontal: 5.w),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   backgroundColor: Colors.redAccent[700],
                                   foregroundColor: Colors.white,
@@ -146,13 +130,14 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                           ElevatedButton(
                                             onPressed: () {},
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.redAccent[700],
-                                                foregroundColor: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12))),
+                                              backgroundColor:
+                                                  Colors.redAccent[700],
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12.r),
+                                              ),
+                                            ),
                                             child: const Text('Yes'),
                                           ),
                                           TextButton(
@@ -171,10 +156,10 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 7, horizontal: 5),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 7.h, horizontal: 5.w),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   backgroundColor: Colors.redAccent[700],
                                   foregroundColor: Colors.white,
@@ -182,21 +167,18 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                 child: const Text('View Mistake'),
                               ),
                             ),
-                            DataCell(
-                              Text(e.questions.length.toString()),
-                            ),
+                            DataCell(Text(e.questions.length.toString())),
                             DataCell(
                               Column(
                                 children: [
                                   Text(
-                                      'right answers: ${e.rightCount.toString()}'),
+                                      'Right answers: ${e.rightCount.toString()}'),
                                   Text(
-                                      'wrong answers: ${e.questions.length - e.rightCount}'),
+                                      'Wrong answers: ${e.questions.length - e.rightCount}'),
                                 ],
                               ),
                             ),
                             DataCell(Text(e.time)),
-                            
                           ],
                         ),
                     ],

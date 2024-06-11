@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:video_player/video_player.dart';
 
 class IdeasContent extends StatefulWidget {
   const IdeasContent({super.key, required this.lesson});
@@ -11,7 +13,24 @@ class IdeasContent extends StatefulWidget {
 }
 
 class _IdeasContentState extends State<IdeasContent> {
+  late VideoPlayerController controller;
   int rating =0 ;
+  @override
+  void initState() {
+    controller = VideoPlayerController.networkUrl(Uri.parse(widget.lesson.videos[0].videoLink!))..initialize().then((_){
+      setState(() {});
+      controller.play();
+    }).catchError((error) {
+        // Handle error
+        log('Video initialization error: $error');
+      });
+    super.initState();
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
   void updateRating(int newRating){
     setState(() {
       rating = newRating;
@@ -24,16 +43,8 @@ class _IdeasContentState extends State<IdeasContent> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            YoutubePlayer(
-              controller: YoutubePlayerController(
-                initialVideoId: 'v69praWH6cs', // Youtube video ID
-                flags: const YoutubePlayerFlags(
-                  autoPlay: false,
-                  mute: false,
-                ),
-              ),
-              showVideoProgressIndicator: true,
-              progressIndicatorColor: Colors.blueAccent,
+            AspectRatio(aspectRatio: controller.value.aspectRatio,
+            child: VideoPlayer(controller),
             ),
             const SizedBox(
               height: 10,
