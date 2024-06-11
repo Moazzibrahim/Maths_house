@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 class Lesson {
   final String name;
   final int chapterId;

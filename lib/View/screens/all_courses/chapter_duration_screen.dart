@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/all_courses_model.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_chapter_screen.dart';

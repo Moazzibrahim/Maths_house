@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, unused_element, use_build_context_synchronously, avoid_print
+
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
