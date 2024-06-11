@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, deprecated_member_use, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -196,11 +196,11 @@ class _UpComingScreenState extends State<UpComingScreen> {
                           );
                         }
                       },
-                      child: Text('Attend'),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: faceBookColor, // Text color
                       ),
+                      child: Text('Attend'),
                     ),
                   ),
                 ),
