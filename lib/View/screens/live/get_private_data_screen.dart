@@ -1,5 +1,5 @@
 // session_data_screen.dart
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously, avoid_print
 
 import 'dart:convert';
 
@@ -14,10 +14,23 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SessionDataScreen extends StatelessWidget {
+class SessionDataScreen extends StatefulWidget {
   final List<LiveRequest> sessionData;
 
   const SessionDataScreen({super.key, required this.sessionData});
+
+  @override
+  _SessionDataScreenState createState() => _SessionDataScreenState();
+}
+
+class _SessionDataScreenState extends State<SessionDataScreen> {
+  late List<LiveRequest> sessionData;
+
+  @override
+  void initState() {
+    super.initState();
+    sessionData = widget.sessionData;
+  }
 
   Future<void> checkAndLaunchUrl(String url, BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -64,7 +77,7 @@ class SessionDataScreen extends StatelessWidget {
   Future<void> bookSession(int sessionId, BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
-    print('Booking session with ID: $sessionId'); // Log the session ID
+    print('Booking session with ID: $sessionId');  // Log the session ID
     final response = await http.post(
       Uri.parse(
           'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/booking_private_session'),
@@ -82,6 +95,9 @@ class SessionDataScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Session booked successfully')),
         );
+        setState(() {
+          sessionData.removeWhere((session) => session.sessionData.id == sessionId);
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -239,8 +255,7 @@ class SessionDataScreen extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           if (sessionId != null) {
-                            print(
-                                'Selected session ID: $sessionId'); // Log the selected session ID
+                            print('Selected session ID: $sessionId'); // Log the selected session ID
                             bookSession(sessionId, context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
