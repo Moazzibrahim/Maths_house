@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/exam_models/exam_mcq_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_result.dart';
-import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/Timer_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
@@ -26,22 +26,30 @@ class ExamScreen extends StatefulWidget {
 class _ExamScreenState extends State<ExamScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Exam"),
-        leading: InkWell(
-          child: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Exam"),
+          leading: InkWell(
+            child: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const TabsScreen(
+                        isLoggedIn: false,
+                      )));
+            },
           ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const RegisteredHomeScreen()));
-          },
         ),
-      ),
-      body: ExamBody(
-        fetchedexamids: widget.fetchedexamid,
+        body: ExamBody(
+          fetchedexamids: widget.fetchedexamid,
+        ),
       ),
     );
   }
@@ -64,6 +72,7 @@ class _ExamBodyState extends State<ExamBody> {
   Duration elapsedTime = Duration.zero;
   List<int> wrongQuestionIds = [];
   int questionsSolved = 0;
+  int missedQuestionsCount = 0;
 
   @override
   void initState() {
@@ -77,7 +86,8 @@ class _ExamBodyState extends State<ExamBody> {
     final mcqprovider = Provider.of<ExamMcqProvider>(context, listen: false);
     print('Attempting to fetch exam data...');
     try {
-      final data = await mcqprovider.fetchExamDataFromApi(context);
+      final data = await mcqprovider.fetchExamDataFromApi(
+          context, widget.fetchedexamids!);
       print('Exam data successfully fetched: $data');
       setState(() {
         questionsWithAnswers = data;
@@ -126,8 +136,31 @@ class _ExamBodyState extends State<ExamBody> {
         child: CircularProgressIndicator(),
       );
     } else if (questionsWithAnswers!.isEmpty) {
-      return const Center(
-        child: Text("No questions available"),
+      return Center(
+        child: AlertDialog(actions: [
+          const Center(
+            child: Text(
+              "You must buy package first!",
+              style: TextStyle(fontSize: 15, color: faceBookColor),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Center(
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          const TabsScreen(isLoggedIn: false)));
+                },
+                child: const Text(
+                  "ok",
+                  style: TextStyle(color: Colors.white),
+                )),
+          )
+        ]),
       );
     }
 
@@ -299,13 +332,14 @@ class _ExamBodyState extends State<ExamBody> {
                             .toList(),
                         'time_taken': elapsedTime.inSeconds,
                       };
+                      wrongQuestionIds =
+                          submitAnswers(questionsWithAnswers!); // Update here
                       fetchAndNavigateToExamResultScreen(postData);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Answers submitted.'),
                         ),
                       );
-                      wrongQuestionIds = submitAnswers(questionsWithAnswers!);
                     }
                   },
                   child: const Text(
@@ -539,7 +573,7 @@ class _ExamBodyState extends State<ExamBody> {
       log("selected answer: $selectedAnswerIndex");
       log("correct answer :$correctAnswerIndex ");
 
-      if (selectedAnswerIndex != null && correctAnswerIndex != -1) {
+      if (selectedAnswerIndex != null) {
         if (selectedAnswerIndex == correctAnswerIndex) {
           correctAnswerCount++;
         } else {
@@ -550,6 +584,14 @@ class _ExamBodyState extends State<ExamBody> {
           });
           wrongAnswerCount++;
         }
+      } else {
+        // Count missed questions as wrong answers
+        wrongAnswerQuestions.add({
+          'question': questionsWithAnswers[i].question,
+          'selectedAnswer': 'None',
+          'correctAnswer': String.fromCharCode(correctAnswerIndex + 65),
+        });
+        wrongAnswerCount++;
       }
     }
 

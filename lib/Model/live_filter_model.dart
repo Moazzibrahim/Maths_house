@@ -1,129 +1,102 @@
-class LiveFilter {
-  final int catId;
-  final String cateName;
-  final String cateUrl;
-  final int teacherId;
-  final List<CourseLive> courseLiveList;
-
-  LiveFilter(
-      {required this.catId,
-      required this.cateName,
-      required this.cateUrl,
-      required this.teacherId,
-      required this.courseLiveList});
-
-  factory LiveFilter.fromJson(Map<String, dynamic> json) {
-    List<CourseLive> cl = [];
-    for (var e in json['courses_live']) {
-      cl.add(CourseLive.fromJson(e));
-    }
-    return LiveFilter(
-      catId: json['id'],
-      cateName: json['cate_name'],
-      cateUrl: json['cate_url'],
-      teacherId: json['teacher_id'],
-      courseLiveList: cl,
-    );
-  }
-}
-
-class CourseLive {
+class LessonSession {
   final int id;
-  final String courseName;
-  final String courseUrl;
-  final String type;
-  final List<ChapterLive> chapterLiveList;
-
-  CourseLive(
-      {required this.id,
-      required this.courseName,
-      required this.courseUrl,
-      required this.type,
-      required this.chapterLiveList});
-
-  factory CourseLive.fromJson(Map<String, dynamic> json) {
-    List<ChapterLive> chl = [];
-    for (var e in json['chapter']) {
-      chl.add(ChapterLive.fromJson(e));
-    }
-    return CourseLive(
-      id: json['id'],
-      courseName: json['course_name'],
-      courseUrl: json['course_url'],
-      type: json['type'],
-      chapterLiveList: chl,
-    );
-  }
-}
-
-class ChapterLive {
-  final int id;
-  final String chapterName;
-  final String chapterUrl;
-  final List<LessonLive> lessonLiveList;
-
-  ChapterLive(
-      {required this.id,
-      required this.chapterName,
-      required this.chapterUrl,
-      required this.lessonLiveList});
-
-  factory ChapterLive.fromJson(Map<String, dynamic> json) {
-    List<LessonLive> lll = [];
-    for (var e in json['lessons']) {
-      lll.add(LessonLive.fromJson(e));
-    }
-    return ChapterLive(
-        id: json['id'],
-        chapterName: json['chapter_name'],
-        chapterUrl: json['ch_url'],
-        lessonLiveList: lll);
-  }
-}
-
-class LessonLive {
-  final int id;
-  final String lessonName;
-  final String lessonrUrl;
-  final List<SessionLive> sessionLiveList;
-  LessonLive(
-      {required this.id, required this.lessonName, required this.lessonrUrl,required this.sessionLiveList});
-
-  factory LessonLive.fromJson(Map<String, dynamic> json) {
-    List<SessionLive> sll = [];
-    for(var e in json['sessions']){
-      sll.add(SessionLive.fromJson(e));
-    }
-    return LessonLive(
-      id: json['id'],
-      lessonName: json['lesson_name'],
-      lessonrUrl: json['lesson_url'],
-      sessionLiveList: sll
-    );
-  }
-}
-
-class SessionLive {
-  final String sessionName;
+  final String name;
   final String date;
-  final String dateFrom;
-  final String dateTo;
-  final int id;
+  final String link;
+  final String materialLink;
+  final String from;
+  final String to;
+  final int lessonId;
+  final int teacherId;
+  final int groupId;
+  final String type;
+  final dynamic price;
+  final dynamic accessDays;
+  final dynamic repeat;
+  final String createdAt;
+  final String updatedAt;
 
-  SessionLive(
-      {required this.sessionName,
-      required this.date,
-      required this.dateFrom,
-      required this.dateTo,
-      required this.id});
+  LessonSession({
+    required this.id,
+    required this.name,
+    required this.date,
+    required this.link,
+    required this.materialLink,
+    required this.from,
+    required this.to,
+    required this.lessonId,
+    required this.teacherId,
+    required this.groupId,
+    required this.type,
+    required this.price,
+    required this.accessDays,
+    required this.repeat,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
-  factory SessionLive.fromJson(Map<String, dynamic> json) {
-    return SessionLive(
-      sessionName: json['name'],
-      date: json['date'],
-      dateFrom: json['from'],
-      dateTo: json['to'],
+  factory LessonSession.fromJson(Map<String, dynamic> json) {
+    return LessonSession(
       id: json['id'],
+      name: json['name'],
+      date: json['date'],
+      link: json['link'],
+      materialLink: json['material_link'],
+      from: json['from'],
+      to: json['to'],
+      lessonId: json['lesson_id'],
+      teacherId: json['teacher_id'],
+      groupId: json['group_id'],
+      type: json['type'],
+      price: json['price'],
+      accessDays: json['access_days'],
+      repeat: json['repeat'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+}
+
+class LessonData {
+  final String chapter;
+  final String lessonSessions;
+  final LessonSession sessionData;
+
+  LessonData({
+    required this.chapter,
+    required this.lessonSessions,
+    required this.sessionData,
+  });
+
+  factory LessonData.fromJson(Map<String, dynamic> json) {
+    return LessonData(
+      chapter: json['chapter'],
+      lessonSessions: json['lessonSessions'],
+      sessionData: LessonSession.fromJson(json['sessionData']),
+    );
+  }
+}
+
+class LiveRequest {
+  final String success;
+  final String category;
+  final List<LessonData> liveRequest;
+
+  LiveRequest({
+    required this.success,
+    required this.category,
+    required this.liveRequest,
+  });
+
+  factory LiveRequest.fromJson(Map<String, dynamic> json) {
+    return LiveRequest(
+      success: json['success'],
+      category: json['category'],
+      liveRequest: List<LessonData>.from(
+        json['liveRequest'].map(
+          (lessonData) => LessonData.fromJson(lessonData),
+        ),
+      ),
     );
   }
 }

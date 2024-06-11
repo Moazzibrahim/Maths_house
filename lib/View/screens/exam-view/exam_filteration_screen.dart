@@ -152,189 +152,194 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Exam Filter'),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Exam Filter'),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          onPressed: () {
-            Navigator.pop(context);
+        ),
+        body: Consumer<ExamProvider>(
+          builder: (context, examProvider, _) {
+            return examProvider.courseNames.isEmpty ||
+                    examProvider.categoryNames.isEmpty ||
+                    examProvider.examCodes.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildDropdownContainer(
+                          hint: "Select Category",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedCategory,
+                            items: [
+                              ...examProvider.categoryNames.map(
+                                (category) => DropdownMenuItem<String>(
+                                  value: category,
+                                  child: Row(
+                                    children: [
+                                      Text(category),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCategory = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdownContainer(
+                          hint: "Select Course",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedCourse,
+                            items: [
+                              ...examProvider.courseNames.map(
+                                (course) => DropdownMenuItem<String>(
+                                  value: course,
+                                  child: Row(
+                                    children: [
+                                      Text(course),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCourse = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdownContainer(
+                          hint: "Select Year",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedYear,
+                            items: [
+                              ..._years.map(
+                                (year) => DropdownMenuItem<String>(
+                                  value: year,
+                                  child: Row(
+                                    children: [
+                                      Text(year),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedYear = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdownContainer(
+                          hint: "Select Month",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedMonth,
+                            items: [
+                              ..._months.map(
+                                (month) => DropdownMenuItem<String>(
+                                  value: month,
+                                  child: Row(
+                                    children: [
+                                      Text(month),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedMonth = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdownContainer(
+                          hint: "Select Exam Code",
+                          child: DropdownButtonFormField<String>(
+                            iconEnabledColor: faceBookColor,
+                            value: _selectedExamCode,
+                            items: [
+                              ...examProvider.examCodes.map(
+                                (code) => DropdownMenuItem<String>(
+                                  value: code,
+                                  child: Row(
+                                    children: [
+                                      Text(code),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedExamCode = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _sendFiltersToServer();
+                            // For demonstration purposes, let's just print the selected filter values
+                            print('Category: $_selectedCategory');
+                            print('Course: $_selectedCourse');
+                            print('Year: $_selectedYear');
+                            print('Month: $_selectedMonth');
+                            print('Exam Code: $_selectedExamCode');
+                            // Here you can implement your logic to fetch exams based on the selected filters
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: faceBookColor,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 120,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
+                          child: const Text(
+                            'Search',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
           },
         ),
-      ),
-      body: Consumer<ExamProvider>(
-        builder: (context, examProvider, _) {
-          return examProvider.courseNames.isEmpty ||
-                  examProvider.categoryNames.isEmpty ||
-                  examProvider.examCodes.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildDropdownContainer(
-                        hint: "Select Category",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedCategory,
-                          items: [
-                            ...examProvider.categoryNames.map(
-                              (category) => DropdownMenuItem<String>(
-                                value: category,
-                                child: Row(
-                                  children: [
-                                    Text(category),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCategory = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildDropdownContainer(
-                        hint: "Select Course",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedCourse,
-                          items: [
-                            ...examProvider.courseNames.map(
-                              (course) => DropdownMenuItem<String>(
-                                value: course,
-                                child: Row(
-                                  children: [
-                                    Text(course),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCourse = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildDropdownContainer(
-                        hint: "Select Year",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedYear,
-                          items: [
-                            ..._years.map(
-                              (year) => DropdownMenuItem<String>(
-                                value: year,
-                                child: Row(
-                                  children: [
-                                    Text(year),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedYear = value!;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildDropdownContainer(
-                        hint: "Select Month",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedMonth,
-                          items: [
-                            ..._months.map(
-                              (month) => DropdownMenuItem<String>(
-                                value: month,
-                                child: Row(
-                                  children: [
-                                    Text(month),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedMonth = value!;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildDropdownContainer(
-                        hint: "Select Exam Code",
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: faceBookColor,
-                          value: _selectedExamCode,
-                          items: [
-                            ...examProvider.examCodes.map(
-                              (code) => DropdownMenuItem<String>(
-                                value: code,
-                                child: Row(
-                                  children: [
-                                    Text(code),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedExamCode = value;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          _sendFiltersToServer();
-                          // For demonstration purposes, let's just print the selected filter values
-                          print('Category: $_selectedCategory');
-                          print('Course: $_selectedCourse');
-                          print('Year: $_selectedYear');
-                          print('Month: $_selectedMonth');
-                          print('Exam Code: $_selectedExamCode');
-                          // Here you can implement your logic to fetch exams based on the selected filters
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: faceBookColor,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 120,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        child: const Text(
-                          'Search',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-        },
       ),
     );
   }

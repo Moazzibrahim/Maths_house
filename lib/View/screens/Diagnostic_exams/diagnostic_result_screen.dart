@@ -50,7 +50,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
               int? grade = snapshot.data!['score'] as int?;
               chapterDetails =
@@ -83,83 +83,90 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
 
   Widget _buildResultScreen(BuildContext context, int? grade,
       List<Map<String, dynamic>> chapterDetails) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            "Result",
-            style: TextStyle(fontWeight: FontWeight.bold),
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false); // Prevent back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Center(
+            child: Text(
+              "Result",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: faceBookColor,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TabsScreen(
+                    isLoggedIn: false,
+                  ),
+                ),
+              );
+            },
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: faceBookColor,
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const TabsScreen(
-                  isLoggedIn: false,
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildInfoRow("Total Score", "${widget.score}"),
-              const SizedBox(height: 15),
-              _buildInfoRow("Grade", "$grade"),
-              const SizedBox(height: 15),
-              _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
-              const SizedBox(height: 15),
-              _buildInfoRow("Correct Questions", "${widget.correctCount}"),
-              const SizedBox(height: 15),
-              _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
-              const SizedBox(height: 25),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
-                onPressed: () {
-                  setState(() {
-                    showRecommendation = !showRecommendation;
-                  });
-                },
-                child: const Text(
-                  "Recommended",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              if (showRecommendation) ...[
-                const SizedBox(height: 10),
-                _buildRecommendationSection(),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildInfoRow("Total Score", "${widget.score}"),
+                const SizedBox(height: 15),
+                _buildInfoRow("Grade", "$grade"),
+                const SizedBox(height: 15),
+                _buildInfoRow("Total Questions", "${widget.totalQuestions}"),
+                const SizedBox(height: 15),
+                _buildInfoRow("Correct Questions", "${widget.correctCount}"),
+                const SizedBox(height: 15),
+                _buildInfoRow("Wrong Questions", "${widget.wrongCount}"),
+                const SizedBox(height: 25),
                 ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TabsScreen(
-                          isLoggedIn: false,
-                        ),
-                      ),
-                    );
+                    setState(() {
+                      showRecommendation = !showRecommendation;
+                    });
                   },
                   child: const Text(
-                    "Home",
+                    "Recommended",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 15),
+                if (showRecommendation) ...[
+                  const SizedBox(height: 10),
+                  _buildRecommendationSection(),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: faceBookColor),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TabsScreen(
+                            isLoggedIn: false,
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Home",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -170,7 +177,7 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
     if (chapterDetails.isEmpty) {
       return const Text(
         "No chapters available",
-        style: TextStyle(fontSize: 16, color: Colors.red),
+        style: TextStyle(fontSize: 16, color: Colors.black),
       );
     }
 

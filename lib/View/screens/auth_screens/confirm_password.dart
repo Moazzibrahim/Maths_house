@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -45,7 +47,7 @@ class _ConfirmPasswordState extends State<ConfirmPassword> {
       _isLoading = true;
     });
 
-    final String url = 'https://login.mathshouse.net/api/update_password';
+    const String url = 'https://login.mathshouse.net/api/update_password';
 
     try {
       final response = await http.post(

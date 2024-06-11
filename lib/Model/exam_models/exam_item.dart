@@ -6,7 +6,8 @@ class ExamItem with ChangeNotifier {
   final int countOfQuestions;
   final String? section;
   final int marks;
-  int? examid;
+  final int examid;
+ // Make examid non-nullable
 
   ExamItem({
     required this.year,
@@ -14,18 +15,17 @@ class ExamItem with ChangeNotifier {
     required this.countOfQuestions,
     this.section,
     required this.marks,
-    this.examid,
+    required this.examid,
   });
 
   factory ExamItem.fromJson(Map<String, dynamic> json) {
     return ExamItem(
-      year: json['year'],
-      month: json['month'],
-      countOfQuestions: json['question'].length,
+      year: json['year'] ?? '',
+      month: json['month'] ?? 0,
+      countOfQuestions: (json['question'] as List).length,
       section: json['section'],
-      marks: json['score'],
-      examid:
-          json['id'] as int?, // Assuming marks are obtained from 'score' field
+      marks: json['score'] ?? 0,
+      examid: json['id'] ?? 0,
     );
   }
 }

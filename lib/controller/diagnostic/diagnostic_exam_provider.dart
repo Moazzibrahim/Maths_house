@@ -14,12 +14,14 @@ class DiagExamProvider with ChangeNotifier {
   int passscore = 0;
   int score = 0;
 
-  Future<void> fetchDataFromApi(BuildContext context, int selectedCourseId) async {
+  Future<void> fetchDataFromApi(
+      BuildContext context, int selectedCourseId) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
 
     try {
-      final diagnosticFilterationProvider = Provider.of<DiagnosticFilterationProvider>(context, listen: false);
+      final diagnosticFilterationProvider =
+          Provider.of<DiagnosticFilterationProvider>(context, listen: false);
       await diagnosticFilterationProvider.fetchdiagdata(context);
 
       const int maxRetries = 5;
@@ -58,6 +60,7 @@ class DiagExamProvider with ChangeNotifier {
                 'mcq': question['mcq'] != null
                     ? (question['mcq'] as List).map((mcq) {
                         return {
+                          'mcq_num': mcq['mcq_num'] ?? "",
                           'mcq_ans': mcq['mcq_ans'] ?? '',
                           'mcq_answers': mcq['mcq_answers'] ?? '',
                         };

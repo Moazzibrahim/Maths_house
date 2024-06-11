@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/otp_verification_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -27,7 +29,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     });
 
     final String user = _controller.text;
-    final String url =
+    const String url =
         'https://login.mathshouse.net/api/forget_password';
 
     try {

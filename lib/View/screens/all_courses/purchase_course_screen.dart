@@ -23,6 +23,8 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
   List<bool> chapterActiveStatus = [];
   List<ChapterWithPrice> chaptersList = [];
   late int selectedPrice;
+  bool selectAll = true; // Add a boolean for the "Select All" checkbox
+
   @override
   void initState() {
     final durationsSet =
@@ -220,9 +222,37 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
               SizedBox(
                 height: 10.h,
               ),
-              const Text(
-                'Course Content',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Course Content',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Select All',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Checkbox(
+                        value: selectAll,
+                        activeColor: Colors.redAccent[700],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            selectAll = value!;
+                            for (int i = 0;
+                                i < chapterActiveStatus.length;
+                                i++) {
+                              chapterActiveStatus[i] = selectAll;
+                            }
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -237,11 +267,17 @@ class _PurchaseCourseScreenState extends State<PurchaseCourseScreen> {
                       onChanged: (bool? value) {
                         setState(() {
                           chapterActiveStatus[i] = value!;
+                          if (!value) {
+                            selectAll = false;
+                          } else if (chapterActiveStatus
+                              .every((status) => status)) {
+                            selectAll = true;
+                          }
                         });
                       },
                     ),
                 ],
-              )
+              ),
             ],
           ),
         ),

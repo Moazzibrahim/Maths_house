@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
@@ -29,25 +30,84 @@ class ExamGridItem extends StatefulWidget {
 
 class _ExamGridItemState extends State<ExamGridItem> {
   @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    await Provider.of<StartExamProvider>(context, listen: false)
+        .fetchDataFromApi(context, {
+      'category_id': widget.categoryid,
+      'course_id': widget.courseid,
+      'year': widget.years,
+      'month': widget.months,
+      'code_id': widget.examcodeid,
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<StartExamProvider>(
       builder: (context, startExamProvider, _) {
-        final lll = startExamProvider.examData.toList();
         if (startExamProvider.examData.isEmpty) {
-          // Fetch data only if it's not already fetched
-          startExamProvider.fetchDataFromApi(context, {
-            'category_id': widget.categoryid,
-            'course_id': widget.courseid,
-            'year': widget.years,
-            'month': widget.months,
-            'code_id': widget.examcodeid,
-          });
-          return const Center(
-            child: CircularProgressIndicator(), // Show loading indicator
+          return AlertDialog(
+            contentPadding: const EdgeInsets.all(20),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 80,
+                        color: Colors.redAccent[700],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        'No Exams for this data',
+                        style: TextStyle(
+                            color: Colors.redAccent[700],
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const TabsScreen(isLoggedIn: false),
+                    ));
+                  },
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
           );
         }
+        final examList = startExamProvider.examData.toList();
         return Column(
-          children: lll.map((examData) {
+          children: examList.map((examData) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -119,29 +179,6 @@ class _ExamGridItemState extends State<ExamGridItem> {
                                 ],
                               ),
                             ),
-                            const Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'Sections',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  // Text(
-                                  //   examData.section!,
-                                  //   style: const TextStyle(
-                                  //     fontWeight: FontWeight.bold,
-                                  //     fontSize: 11,
-                                  //     color: faceBookColor,
-                                  //   ),
-                                  // )
-                                ],
-                              ),
-                            ),
                             Expanded(
                               child: Column(
                                 children: [
@@ -184,17 +221,22 @@ class _ExamGridItemState extends State<ExamGridItem> {
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () {
+                                            final selectedExamIndex =
+                                                examList.indexOf(examData);
+                                            final selectedExamId =
+                                                startExamProvider
+                                                    .examIds[selectedExamIndex];
                                             Provider.of<ExamMcqProvider>(
                                                     context,
                                                     listen: false)
-                                                .fetchExamDataFromApi(context);
+                                                .fetchExamDataFromApi(
+                                                    context, selectedExamId);
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     ExamScreen(
-                                                  fetchedexamid:
-                                                      examData.examid,
+                                                  fetchedexamid: selectedExamId,
                                                 ),
                                               ),
                                             );

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_recharge.dart';
 import 'package:flutter_application_1/constants/colors.dart';
-import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/wallet_history_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -43,9 +42,9 @@ class _WalletScreenState extends State<WalletScreen> {
         builder: (context, walletProvider, _) {
           return Scaffold(
             appBar: AppBar(
-              title: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: const Text(
+              title: const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text(
                   'Wallet',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -56,7 +55,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TabsScreen(isLoggedIn: false),
+                        builder: (context) => const TabsScreen(isLoggedIn: false),
                       ));
                 },
                 icon: const Icon(Icons.arrow_back),

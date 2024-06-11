@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/my_courses/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
-import 'package:flutter_application_1/View/screens/live_screen.dart';
+import 'package:flutter_application_1/View/screens/live/live_screen.dart';
 import 'package:flutter_application_1/View/screens/questions_filter_screen.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/filter_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/history_screen.dart';
@@ -22,11 +22,11 @@ class RegisteredHomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading:  Column(
+        leading: Column(
           children: [
             CircleAvatar(
               radius: 21.r,
-              backgroundImage:const AssetImage('assets/images/logo.jpg'),
+              backgroundImage: const AssetImage('assets/images/logo.jpg'),
             ),
           ],
         ),
@@ -61,7 +61,9 @@ class RegisteredHomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10,)
+                        const SizedBox(
+                          height: 10,
+                        )
                       ],
                     );
                   }
@@ -103,7 +105,7 @@ class RegisteredHomeScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => const LiveScreen()));
+                          builder: (ctx) =>  const LiveScreen()));
                     },
                     child: GridContainer(
                       text: 'Live',
