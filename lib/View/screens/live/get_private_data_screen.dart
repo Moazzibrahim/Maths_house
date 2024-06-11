@@ -1,5 +1,5 @@
 // session_data_screen.dart
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously, avoid_print
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously, avoid_print, library_private_types_in_public_api
 
 import 'dart:convert';
 
@@ -77,7 +77,7 @@ class _SessionDataScreenState extends State<SessionDataScreen> {
   Future<void> bookSession(int sessionId, BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
-    print('Booking session with ID: $sessionId');  // Log the session ID
+    print('Booking session with ID: $sessionId'); // Log the session ID
     final response = await http.post(
       Uri.parse(
           'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/booking_private_session'),
@@ -96,7 +96,8 @@ class _SessionDataScreenState extends State<SessionDataScreen> {
           const SnackBar(content: Text('Session booked successfully')),
         );
         setState(() {
-          sessionData.removeWhere((session) => session.sessionData.id == sessionId);
+          sessionData
+              .removeWhere((session) => session.sessionData.id == sessionId);
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -217,7 +218,6 @@ class _SessionDataScreenState extends State<SessionDataScreen> {
                                 .format(DateTime.parse(sessionDate));
                             final fromDateTime =
                                 DateTime.parse('$sessionDateString $fromTime');
-
                             if (fromDateTime.isAfter(
                                 now.add(const Duration(minutes: 10)))) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -255,7 +255,8 @@ class _SessionDataScreenState extends State<SessionDataScreen> {
                       ElevatedButton(
                         onPressed: () {
                           if (sessionId != null) {
-                            print('Selected session ID: $sessionId'); // Log the selected session ID
+                            print(
+                                'Selected session ID: $sessionId'); // Log the selected session ID
                             bookSession(sessionId, context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
