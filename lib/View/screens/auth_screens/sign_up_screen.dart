@@ -377,8 +377,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Sign Up Success'),
-                            content:
-                                const Text('You have successfully signed up.'),
+                            content: const Text(
+                                'your confirmation has sent to your gmail ,please check.'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
@@ -389,7 +389,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                   );
                                 },
-                                child: const Text('Login'),
+                                child: const Text('ok'),
                               ),
                             ],
                           );
