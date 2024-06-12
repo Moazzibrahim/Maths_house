@@ -12,7 +12,7 @@ class ExamHistory {
   });
 
   factory ExamHistory.fromJson(Map<String, dynamic> json) => ExamHistory(
-        id: json['exam_id'] ?? 0,
+        id: json['id'] ?? 0,
         score: json['exams']['score'] ?? 0,
         examName: json['exams']['title'] ?? 'no title',
         date: json['date'] ?? 'no title',

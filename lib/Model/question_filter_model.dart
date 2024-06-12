@@ -8,11 +8,13 @@ class Question {
   final String? questionNum;
   final int? year;
   final String? examCode;
+  final int? qId;
   final List<Mcq> mcqList;
   final List<McqAnswer> mcqAnswerList;
 
   Question(
       {required this.question,
+      required this.qId,
       required this.qUrl,
       required this.mcqList,
       required this.section,
@@ -41,6 +43,7 @@ class Question {
     }
 
     return Question(
+      qId: json['id'] ?? '',
       question: json['question'] ?? '',
       qUrl: json['q_url'] ?? '',
       mcqList: mcqList,
