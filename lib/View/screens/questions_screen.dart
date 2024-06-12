@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/question_filter_model.dart';
+import 'package:flutter_application_1/View/screens/history_screens/question_answer_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
 import 'package:provider/provider.dart';
@@ -44,14 +45,13 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   Container _buildRadioListTile(Question question, int index) {
     String mcqText = question.mcqList[index].text!;
     String mcqValue =
-        String.fromCharCode(index + 65); // Convert index to A, B, C, D
+        String.fromCharCode(index + 65); 
     Color? currentContainerColor;
-    // Determine color based on answer selection and whether answer was submitted
     if (answerSubmitted) {
       currentContainerColor = index == correctAnswerIndex
-          ? const Color.fromARGB(255, 133, 240, 137) // Correct answer
+          ? const Color.fromARGB(255, 133, 240, 137) 
           : selectedAnswer == mcqValue
-              ? const Color.fromARGB(255, 238, 104, 95) // Incorrect answer
+              ? const Color.fromARGB(255, 238, 104, 95)
               : null;
     }
 
@@ -67,7 +67,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         groupValue: selectedAnswer,
         activeColor: Colors.redAccent[700],
         onChanged: answerSubmitted
-            ? null // Disable onChanged when answer is submitted
+            ? null 
             : (value) {
                 setState(() {
                   selectedAnswer = value;
@@ -215,22 +215,40 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                           ElevatedButton(
                             onPressed: () {
                               showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text("Are you sure you want to view the answer for this question?"),
-                                    content: Text(question[0].mcqList[0].answer!),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text("OK"),
-                                      ),
-                                    ],
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Confirmation"),
+                                        content: const Text(
+                                            "Are you sure you want to view the answer for this question?",style: TextStyle(fontSize: 18),),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          QuestionAnswerScreen(
+                                                            id: question[0].qId! ,
+                                                          )));
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.redAccent[700],
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
+                                            ),
+                                            child: const Text('Yes'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Close',style: TextStyle(color: Colors.black),),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   );
-                                },
-                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.greenAccent[700],
