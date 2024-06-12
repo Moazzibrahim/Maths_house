@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_chapter_screen.dart';
-import 'package:flutter_application_1/View/screens/exam-view/exam_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -65,7 +65,10 @@ class _ExamDurationState extends State<ExamDuration> {
           ),
           onTap: () {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const ExamScreen()),
+              MaterialPageRoute(
+                  builder: (context) => const TabsScreen(
+                        isLoggedIn: false,
+                      )),
             );
           },
         ),

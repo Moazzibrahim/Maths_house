@@ -53,9 +53,9 @@ class DiaExamReccomendation {
 }
 
 class DiaPrices {
-  final double price;
-  final int duration;
-  final double discount;
+  final dynamic price;
+  final dynamic duration;
+  final dynamic discount;
 
   DiaPrices(
       {required this.price, required this.duration, required this.discount});
