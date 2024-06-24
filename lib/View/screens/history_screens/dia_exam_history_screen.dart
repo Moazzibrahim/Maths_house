@@ -174,7 +174,6 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
                                 onPressed: () async {
                                   showChapterDialog(
                                       context, diaExamHistory.chapterName);
-
                                   await diaExamHistory
                                       .getDiaExamHistoryrecommendation(
                                           context, e.id);
