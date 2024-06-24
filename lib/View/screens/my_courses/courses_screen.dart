@@ -6,6 +6,7 @@ import 'package:flutter_application_1/controller/courses_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+//180 line api line
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
 
@@ -58,16 +59,18 @@ class _CoursesScreenState extends State<CoursesScreen> {
                 itemBuilder: (context, index) {
                   final course = coursesProvider.allcourses[index];
                   return InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => ChaptersScreen(
-                                title: course.name,
-                                course: course,
-                              )));
-                    },
-                    child: CustomUnregisteredWidgets(text: course.name,image: course.courseUrl,)
-                  );
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => ChaptersScreen(
+                                  title: course.name,
+                                  course: course,
+                                )));
+                      },
+                      child: CustomUnregisteredWidgets(
+                        text: course.name,
+                        image: course.courseUrl,
+                      ));
                 },
               );
             }
