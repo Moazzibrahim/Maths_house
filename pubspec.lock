@@ -853,6 +853,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  webview_flutter_x5:
+    dependency: "direct main"
+    description:
+      name: webview_flutter_x5
+      sha256: b5d06611326b000951e080c70f1bd69f9b502f6e12f7deb63e993cde1e790787
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.8+9"
   win32:
     dependency: transitive
     description:
