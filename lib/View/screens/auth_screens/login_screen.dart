@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20.h,
               ),
               Image.asset(
-                "assets/images/logo.jpg",
+                "assets/images/logo.png",
                 width: 200.w,
                 height: 200.h,
                 fit: BoxFit.contain,

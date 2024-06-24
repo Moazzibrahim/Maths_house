@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/all_courses/select_course.dart';
-import 'package:flutter_application_1/View/screens/my_courses/courses_screen.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_filteration_screen.dart';
 import 'package:flutter_application_1/View/screens/live/live_screen.dart';
 import 'package:flutter_application_1/View/screens/questions_filter_screen.dart';
@@ -27,7 +26,7 @@ class RegisteredHomeScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 21.r,
-              backgroundImage: const AssetImage('assets/images/logo.jpg'),
+              backgroundImage: const AssetImage('assets/images/logo.png'),
             ),
           ],
         ),
