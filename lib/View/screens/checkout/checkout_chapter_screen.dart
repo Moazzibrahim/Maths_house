@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: avoid_print, prefer_const_constructors, use_build_context_synchronously, deprecated_member_use
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -273,7 +273,7 @@ class _CheckoutChapterScreenState extends State<CheckoutChapterScreen> {
 
                               // Construct the URL with type set to "chapters"
                               final url =
-                                  'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/check_promo_chapter/${widget.type}/${filteredId}/${widget.price}/$couponCode/${widget.courseid}';
+                                  'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/check_promo_chapter/${widget.type}/$filteredId/${widget.price}/$couponCode/${widget.courseid}';
 
                               // Print the URL being sent
                               print('Sending URL: $url');

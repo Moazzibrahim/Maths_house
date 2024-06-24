@@ -1,6 +1,6 @@
 // all_session_data_screen.dart
 
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, deprecated_member_use
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -190,11 +190,11 @@ class AllSessionDataScreen extends StatelessWidget {
                             );
                           }
                         },
-                        child: const Text('Attend'),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: faceBookColor, // Text color
                         ),
+                        child: const Text('Attend'),
                       ),
                     ],
                   ),

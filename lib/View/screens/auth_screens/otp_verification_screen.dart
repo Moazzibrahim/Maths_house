@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'dart:convert';
 class OtpVerificationScreen extends StatefulWidget {
   final String user;
 
-  const OtpVerificationScreen({Key? key, required this.user}) : super(key: key);
+  const OtpVerificationScreen({super.key, required this.user});
 
   @override
   _OtpVerificationScreenState createState() => _OtpVerificationScreenState();

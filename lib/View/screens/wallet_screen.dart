@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, avoid_print
+// ignore_for_file: use_super_parameters, avoid_print, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';

@@ -12,8 +12,7 @@ class ConfirmPassword extends StatefulWidget {
   final String user;
   final String code;
 
-  const ConfirmPassword({Key? key, required this.user, required this.code})
-      : super(key: key);
+  const ConfirmPassword({super.key, required this.user, required this.code});
 
   @override
   State<ConfirmPassword> createState() => _ConfirmPasswordState();

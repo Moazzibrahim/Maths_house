@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/my_live_model.dart';
@@ -6,7 +6,6 @@ import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,6 +37,7 @@ class MyLiveScreen extends StatefulWidget {
   const MyLiveScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyLiveScreenState createState() => _MyLiveScreenState();
 }
 

@@ -16,7 +16,7 @@ class SelectCourse extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            Spacer(
+            const Spacer(
               flex: 1,
             ),
             GestureDetector(
@@ -25,7 +25,7 @@ class SelectCourse extends StatelessWidget {
                   MaterialPageRoute(builder: (ctx) => const CoursesScreen()),
                 );
               },
-              child: Container(
+              child: SizedBox(
                 height: 200,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -47,7 +47,7 @@ class SelectCourse extends StatelessWidget {
                   ),
                 );
               },
-              child: Container(
+              child: SizedBox(
                 height: 200,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -60,7 +60,7 @@ class SelectCourse extends StatelessWidget {
                 ),
               ),
             ),
-            Spacer(
+            const Spacer(
               flex: 2,
             ), // Spacer to push the content to the center
           ],
