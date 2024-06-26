@@ -72,7 +72,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => const UnregisteredCourses(isLoggedIn: false,)));
+                            builder: (ctx) => const UnregisteredCourses(isLoggedIn: false,isFromCourses: false,)));
                       },
                       child: CustomSmallCard(
                         icon: Icons.book_rounded,

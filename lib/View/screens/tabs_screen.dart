@@ -28,7 +28,7 @@ class _TabsScreenState extends State<TabsScreen> {
       PackageScreen(
         isLoggedIn: widget.isLoggedIn,
       ),
-      UnregisteredCourses(isLoggedIn: widget.isLoggedIn,),
+      UnregisteredCourses(isLoggedIn: widget.isLoggedIn,isFromCourses: false,),
       ProfileScreen(
         isLoggedIn: widget.isLoggedIn,
       ),

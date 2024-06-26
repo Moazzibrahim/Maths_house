@@ -8,8 +8,9 @@ import 'package:flutter_application_1/controller/all_courses_provider.dart';
 import 'package:provider/provider.dart';
 
 class UnregisteredCourses extends StatefulWidget {
-  const UnregisteredCourses({super.key, required this.isLoggedIn});
+  const UnregisteredCourses({super.key, required this.isLoggedIn, required this.isFromCourses});
   final bool isLoggedIn;
+  final bool isFromCourses;
 
   @override
   State<UnregisteredCourses> createState() => _UnregisteredCoursesState();
@@ -36,6 +37,9 @@ class _UnregisteredCoursesState extends State<UnregisteredCourses> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
+          leading: widget.isFromCourses? IconButton(onPressed: (){
+            Navigator.pop(context);
+          }, icon: const Icon(Icons.arrow_back)) : null
         ),
         body: !widget.isLoggedIn
             ? Padding(

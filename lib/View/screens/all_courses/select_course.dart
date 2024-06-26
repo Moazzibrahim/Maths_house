@@ -43,7 +43,7 @@ class SelectCourse extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (ctx) =>
-                        const UnregisteredCourses(isLoggedIn: false),
+                        const UnregisteredCourses(isLoggedIn: false,isFromCourses: true,),
                   ),
                 );
               },
