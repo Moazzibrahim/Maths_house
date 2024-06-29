@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/my_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -54,11 +56,11 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
         future: futureMyLiveSessions,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No live sessions found'));
+            return const Center(child: Text('No live sessions found'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -105,7 +107,8 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                         SizedBox(height: 5.h),
                         Row(
                           children: [
-                            Icon(Icons.calendar_today, color: faceBookColor),
+                            const Icon(Icons.calendar_today,
+                                color: faceBookColor),
                             SizedBox(width: 5.w),
                             Text(
                               'Date:${_formatDate(session.session?.date)}', // Use the helper function here
@@ -116,7 +119,7 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                         SizedBox(height: 5.h),
                         Row(
                           children: [
-                            Icon(Icons.access_time, color: faceBookColor),
+                            const Icon(Icons.access_time, color: faceBookColor),
                             const SizedBox(width: 5),
                             Text(
                               'From: ${session.session?.from ?? 'no from'}',
@@ -132,7 +135,7 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                         SizedBox(height: 5.h),
                         Row(
                           children: [
-                            Icon(Icons.info, color: faceBookColor),
+                            const Icon(Icons.info, color: faceBookColor),
                             SizedBox(width: 5.w),
                             Text(
                               'Type: ${session.session?.type ?? 'No type'}',
@@ -158,9 +161,9 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                                   );
                                 }
                               },
-                              icon: Icon(Icons.play_circle_filled,
+                              icon: const Icon(Icons.play_circle_filled,
                                   color: Colors.white),
-                              label: Text('Video lesson'),
+                              label: const Text('Video lesson'),
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: faceBookColor,
@@ -179,9 +182,9 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                                   );
                                 }
                               },
-                              icon: Icon(Icons.video_library,
+                              icon: const Icon(Icons.video_library,
                                   color: Colors.white),
-                              label: Text('Video record'),
+                              label: const Text('Video record'),
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: faceBookColor,
@@ -193,9 +196,9 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                                   _launchURL(lesson.ideas!.first.pdf);
                                 }
                               },
-                              icon: Icon(Icons.picture_as_pdf,
+                              icon: const Icon(Icons.picture_as_pdf,
                                   color: Colors.white),
-                              label: Text('Download PDF'),
+                              label: const Text('Download PDF'),
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: faceBookColor,
@@ -217,7 +220,9 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
 
   void _launchURL(String? url) async {
     if (url != null) {
+      // ignore: deprecated_member_use
       if (await canLaunch(url)) {
+        // ignore: deprecated_member_use
         await launch(url);
       } else {
         throw 'Could not launch $url';

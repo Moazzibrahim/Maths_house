@@ -16,7 +16,7 @@ class _VideoWebViewState extends State<VideoWebView> {
   @override
   void initState() {
     super.initState();
-    WebView.platform ??= SurfaceAndroidWebView();
+    WebView.platform;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -53,11 +53,13 @@ class _VideoWebViewState extends State<VideoWebView> {
 }
 
 void main() {
-  WebView.platform ??= SurfaceAndroidWebView();
-  runApp(MyApp());
+  WebView.platform;
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
