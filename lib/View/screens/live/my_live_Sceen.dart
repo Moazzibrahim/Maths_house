@@ -1,17 +1,14 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/my_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/screens/live/video_live.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart'; // Add this import for date formatting
-
-// Define your models (MyLiveSession, Session, Lesson, etc.) here or import them if defined in a separate file
+import 'package:intl/intl.dart';
 
 Future<List<MyLiveSession>> fetchMyLiveSessions(BuildContext context) async {
   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -37,7 +34,6 @@ class MyLiveScreen extends StatefulWidget {
   const MyLiveScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _MyLiveScreenState createState() => _MyLiveScreenState();
 }
 
@@ -94,17 +90,12 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                         SizedBox(height: 5.h),
                         Text(
                           lesson?.lessonName ?? 'No lesson',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 16.sp, color: Colors.grey),
                         ),
                         SizedBox(height: 5.h),
                         Text(
                           'name: ${session.session?.name ?? 'No session name'}',
-                          style: TextStyle(
-                            fontSize: 18.0.sp,
-                          ),
+                          style: TextStyle(fontSize: 18.0.sp),
                         ),
                         SizedBox(height: 5.h),
                         Row(
@@ -151,7 +142,12 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                           children: [
                             ElevatedButton.icon(
                               onPressed: () {
-                                _launchURL(lesson?.lessonUrl);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VideoWebView(),
+                                  ),
+                                );
                               },
                               icon: Icon(Icons.play_circle_filled,
                                   color: Colors.white),
