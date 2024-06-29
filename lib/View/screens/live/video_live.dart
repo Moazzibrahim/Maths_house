@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/live/my_live_Sceen.dart';
 import 'package:webview_flutter_x5/webview_flutter.dart';
-import 'package:flutter/services.dart'; // Add this import for SystemChrome
+import 'package:flutter/services.dart';
 
 class VideoWebView extends StatefulWidget {
+  final String url; // Accept URL as a parameter
+
+  const VideoWebView({super.key, required this.url});
+
   @override
   _VideoWebViewState createState() => _VideoWebViewState();
 }
@@ -11,7 +16,6 @@ class _VideoWebViewState extends State<VideoWebView> {
   @override
   void initState() {
     super.initState();
-    // Enable hybrid composition on Android
     WebView.platform ??= SurfaceAndroidWebView();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -21,7 +25,6 @@ class _VideoWebViewState extends State<VideoWebView> {
 
   @override
   void dispose() {
-    // Revert preferred orientation to normal when the screen is closed
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -35,12 +38,11 @@ class _VideoWebViewState extends State<VideoWebView> {
       appBar: AppBar(
         title: const Text('Embedded Video'),
       ),
-      body: const Center(
+      body: Center(
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: WebView(
-            initialUrl:
-                'https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4',
+            initialUrl: widget.url, // Use the URL from the widget
             javascriptMode: JavascriptMode.unrestricted,
             initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
           ),
@@ -51,7 +53,6 @@ class _VideoWebViewState extends State<VideoWebView> {
 }
 
 void main() {
-  // Ensure platform is set before running the app
   WebView.platform ??= SurfaceAndroidWebView();
   runApp(MyApp());
 }
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VideoWebView(),
+      home: const MyLiveScreen(),
     );
   }
 }

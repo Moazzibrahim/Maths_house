@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // Add this import for date formatting
 
 Future<List<MyLiveSession>> fetchMyLiveSessions(BuildContext context) async {
   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -90,12 +90,17 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                         SizedBox(height: 5.h),
                         Text(
                           lesson?.lessonName ?? 'No lesson',
-                          style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.grey,
+                          ),
                         ),
                         SizedBox(height: 5.h),
                         Text(
                           'name: ${session.session?.name ?? 'No session name'}',
-                          style: TextStyle(fontSize: 18.0.sp),
+                          style: TextStyle(
+                            fontSize: 18.0.sp,
+                          ),
                         ),
                         SizedBox(height: 5.h),
                         Row(
@@ -142,12 +147,16 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                           children: [
                             ElevatedButton.icon(
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => VideoWebView(),
-                                  ),
-                                );
+                                if (lesson != null &&
+                                    lesson.lessonUrl != null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          VideoWebView(url: lesson.lessonUrl!),
+                                    ),
+                                  );
+                                }
                               },
                               icon: Icon(Icons.play_circle_filled,
                                   color: Colors.white),
@@ -161,7 +170,13 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                               onPressed: () {
                                 if (lesson!.ideas!.isNotEmpty &&
                                     lesson.ideas?.first.vLink != null) {
-                                  _launchURL(lesson.ideas?.first.vLink);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => VideoWebView(
+                                          url: lesson.ideas?.first.vLink),
+                                    ),
+                                  );
                                 }
                               },
                               icon: Icon(Icons.video_library,
