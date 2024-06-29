@@ -15,10 +15,11 @@ class IdeasContent extends StatefulWidget {
 class _IdeasContentState extends State<IdeasContent> {
   late VideoPlayerController controller;
   int rating = 0;
+  int viewedVideoIndex = 0;
   @override
   void initState() {
     super.initState();
-    WebView.platform ??= SurfaceAndroidWebView();
+    WebView.platform;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -51,7 +52,7 @@ class _IdeasContentState extends State<IdeasContent> {
             AspectRatio(
               aspectRatio: 1 / 1,
               child: WebView(
-                initialUrl: widget.lesson.videos[0].videoLink,
+                initialUrl: widget.lesson.videos[viewedVideoIndex].videoLink,
                 javascriptMode: JavascriptMode.unrestricted,
                 initialMediaPlaybackPolicy:
                     AutoMediaPlaybackPolicy.always_allow,
@@ -81,7 +82,7 @@ class _IdeasContentState extends State<IdeasContent> {
                   width: 20,
                 ),
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/moaz.jpeg'),
+                  backgroundImage: AssetImage('assets/images/logo.png'),
                 ),
                 SizedBox(
                   width: 10,
@@ -123,37 +124,45 @@ class _IdeasContentState extends State<IdeasContent> {
                 ? ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: widget.lesson.videos.length,
+                    itemCount: widget.lesson.videos.length -1,
                     itemBuilder: (context, i) {
+                      int index = i + 1;
                       return Row(
                         children: [
-                          Container(
-                            height: 150,
-                            width: 200,
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: const Color.fromARGB(255, 55, 54, 54),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(16),
-                                        color: const Color.fromARGB(
-                                            255, 195, 194, 194),
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                viewedVideoIndex = index;
+                              });
+                            },
+                            child: Container(
+                              height: 150,
+                              width: 200,
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: const Color.fromARGB(255, 55, 54, 54),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(16),
+                                          color: const Color.fromARGB(
+                                              255, 195, 194, 194),
+                                        ),
+                                        child: const Text('2:30'),
                                       ),
-                                      child: const Text('0:10/2:30'),
-                                    ),
-                                  ],
-                                )
-                              ],
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -165,7 +174,7 @@ class _IdeasContentState extends State<IdeasContent> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(widget.lesson.videos[i].videoName ??
+                                    Text(widget.lesson.videos[index].videoName ??
                                         'camera wowo'),
                                   ],
                                 ),
