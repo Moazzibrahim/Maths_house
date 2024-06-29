@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
+import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/exam_history_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,6 +38,25 @@ class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
                 child: CircularProgressIndicator(),
               );
             } else {
+              final List<double> prices = [];
+              final List<int> durations = [];
+              final List <double> discount = [];
+              for(var e in allrecs){
+                for(var j in e.prices){
+                  prices.add(j.price);
+                }
+              }
+              for(var e in allrecs){
+                for(var j in e.prices){
+                  durations.add(j.duration.toInt());
+                }
+              }
+              for(var e in allrecs){
+                for(var j in e.prices){
+                  discount.add(j.discount.toDouble());
+                }
+              }
+              log('prices: $prices');
               return ListView.builder(
                 itemCount: allrecs.length,
                 itemBuilder: (context, i) {
@@ -53,10 +74,13 @@ class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (ctx) => CheckoutScreen(
-                                    chapterName: allrecs[i].chapteName,
-                                    price: allrecs[i].prices[i].price.toDouble(),
-                                  ),
+                                  builder: (ctx) => ExamDuration(
+                                    chapterNames: allrecs.map((e) => e.chapteName,).toList(),
+                                    discounts: discount,
+                                    durations: durations,
+                                    ids: allrecs.map((e) => e.id.toInt(),).toList(),
+                                    prices: prices,
+                                  )
                                 ),
                               );
                             },

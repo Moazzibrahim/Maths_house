@@ -57,9 +57,10 @@ class ExamViewMistakesList {
 
 class ExamReccomndation {
   final String chapteName;
+  final int id;
   final List<Price> prices;
 
-  ExamReccomndation({required this.chapteName, required this.prices});
+  ExamReccomndation({required this.chapteName, required this.prices, required this.id});
 
   factory ExamReccomndation.fromJson(Map<String, dynamic> json) {
     List<Price> priceList = [];
@@ -69,20 +70,30 @@ class ExamReccomndation {
     }
     return ExamReccomndation(
       chapteName: json['chapter_name']??'no chapter name',
+      id: json['id'] ?? 'no id',
       prices: priceList,
     );
   }
 }
 
 class Price {
-  final int price;
+  final double price;
+  final dynamic duration;
+  final double discount;
 
-  Price({required this.price});
+  Price({
+    required this.price,
+    required this.discount,
+    required this.duration,
+  });
 
   factory Price.fromJson(Map<String, dynamic> json) => Price(
-        price: json['price']??'no price',
+        price: (json['price'] ?? 0).toDouble(),
+        duration: json['duration'] ?? 'no',
+        discount: (json['discount'] ?? 0).toDouble(),
       );
 }
+
 
 class ExamReccomndationList {
   final List<dynamic> examReccomendationList;

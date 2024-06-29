@@ -62,7 +62,7 @@ class SelectCourse extends StatelessWidget {
             ),
             const Spacer(
               flex: 2,
-            ), // Spacer to push the content to the center
+            ), 
           ],
         ),
       ),
