@@ -29,8 +29,10 @@ import 'package:flutter_application_1/controller/quiz_provider.dart';
 import 'package:flutter_application_1/controller/wallet_history_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:webview_flutter_x5/webview_flutter.dart';
 
 void main() {
+  WebView.platform;
   runApp(const MathHouse());
 }
 

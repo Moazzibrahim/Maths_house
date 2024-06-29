@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:video_player/video_player.dart';
+import 'package:webview_flutter_x5/webview_flutter.dart';
 
 class IdeasContent extends StatefulWidget {
   const IdeasContent({super.key, required this.lesson});
@@ -17,13 +16,7 @@ class _IdeasContentState extends State<IdeasContent> {
   int rating =0 ;
   @override
   void initState() {
-    controller = VideoPlayerController.networkUrl(Uri.parse(widget.lesson.videos[0].videoLink!))..initialize().then((_){
-      setState(() {});
-      controller.play();
-    }).catchError((error) {
-        // Handle error
-        log('Video initialization error: $error');
-      });
+    WebView.platform;
     super.initState();
   }
   @override
@@ -43,8 +36,13 @@ class _IdeasContentState extends State<IdeasContent> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            AspectRatio(aspectRatio: controller.value.aspectRatio,
-            child: VideoPlayer(controller),
+            AspectRatio(
+              aspectRatio: 1/1,
+              child:  WebView(
+                      initialUrl: widget.lesson.videos[0].videoLink,
+                      javascriptMode: JavascriptMode.unrestricted,
+                      initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
+                    ),
             ),
             const SizedBox(
               height: 10,
