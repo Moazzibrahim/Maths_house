@@ -175,7 +175,7 @@ class _IdeasContentState extends State<IdeasContent> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(widget.lesson.videos[index].videoName ??
-                                        'camera wowo'),
+                                        'video'),
                                   ],
                                 ),
                                 const SizedBox(
