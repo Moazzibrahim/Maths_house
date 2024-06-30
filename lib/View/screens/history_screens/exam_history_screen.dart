@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_options_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_recommendation_screen.dart';
@@ -15,11 +14,36 @@ class ExamHistoryScreen extends StatefulWidget {
 }
 
 class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isAtStart = true;
+
   @override
   void initState() {
+    super.initState();
     Provider.of<ExamHistoryProvider>(context, listen: false)
         .getExamHistoryData(context);
-    super.initState();
+
+    _scrollController.addListener(() {
+      setState(() {
+        _isAtStart = _scrollController.position.pixels == 0;
+      });
+    });
+  }
+
+  void _scrollHorizontally() {
+    if (_isAtStart) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -30,101 +54,142 @@ class _ExamHistoryScreenState extends State<ExamHistoryScreen> {
         padding: EdgeInsets.all(10.w),
         child: Consumer<ExamHistoryProvider>(
           builder: (context, examHistoryProvider, _) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: DataTable(
-                  dataRowHeight: 60.h,
-                  columnSpacing: 25.w,
-                  columns: [
-                    DataColumn(
-                      label: Text(
-                        'Name',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                      numeric: true,
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Date',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                      numeric: true,
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Score',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Actions',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                      numeric: true,
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Recommendation',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                      numeric: true,
-                    ),
-                  ],
-                  rows: examHistoryProvider.allExamHistory
-                      .map(
-                        (e) => DataRow(
-                          cells: [
-                            DataCell(Text(e.examName,
-                                style: TextStyle(fontSize: 14.sp))),
-                            DataCell(Text(e.date,
-                                style: TextStyle(fontSize: 14.sp))),
-                            DataCell(Text(e.score.toString(),
-                                style: TextStyle(fontSize: 14.sp))),
-                            DataCell(
-                              ElevatedButton(
-                                onPressed: () async{
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (ctx)=> ExamOptionScreen(id: e.id,))
-                                      );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 7.h, horizontal: 5.w),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  backgroundColor: Colors.redAccent[700],
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: const Text('View Mistake'),
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      controller: _scrollController,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: DataTable(
+                          dataRowHeight: 60.h,
+                          columnSpacing: 25.w,
+                          columns: [
+                            DataColumn(
+                              label: Text(
+                                'Name',
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                              numeric: true,
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Date',
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                              numeric: true,
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Score',
+                                style: TextStyle(fontSize: 16.sp),
                               ),
                             ),
-                            DataCell(
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> ExamRecommendationScreen(id: e.id)));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 7.h, horizontal: 5.w),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  backgroundColor: Colors.redAccent[700],
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: const Text('Recommendation'),
+                            DataColumn(
+                              label: Text(
+                                'Actions',
+                                style: TextStyle(fontSize: 16.sp),
                               ),
+                              numeric: true,
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Recommendation',
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                              numeric: true,
                             ),
                           ],
+                          rows: examHistoryProvider.allExamHistory
+                              .map(
+                                (e) => DataRow(
+                                  cells: [
+                                    DataCell(Text(e.examName,
+                                        style: TextStyle(fontSize: 14.sp))),
+                                    DataCell(Text(e.date,
+                                        style: TextStyle(fontSize: 14.sp))),
+                                    DataCell(Text(e.score.toString(),
+                                        style: TextStyle(fontSize: 14.sp))),
+                                    DataCell(
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  ExamOptionScreen(id: e.id),
+                                            ),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 7.h, horizontal: 5.w),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.r),
+                                          ),
+                                          backgroundColor:
+                                              Colors.redAccent[700],
+                                          foregroundColor: Colors.white,
+                                        ),
+                                        child: const Text('View Mistake'),
+                                      ),
+                                    ),
+                                    DataCell(
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  ExamRecommendationScreen(
+                                                      id: e.id),
+                                            ),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 7.h, horizontal: 5.w),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.r),
+                                          ),
+                                          backgroundColor:
+                                              Colors.redAccent[700],
+                                          foregroundColor: Colors.white,
+                                        ),
+                                        child: const Text('Recommendation'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                              .toList(),
                         ),
-                      )
-                      .toList(),
-                ),
-              ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: GestureDetector(
+                        onTap: _scrollHorizontally,
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _isAtStart ? Icons.arrow_forward : Icons.arrow_back,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
         ),

@@ -25,7 +25,7 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context,'Question History'),
+      appBar: buildAppBar(context, 'Question History'),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionHistoryProvider, _) {
           return SingleChildScrollView(
@@ -36,14 +36,13 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                 children: [
                   DataTable(
                     dataRowMaxHeight: 55.h,
-                    columnSpacing:
-                        25, 
+                    columnSpacing: 25,
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Text(
                           'Year',
                         ),
-                        numeric: true, 
+                        numeric: true,
                       ),
                       DataColumn(
                         label: Text(
@@ -88,7 +87,9 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                                       return AlertDialog(
                                         title: const Text("Confirmation"),
                                         content: const Text(
-                                            "Are you sure you want to view the answer for this question?",style: TextStyle(fontSize: 18),),
+                                          "Are you sure you want to view the answer for this question?",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
                                         actions: <Widget>[
                                           ElevatedButton(
                                             onPressed: () {
@@ -102,17 +103,24 @@ class _QuestionHistoryScreenState extends State<QuestionHistoryScreen> {
                                                           )));
                                             },
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.redAccent[700],
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
-                                            ),
+                                                backgroundColor:
+                                                    Colors.redAccent[700],
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12))),
                                             child: const Text('Yes'),
                                           ),
                                           TextButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: const Text('Close',style: TextStyle(color: Colors.black),),
+                                            child: const Text(
+                                              'Close',
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
                                           ),
                                         ],
                                       );

@@ -1,5 +1,3 @@
-// ignore_for_file: use_super_parameters, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -15,15 +13,39 @@ class Paymenthistoryscreen extends StatefulWidget {
 
 class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
   bool showTable = false;
+  final ScrollController _scrollController = ScrollController();
+  bool _isAtStart = true;
 
   @override
   void initState() {
+    super.initState();
     Provider.of<PaymentHistoryProvider>(context, listen: false)
         .fetchPaymentHistory(context)
         .catchError((e) {
       print(e);
     });
-    super.initState();
+
+    _scrollController.addListener(() {
+      setState(() {
+        _isAtStart = _scrollController.position.pixels == 0;
+      });
+    });
+  }
+
+  void _scrollHorizontally() {
+    if (_isAtStart) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -31,7 +53,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
     return Consumer<PaymentHistoryProvider>(
       builder: (context, paymentProvider, _) {
         return Scaffold(
-          appBar: buildAppBar(context, "payment history"),
+          appBar: buildAppBar(context, "Payment History"),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -42,8 +64,6 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 10),
-                    // Total payment amount
-
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -76,36 +96,63 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
               // Conditional table
               if (showTable)
                 Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: DataTable(
-                        columns: const [
-                          DataColumn(label: Text('#')),
-                          DataColumn(label: Text('Price')),
-                          DataColumn(label: Text('type')),
-                          DataColumn(label: Text('created_at')),
-                          DataColumn(label: Text('Payment Method')),
-                        ],
-                        rows: paymentProvider.paymentHistoryList
-                            .asMap()
-                            .entries
-                            .map((entry) => DataRow(
-                                  cells: [
-                                    DataCell(Text('${entry.key + 1}')),
-                                    DataCell(
-                                        Text(entry.value.price.toString())),
-                                    DataCell(Text(entry.value.module)),
-                                    DataCell(
-                                        Text(entry.value.createdAt.toString())),
-                                    DataCell(Text(entry.value.method?.payment ??
-                                        'wallet')),
-                                  ],
-                                ))
-                            .toList(),
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        controller: _scrollController,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(label: Text('#')),
+                              DataColumn(label: Text('Price')),
+                              DataColumn(label: Text('Type')),
+                              DataColumn(label: Text('Created At')),
+                              DataColumn(label: Text('Payment Method')),
+                            ],
+                            rows: paymentProvider.paymentHistoryList
+                                .asMap()
+                                .entries
+                                .map((entry) => DataRow(
+                                      cells: [
+                                        DataCell(Text('${entry.key + 1}')),
+                                        DataCell(
+                                            Text(entry.value.price.toString())),
+                                        DataCell(Text(entry.value.module)),
+                                        DataCell(Text(
+                                            entry.value.createdAt.toString())),
+                                        DataCell(Text(
+                                            entry.value.method?.payment ??
+                                                'wallet')),
+                                      ],
+                                    ))
+                                .toList(),
+                          ),
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: GestureDetector(
+                          onTap: _scrollHorizontally,
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.7),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              _isAtStart
+                                  ? Icons.arrow_forward
+                                  : Icons.arrow_back,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
             ],
