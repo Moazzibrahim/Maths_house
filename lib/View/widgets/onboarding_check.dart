@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_application_1/View/screens/onboarding_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingCheck extends StatefulWidget {
   const OnBoardingCheck({super.key});
@@ -11,7 +13,7 @@ class OnBoardingCheck extends StatefulWidget {
 }
 
 class _OnBoardingCheckState extends State<OnBoardingCheck> {
-  bool _isNewUser = false;
+  bool _isNewUser = true;
 
   @override
   void initState() {
@@ -22,14 +24,20 @@ class _OnBoardingCheckState extends State<OnBoardingCheck> {
   Future<void> checkIfNewUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isNewUser = prefs.getBool('isNewUser') ?? true;
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    String? token = prefs.getString('token');
+
     setState(() {
       _isNewUser = isNewUser;
     });
-  }
 
-  void _setLoggedIn(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', value);
+    if (isLoggedIn && token != null) {
+      Provider.of<TokenModel>(context, listen: false).setToken(token);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const TabsScreen(
+            isLoggedIn: false), // Redirect with isLoggedIn: true
+      ));
+    }
   }
 
   @override
@@ -37,8 +45,8 @@ class _OnBoardingCheckState extends State<OnBoardingCheck> {
     if (_isNewUser) {
       return const OnBoardingScreen();
     } else {
-      _setLoggedIn(true); // Update login state
-      return const TabsScreen(isLoggedIn: true);
+      return const TabsScreen(
+          isLoggedIn: false); // Redirect with isLoggedIn: true
     }
   }
 }
