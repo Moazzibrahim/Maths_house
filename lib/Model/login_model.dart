@@ -93,7 +93,7 @@ class LoginModel with ChangeNotifier {
 
   Future<void> logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false);
+    await prefs.setBool('isLoggedIn', true);
     await prefs.remove('token'); // Remove the token
     notifyListeners();
   }

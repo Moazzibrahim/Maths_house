@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_application_1/View/screens/onboarding_screen.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart'; // Add the login screen import
 
 class OnBoardingCheck extends StatefulWidget {
   const OnBoardingCheck({super.key});
@@ -36,6 +37,10 @@ class _OnBoardingCheckState extends State<OnBoardingCheck> {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const TabsScreen(
             isLoggedIn: false), // Redirect with isLoggedIn: true
+      ));
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const LoginPage(),
       ));
     }
   }
