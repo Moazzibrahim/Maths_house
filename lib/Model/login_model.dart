@@ -5,6 +5,7 @@ import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Create a class to hold the token
 class TokenModel with ChangeNotifier {
@@ -67,6 +68,9 @@ class LoginModel with ChangeNotifier {
         // Use provider to set the token
         Provider.of<TokenModel>(context, listen: false).setToken(token);
         Provider.of<LoginModel>(context, listen: false).setId(id);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
         log("status code: ${response.statusCode}");
         log("Token: $token");
         log("id: $id");
@@ -105,5 +109,11 @@ class LoginModel with ChangeNotifier {
       );
       return 'Error occurred while authenticating';
     }
+  }
+
+  Future<void> logoutUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    notifyListeners();
   }
 }

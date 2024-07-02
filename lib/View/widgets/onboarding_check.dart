@@ -11,24 +11,33 @@ class OnBoardingCheck extends StatefulWidget {
 }
 
 class _OnBoardingCheckState extends State<OnBoardingCheck> {
-    bool _isNewUser = false;
-    @override
+  bool _isNewUser = false;
+
+  @override
   void initState() {
     super.initState();
     checkIfNewUser();
   }
-    Future<void> checkIfNewUser() async {
+
+  Future<void> checkIfNewUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isNewUser = prefs.getBool('isNewUser') ?? true;
     setState(() {
       _isNewUser = isNewUser;
     });
   }
+
+  void _setLoggedIn(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(_isNewUser){
+    if (_isNewUser) {
       return const OnBoardingScreen();
-    }else{
+    } else {
+      _setLoggedIn(true); // Update login state
       return const TabsScreen(isLoggedIn: true);
     }
   }
