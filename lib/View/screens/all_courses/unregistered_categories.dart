@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/all_courses/all_courses_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_courses_custom.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
+import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/all_courses_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -28,19 +29,10 @@ class _UnregisteredCoursesState extends State<UnregisteredCourses> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return Future.value(false); // Prevent back navigation
+        return Future.value(false);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Categories',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
-          leading: widget.isFromCourses? IconButton(onPressed: (){
-            Navigator.pop(context);
-          }, icon: const Icon(Icons.arrow_back)) : null
-        ),
+        appBar: widget.isFromCourses? buildAppBar(context, 'Categouries'): null,
         body: !widget.isLoggedIn
             ? Padding(
                 padding: const EdgeInsets.all(8.0),

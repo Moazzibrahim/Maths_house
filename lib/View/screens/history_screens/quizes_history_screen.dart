@@ -51,38 +51,6 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
     );
   }
 
-  Widget _buildConfirmationDialog(BuildContext context) {
-    return AlertDialog(
-      title: const Text("Confirmation"),
-      content: const Text(
-        "Are you sure you want to view the answer for this question?",
-        style: TextStyle(fontSize: 18),
-      ),
-      actions: <Widget>[
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.redAccent[700],
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-          ),
-          child: const Text('Yes'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text(
-            'Close',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ],
-    );
-  }
-
   void _scrollHorizontally() {
     if (_isAtStart) {
       _scrollController.animateTo(
@@ -183,8 +151,43 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return _buildConfirmationDialog(
-                                                context);
+                                            return AlertDialog(
+                                              title: const Text("Confirmation"),
+                                              content: const Text(
+                                                "Are you sure you want to view the answer for this question?",
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                  
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.redAccent[700],
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(12.r)
+                                                    ),
+                                                  ),
+                                                  child: const Text('Yes'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text(
+                                                    'Close',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
                                           },
                                         );
                                       },
