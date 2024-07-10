@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class WalletProvider with ChangeNotifier {
   List<WalletHistory> walletHistoryList = [];
-  int totalWallet = 0; // Change type to int
+  double totalWallet = 0; // Change type to int
 
   Future<void> fetchWalletHistory(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -31,11 +31,13 @@ class WalletProvider with ChangeNotifier {
 
         // Debugging prints
         print('Total Wallet from API: ${responseData['totalWallet']}');
-        print('Type of totalWallet from API: ${responseData['totalWallet'].runtimeType}');
-        
+        print(
+            'Type of totalWallet from API: ${responseData['totalWallet'].runtimeType}');
+
         totalWallet = responseData['totalWallet']; // Assuming it's an int
         print('Total Wallet after assignment: $totalWallet');
-        print('Type of totalWallet after assignment: ${totalWallet.runtimeType}');
+        print(
+            'Type of totalWallet after assignment: ${totalWallet.runtimeType}');
 
         print(walletHistoryList);
         notifyListeners();
