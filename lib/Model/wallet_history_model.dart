@@ -35,7 +35,7 @@ class WalletHistoryList {
     List<WalletHistory> walletHistoryList =
         list.map((e) => WalletHistory.fromJson(e)).toList();
     return WalletHistoryList(
-      totalWallet: int.parse(json['totalWallet']),
+      totalWallet: json['totalWallet'], // Assign directly without parsing
       walletHistoryList: walletHistoryList,
     );
   }

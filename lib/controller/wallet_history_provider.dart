@@ -1,16 +1,13 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/Model/wallet_history_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:provider/provider.dart';
 
 class WalletProvider with ChangeNotifier {
   List<WalletHistory> walletHistoryList = [];
-  String totalWallet = ''; // Define totalWallet property
+  int totalWallet = 0; // Change type to int
 
   Future<void> fetchWalletHistory(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -27,12 +24,18 @@ class WalletProvider with ChangeNotifier {
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        print(responseData);
+        print('Response data: $responseData');
         WalletHistoryList historyList =
             WalletHistoryList.fromJson(responseData);
         walletHistoryList = historyList.walletHistoryList;
-        totalWallet = responseData['totalWallet'];
-        print(totalWallet);
+
+        // Debugging prints
+        print('Total Wallet from API: ${responseData['totalWallet']}');
+        print('Type of totalWallet from API: ${responseData['totalWallet'].runtimeType}');
+        
+        totalWallet = responseData['totalWallet']; // Assuming it's an int
+        print('Total Wallet after assignment: $totalWallet');
+        print('Type of totalWallet after assignment: ${totalWallet.runtimeType}');
 
         print(walletHistoryList);
         notifyListeners();

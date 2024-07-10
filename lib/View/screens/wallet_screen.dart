@@ -1,5 +1,3 @@
-// ignore_for_file: use_super_parameters, avoid_print, deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_recharge.dart';
@@ -55,7 +53,8 @@ class _WalletScreenState extends State<WalletScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const TabsScreen(isLoggedIn: false),
+                        builder: (context) =>
+                            const TabsScreen(isLoggedIn: false),
                       ));
                 },
                 icon: const Icon(Icons.arrow_back),
@@ -74,7 +73,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         height: 10,
                       ),
                       Text(
-                        'Total: ${walletProvider.totalWallet}\$',
+                        'Total: ${walletProvider.totalWallet}\$', // No need to convert to String
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
