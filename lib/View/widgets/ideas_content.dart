@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
-import 'package:video_player/video_player.dart';
 import 'package:webview_flutter_x5/webview_flutter.dart';
 import 'package:flutter/services.dart'; // Add this import for SystemChrome
 
@@ -13,27 +12,25 @@ class IdeasContent extends StatefulWidget {
 }
 
 class _IdeasContentState extends State<IdeasContent> {
-  late VideoPlayerController controller;
   int rating = 0;
   int viewedVideoIndex = 0;
-  @override
-  void initState() {
-    super.initState();
-    WebView.platform;
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
+  bool isLandscape = false;
 
-  @override
-  void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    controller.dispose();
-    super.dispose();
+  void toggleRotation() {
+    if (isLandscape) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    }
+    setState(() {
+      isLandscape = !isLandscape;
+    });
   }
 
   void updateRating(int newRating) {
@@ -118,6 +115,15 @@ class _IdeasContentState extends State<IdeasContent> {
                     ],
                   ),
                 ),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(isLandscape ? Icons.screen_lock_rotation : Icons.screen_rotation,color: Colors.red,),
+                  onPressed: toggleRotation,
+                ),
+                const Text('اقلب الشاشة لمشاهدة الفيديو كامل', style: TextStyle(fontSize: 16),)
               ],
             ),
             widget.lesson.videos.isNotEmpty
