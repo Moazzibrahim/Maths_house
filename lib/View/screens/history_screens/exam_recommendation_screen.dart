@@ -17,10 +17,19 @@ class ExamRecommendationScreen extends StatefulWidget {
 }
 
 class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
+  bool isLoaded = false;
   @override
   void initState() {
     Provider.of<ExamHistoryProvider>(context, listen: false)
         .getExamReccomendationData(context, widget.id);
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        setState(() {
+          isLoaded = true;
+        });
+      },
+    );
     super.initState();
   }
 
@@ -34,25 +43,28 @@ class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
           builder: (context, reccomendationProvider, _) {
             final allrecs = reccomendationProvider.allrecs;
             if (allrecs.isEmpty) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return isLoaded
+                  ? const Center(
+                      child: Text('There is no Data in this section right now'))
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    );
             } else {
               final List<double> prices = [];
               final List<int> durations = [];
-              final List <double> discount = [];
-              for(var e in allrecs){
-                for(var j in e.prices){
+              final List<double> discount = [];
+              for (var e in allrecs) {
+                for (var j in e.prices) {
                   prices.add(j.price);
                 }
               }
-              for(var e in allrecs){
-                for(var j in e.prices){
+              for (var e in allrecs) {
+                for (var j in e.prices) {
                   durations.add(j.duration.toInt());
                 }
               }
-              for(var e in allrecs){
-                for(var j in e.prices){
+              for (var e in allrecs) {
+                for (var j in e.prices) {
                   discount.add(j.discount.toDouble());
                 }
               }
@@ -74,14 +86,21 @@ class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (ctx) => ExamDuration(
-                                    chapterNames: allrecs.map((e) => e.chapteName,).toList(),
-                                    discounts: discount,
-                                    durations: durations,
-                                    ids: allrecs.map((e) => e.id.toInt(),).toList(),
-                                    prices: prices,
-                                  )
-                                ),
+                                    builder: (ctx) => ExamDuration(
+                                          chapterNames: allrecs
+                                              .map(
+                                                (e) => e.chapteName,
+                                              )
+                                              .toList(),
+                                          discounts: discount,
+                                          durations: durations,
+                                          ids: allrecs
+                                              .map(
+                                                (e) => e.id.toInt(),
+                                              )
+                                              .toList(),
+                                          prices: prices,
+                                        )),
                               );
                             },
                             style: ElevatedButton.styleFrom(

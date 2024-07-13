@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 class QuizHistoryProvider with ChangeNotifier {
 List<QuizHistory> allQuizHistory=[];
+List<Mistake> allMistakes = [];
 Future<void> getQuizHistory(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -29,7 +30,33 @@ Future<void> getQuizHistory(BuildContext context) async {
             .map((e) => QuizHistory.fromJson(e))
             .toList();
         allQuizHistory = q;
-        // log('all quiz: $allQuizHistory');
+        notifyListeners();
+      }else{
+        log('error: ${response.statusCode}');
+      }
+    } catch (e) {
+      log('Error: $e');
+    }
+  }
+
+  Future<void> getDiaRecommedations(BuildContext context)async{
+        final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+        final token = tokenProvider.token;
+      try {
+      final response = await http.get(
+        Uri.parse(
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_quiz_mistakes/12'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        Mistakes mistakes = Mistakes.fromJson(responseData);
+        List<Mistake> mistakesList = mistakes.mistakesList.map((e) => Mistake.fromJson(e),).toList();
+        allMistakes = mistakesList;
         notifyListeners();
       }
     } catch (e) {

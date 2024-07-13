@@ -17,9 +17,15 @@ class ExamOptionScreen extends StatefulWidget {
 }
 
 class _ExamOptionScreenState extends State<ExamOptionScreen> {
+  bool isLoaded = false;
   @override
   void initState() {
     Provider.of<ExamHistoryProvider>(context,listen: false).getExamViewMistakesData(context, widget.id);
+    Future.delayed(const Duration(seconds: 3),() {
+                setState(() {
+                  isLoaded =true;
+                });
+              },);
     super.initState();
   }
   @override
@@ -32,9 +38,12 @@ class _ExamOptionScreenState extends State<ExamOptionScreen> {
           builder: (context,mistakeProvider, _) {
             final allMistakes = mistakeProvider.allmistakes;
             if(allMistakes.isEmpty){
-              return const Center(
-                child: CircularProgressIndicator(color: Colors.red,),
-              );
+              return isLoaded
+                  ? const Center(
+                      child: Text('There is no Data in this section right now'))
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    );
             }else{
               return ListView.builder(
             itemCount: allMistakes.length,

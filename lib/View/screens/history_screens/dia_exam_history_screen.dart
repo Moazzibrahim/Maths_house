@@ -22,42 +22,6 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
     super.initState();
   }
 
-  void showChapterDialog(BuildContext context, List<String> chapterNames) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Recommended Chapters'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: chapterNames.map((chapter) {
-                return Column(
-                  children: [
-                    Text(chapter),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle buy button pressed
-                        print('Buy $chapter');
-                      },
-                      child: const Text('Buy'),
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,12 +119,12 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
                           'Score',
                         ),
                       ),
-                      DataColumn(
-                        label: Text(
-                          'Recommendation',
-                        ),
-                        numeric: true,
-                      ),
+                      // DataColumn(
+                      //   label: Text(
+                      //     'Recommendation',
+                      //   ),
+                      //   numeric: true,
+                      // ),
                     ],
                     rows: <DataRow>[
                       for (var e in diaExamHistory.allDiaExam)
@@ -169,30 +133,28 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
                             DataCell(Text(e.examTitle)),
                             DataCell(Text(e.date)),
                             DataCell(Text(e.score.toString())),
-                            DataCell(
-                              ElevatedButton(
-                                onPressed: () async {
-                                  showChapterDialog(
-                                      context, diaExamHistory.chapterName);
-                                  await diaExamHistory
-                                      .getDiaExamHistoryrecommendation(
-                                          context, e.id);
-                                  print(e.id);
-                                  print(diaExamHistory.chapterName);
-                                  print(diaExamHistory.durations);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 7, horizontal: 5),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  backgroundColor: Colors.redAccent[700],
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: const Text('Recommendation'),
-                              ),
-                            ),
+                            // DataCell(
+                            //   ElevatedButton(
+                            //     onPressed: () async {
+                            //       await diaExamHistory
+                            //           .getDiaExamHistoryrecommendation(
+                            //               context, e.id);
+                            //       print(e.id);
+                            //       print(diaExamHistory.chapterName);
+                            //       print(diaExamHistory.durations);
+                            //     },
+                            //     style: ElevatedButton.styleFrom(
+                            //       padding: const EdgeInsets.symmetric(
+                            //           vertical: 7, horizontal: 5),
+                            //       shape: RoundedRectangleBorder(
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       ),
+                            //       backgroundColor: Colors.redAccent[700],
+                            //       foregroundColor: Colors.white,
+                            //     ),
+                            //     child: const Text('Recommendation'),
+                            //   ),
+                            // ),
                           ],
                         ),
                     ],

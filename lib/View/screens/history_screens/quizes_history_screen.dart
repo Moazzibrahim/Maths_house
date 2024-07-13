@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/history_models/quizes_history_model.dart';
+import 'package:flutter_application_1/View/screens/history_screens/quiz_mistakes_screen.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/quiz_history_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -160,7 +163,10 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                               actions: [
                                                 ElevatedButton(
                                                   onPressed: () {
-                                                  
+                                                  quizHistoryProvider.getDiaRecommedations(context);
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(builder: (ctx)=> const QuizMistakesScreen() )
+                                                  );
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(

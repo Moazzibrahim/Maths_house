@@ -46,3 +46,21 @@ class QuizHistoryList {
         quizHistoryList: json['quiz_history'],
       );
 }
+
+class Mistake {
+  final String qurl;
+
+  Mistake({required this.qurl});
+
+  factory Mistake.fromJson(Map<String,dynamic> json)=>
+  Mistake(qurl: json['question']['q_url']);
+}
+
+class Mistakes {
+  final List<dynamic> mistakesList;
+
+  Mistakes({required this.mistakesList});
+
+   factory Mistakes.fromJson(Map<String,dynamic> json)=>
+  Mistakes(mistakesList: json['mistakes']);
+}
