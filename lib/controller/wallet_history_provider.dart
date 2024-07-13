@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/Model/wallet_history_model.dart';
@@ -24,28 +26,28 @@ class WalletProvider with ChangeNotifier {
       );
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        print('Response data: $responseData');
+        log('Response data: $responseData');
         WalletHistoryList historyList =
             WalletHistoryList.fromJson(responseData);
         walletHistoryList = historyList.walletHistoryList;
 
         // Debugging prints
-        print('Total Wallet from API: ${responseData['totalWallet']}');
-        print(
+        log('Total Wallet from API: ${responseData['totalWallet']}');
+        log(
             'Type of totalWallet from API: ${responseData['totalWallet'].runtimeType}');
 
         totalWallet = responseData['totalWallet']; // Assuming it's an int
-        print('Total Wallet after assignment: $totalWallet');
-        print(
+        log('Total Wallet after assignment: $totalWallet');
+        log(
             'Type of totalWallet after assignment: ${totalWallet.runtimeType}');
 
-        print(walletHistoryList);
+        log('$walletHistoryList');
         notifyListeners();
       } else {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print('error: $e');
+      log('error: $e');
     }
   }
 }

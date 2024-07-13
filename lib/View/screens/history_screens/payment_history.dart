@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_application_1/controller/payment_history_provider.dart';
 import 'package:provider/provider.dart';
 
 class Paymenthistoryscreen extends StatefulWidget {
-  const Paymenthistoryscreen({Key? key}) : super(key: key);
+  const Paymenthistoryscreen({super.key});
 
   @override
   State<Paymenthistoryscreen> createState() => _PaymenthistoryscreenState();
@@ -22,7 +24,7 @@ class _PaymenthistoryscreenState extends State<Paymenthistoryscreen> {
     Provider.of<PaymentHistoryProvider>(context, listen: false)
         .fetchPaymentHistory(context)
         .catchError((e) {
-      print(e);
+      log(e);
     });
 
     _scrollController.addListener(() {

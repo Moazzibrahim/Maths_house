@@ -1,6 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'package:provider/provider.dart'; // Import Provider
@@ -31,9 +33,12 @@ class LogoutModel with ChangeNotifier {
         // Redirect to login screen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(builder: (context) => const TabsScreen(isLoggedIn: true,)),
         );
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content:  Text('Check connection please'))
+        );
         log('Logout failed');
         log('Status code: ${response.statusCode}');
         log('Response body: ${response.body}');

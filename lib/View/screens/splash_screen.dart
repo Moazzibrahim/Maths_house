@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/widgets/onboarding_check.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart'; // Add the login screen import
 import 'package:flutter_application_1/View/screens/tabs_screen.dart'; // Add the main screen import
 
 class SplashScreen extends StatefulWidget {
@@ -30,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ));
       } else {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const LoginPage(),
+          builder: (context) => const OnBoardingCheck(),
         ));
       }
     });

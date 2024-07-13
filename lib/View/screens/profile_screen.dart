@@ -5,7 +5,6 @@ import 'package:flutter_application_1/Model/delete_account/delete_account.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
 import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/edit_profile_screen.dart';
-import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_screen.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
@@ -278,11 +277,6 @@ class RequesterContent extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () async {
                     await LogoutModel().logout(context);
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (ctx) => const TabsScreen(
-                              isLoggedIn: true,
-                            )));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

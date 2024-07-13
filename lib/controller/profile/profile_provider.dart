@@ -31,7 +31,7 @@ class ProfileProvider with ChangeNotifier {
         _userData = user;
         notifyListeners();
       } else {
-        log('Failed to fetch data proffff');
+        log('Failed to fetch data proffff: ${response.statusCode}');
       }
     } catch (e) {
       log('Error: $e');

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_recharge.dart';
@@ -8,9 +10,9 @@ import 'package:provider/provider.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({
-    Key? key,
+    super.key,
     this.chapters = const [],
-  }) : super(key: key);
+  });
   final List<Map<String, dynamic>> chapters;
 
   @override
@@ -25,7 +27,7 @@ class _WalletScreenState extends State<WalletScreen> {
     Provider.of<WalletProvider>(context, listen: false)
         .fetchWalletHistory(context)
         .catchError((e) {
-      print(e);
+      log(e);
     });
     super.initState();
   }
