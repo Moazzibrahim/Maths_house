@@ -1,9 +1,8 @@
-// ignore_for_file: avoid_print
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/delete_account/delete_account.dart';
 import 'package:flutter_application_1/Model/logout_model.dart';
-import 'package:flutter_application_1/Model/profile_name.dart';
 import 'package:flutter_application_1/View/screens/edit_profile_screen.dart';
 import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
 import 'package:flutter_application_1/View/screens/wallet_screen.dart';
@@ -12,6 +11,8 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+
+import '../../Model/profile_name.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.isLoggedIn});
@@ -24,12 +25,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    if(!widget.isLoggedIn){
+    if (!widget.isLoggedIn) {
       Provider.of<ProfileProvider>(context, listen: false)
-        .getprofileData(context)
-        .catchError((e) {
-      print(e);
-    });
+          .getprofileData(context)
+          .catchError((e) {
+        log(e);
+      });
     }
     super.initState();
   }
@@ -45,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             appBar: AppBar(
               title: const Center(
                   child: Text(
-                "My profile",
+                "My Profile",
                 style: TextStyle(fontWeight: FontWeight.bold),
               )),
               automaticallyImplyLeading: false,
@@ -158,227 +159,123 @@ class RequesterContent extends StatelessWidget {
         child: Column(
           children: [
             if (user != null) ...[
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.person_outline),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Name: ${user!.fName} ${user!.lName}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.person_outline,
+                label: 'Name',
+                value: '${user!.fName} ${user!.lName}',
               ),
               const Divider(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.person_outline),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'NickName:  ${user!.nickname}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.person_outline,
+                label: 'NickName',
+                value: user!.nickname,
               ),
               const Divider(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.email_outlined),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Email: ${user!.email}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.email_outlined,
+                label: 'Email',
+                value: user!.email,
               ),
               const Divider(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.mobile_screen_share_outlined),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Mobile: ${user!.phone}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.mobile_screen_share_outlined,
+                label: 'Mobile',
+                value: user!.phone,
               ),
               const Divider(),
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      elevation: 4,
-                      shadowColor: Colors.black,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13))),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WalletScreen()),
-                      );
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.wallet),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Text(
-                              'Wallet',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ],
-                        ),
-                        Icon(Icons.arrow_forward_ios)
-                      ],
-                    ),
-                  ),
-                ),
+              _ProfileActionButton(
+                icon: Icons.wallet,
+                label: 'Wallet',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WalletScreen()),
+                  );
+                },
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    await LogoutModel().logout(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 4,
-                    shadowColor: Colors.black,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 15,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
-                      side: const BorderSide(
-                        color: faceBookColor,
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: faceBookColor),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 7,
+              _ProfileActionButton(
+                icon: Icons.logout,
+                label: 'Logout',
+                onPressed: () async {
+                  await LogoutModel().logout(context);
+                },
+                backgroundColor: Colors.white,
+                textColor: faceBookColor,
+                borderColor: faceBookColor,
               ),
               TextButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            actions: [
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              const Text(
-                                  "Are you sure to delete your account ?"),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Provider.of<DeleteAccount>(context,
-                                              listen: false)
-                                          .deleteAccount(context);
-                                      Future.delayed(
-                                        const Duration(
-                                          seconds: 2,
-                                        ),
-                                        () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const UnregisteredHomescreen()));
-                                        },
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: faceBookColor,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 10)),
-                                    child: const Text(
-                                      "Delete",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          actions: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text("Are you sure to delete your account?"),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Provider.of<DeleteAccount>(context,
+                                            listen: false)
+                                        .deleteAccount(context);
+                                    Future.delayed(
+                                      const Duration(seconds: 2),
+                                      () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const UnregisteredHomescreen(),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: faceBookColor,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
                                   ),
-                                  const SizedBox(
-                                    width: 8,
+                                  child: const Text(
+                                    "Delete",
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: faceBookColor),
-                                    child: const Text(
-                                      "cancel",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                ),
+                                const SizedBox(width: 8),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: faceBookColor,
                                   ),
-                                ],
-                              )
-                            ],
-                          );
-                        });
-                  },
-                  child: const Text(
-                    "Delete account?",
-                    style: TextStyle(
-                        color: faceBookColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400),
-                  ))
-              // Other fields...
+                                  child: const Text(
+                                    "Cancel",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      });
+                },
+                child: const Text(
+                  "Delete account?",
+                  style: TextStyle(
+                      color: faceBookColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400),
+                ),
+              ),
             ] else
               const Text('User data not available'),
           ],
@@ -401,75 +298,118 @@ class ParentContent extends StatelessWidget {
         child: Column(
           children: [
             if (user != null) ...[
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.person_outline),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Name: ${user!.lName}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.person_outline,
+                label: 'Name',
+                value: user!.lName,
               ),
               const Divider(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.email_outlined),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Email: ${user!.parentEmail}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.email_outlined,
+                label: 'Email',
+                value: user!.parentEmail,
               ),
               const Divider(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.mobile_screen_share_outlined),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Mobile: ${user!.parentPhone}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.mobile_screen_share_outlined,
+                label: 'Mobile',
+                value: user!.parentPhone,
               ),
               const Divider(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    const Icon(Icons.email_outlined),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Extra Email: ${user!.extraemail}',
-                      style: const TextStyle(fontSize: 18),
-                    )
-                  ],
-                ),
+              _ProfileDetailRow(
+                icon: Icons.email_outlined,
+                label: 'Extra Email',
+                value: user!.extraemail,
               ),
             ] else
               const Text('User data not available'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileDetailRow extends StatelessWidget {
+  const _ProfileDetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 5),
+          Text(
+            '$label: $value',
+            style: const TextStyle(fontSize: 18),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileActionButton extends StatelessWidget {
+  const _ProfileActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.backgroundColor = Colors.white,
+    this.textColor = Colors.black,
+    this.borderColor,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color? borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          elevation: 4,
+          shadowColor: Colors.black,
+          foregroundColor: textColor,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(13),
+            side: borderColor != null
+                ? BorderSide(color: borderColor!)
+                : BorderSide.none,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(icon),
+                const SizedBox(width: 15),
+                Text(
+                  label,
+                  style: const TextStyle(fontSize: 17),
+                ),
+              ],
+            ),
+            const Icon(Icons.arrow_forward_ios),
           ],
         ),
       ),

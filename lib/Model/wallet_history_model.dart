@@ -1,6 +1,6 @@
 class WalletHistory {
   final int studentId;
-  final double wallet;
+  final int wallet;
   final String date;
   final String state;
 
@@ -14,7 +14,7 @@ class WalletHistory {
   factory WalletHistory.fromJson(Map<String, dynamic> json) {
     return WalletHistory(
       studentId: json['student_id'],
-      wallet: json['wallet'].toDouble(),
+      wallet: json['wallet'],
       date: json['date'],
       state: json['state'],
     );
@@ -22,7 +22,7 @@ class WalletHistory {
 }
 
 class WalletHistoryList {
-  final double totalWallet;
+  final int totalWallet;
   final List<WalletHistory> walletHistoryList;
 
   WalletHistoryList({
@@ -35,8 +35,7 @@ class WalletHistoryList {
     List<WalletHistory> walletHistoryList =
         list.map((e) => WalletHistory.fromJson(e)).toList();
     return WalletHistoryList(
-      totalWallet:
-          json['totalWallet'].toDouble(), // Assign directly without parsing
+      totalWallet: json['totalWallet'], // Assign directly without parsing
       walletHistoryList: walletHistoryList,
     );
   }

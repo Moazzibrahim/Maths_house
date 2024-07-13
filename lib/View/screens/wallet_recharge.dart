@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/payment_method_provider.dart';
@@ -94,7 +94,10 @@ class _WalletRechargeScreenState extends State<WalletRechargeScreen> {
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const OrderDetails()),
+            MaterialPageRoute(
+                builder: (context) => const TabsScreen(
+                      isLoggedIn: false,
+                    )),
           );
         });
       } else {

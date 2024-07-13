@@ -3,7 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
-import 'package:flutter_application_1/View/screens/checkout/order_details_screen.dart';
+import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/payment_method_provider.dart';
@@ -133,7 +133,10 @@ class _PaymentChapterScreenState extends State<PaymentChapterScreen> {
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const OrderDetails()),
+            MaterialPageRoute(
+                builder: (context) => const TabsScreen(
+                      isLoggedIn: false,
+                    )),
           );
         });
       } else {
@@ -287,7 +290,7 @@ class _PaymentChapterScreenState extends State<PaymentChapterScreen> {
                   onPressed: () {
                     if (_selectedOptionId != null && _image != null) {
                       if (widget.id != null &&
-                          widget.id!.isNotEmpty && 
+                          widget.id!.isNotEmpty &&
                           widget.duration != null &&
                           widget.duration!.isNotEmpty) {
                         // Create filtered lists for id and duration

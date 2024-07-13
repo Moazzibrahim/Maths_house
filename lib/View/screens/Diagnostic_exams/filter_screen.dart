@@ -99,9 +99,9 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
       } else {
         log('Failed to send filters. Status code: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                'Failed to send filters. Status code: ${response.statusCode}'),
+          const SnackBar(
+            content:
+                Text('Failed to send filters. please  check your connection'),
           ),
         );
       }
