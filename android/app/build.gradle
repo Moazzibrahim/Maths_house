@@ -28,7 +28,7 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 }
 
 android {
-    namespace "net.mathshouse.login"
+    namespace "net.mathshouse.wego"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -47,8 +47,8 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        applicationId "net.mathshouse.login"
-        minSdkVersion flutter.minSdkVersion
+        applicationId "net.mathshouse.wego"
+        minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -65,7 +65,7 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             ndk {
                 debugSymbolLevel 'FULL'
             }
