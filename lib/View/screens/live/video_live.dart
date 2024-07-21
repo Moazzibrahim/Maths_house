@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/live/my_live_Sceen.dart';
-import 'package:webview_flutter_x5/webview_flutter.dart';
-import 'package:flutter/services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class VideoWebView extends StatefulWidget {
   final String url; // Accept URL as a parameter
@@ -13,22 +12,26 @@ class VideoWebView extends StatefulWidget {
 }
 
 class _VideoWebViewState extends State<VideoWebView> {
+  final controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..loadRequest(Uri.parse(
+        "https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4"));
   @override
   void initState() {
     super.initState();
-    WebView.platform;
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
+
+    // SystemChrome.setPreferredOrientations([
+    //   // DeviceOrientation.landscapeRight,
+    //   // DeviceOrientation.landscapeLeft,
+    // ]);
   }
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
     super.dispose();
   }
 
@@ -41,10 +44,11 @@ class _VideoWebViewState extends State<VideoWebView> {
       body: Center(
         child: AspectRatio(
           aspectRatio: 16 / 9,
-          child: WebView(
-            initialUrl: widget.url, // Use the URL from the widget
-            javascriptMode: JavascriptMode.unrestricted,
-            initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
+          child: WebViewWidget(
+            controller: controller,
+            // initialUrl: widget.url, // Use the URL from the widget
+            // javascriptMode: JavascriptMode.unrestricted,
+            // initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
           ),
         ),
       ),
@@ -53,7 +57,7 @@ class _VideoWebViewState extends State<VideoWebView> {
 }
 
 void main() {
-  WebView.platform;
+  // WebView.platform;
   runApp(const MyApp());
 }
 

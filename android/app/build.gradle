@@ -48,7 +48,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         applicationId "net.mathshouse.wego"
-        minSdkVersion 19
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
