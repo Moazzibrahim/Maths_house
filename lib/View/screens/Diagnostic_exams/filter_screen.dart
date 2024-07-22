@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, avoid_print, use_build_context_synchronously, unused_field
+// ignore_for_file: avoid_print, deprecated_member_use, use_build_context_synchronously, unused_field
 
 import 'dart:developer';
 import 'package:flutter/material.dart';
@@ -101,7 +101,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content:
-                Text('Failed to send filters. please  check your connection'),
+                Text('Failed to send filters. please check your connection'),
           ),
         );
       }
@@ -137,7 +137,6 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         return Future.value(false); // Prevent back navigation
@@ -174,18 +173,18 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                           child: DropdownButtonFormField<String>(
                             iconEnabledColor: faceBookColor,
                             value: _selectedCategory,
-                            items: [
-                              ...uniqueCategories.map(
-                                (category) => DropdownMenuItem<String>(
-                                  value: category,
-                                  child: Row(
-                                    children: [
-                                      Text(category),
-                                    ],
+                            items: uniqueCategories
+                                .map(
+                                  (category) => DropdownMenuItem<String>(
+                                    value: category,
+                                    child: Text(
+                                      category,
+                                      overflow: TextOverflow
+                                          .ellipsis, // Handle overflow
+                                    ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                                .toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedCategory = value;
@@ -199,18 +198,18 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                           child: DropdownButtonFormField<String>(
                             iconEnabledColor: faceBookColor,
                             value: _selectedCourse,
-                            items: [
-                              ...uniqueCourses.map(
-                                (course) => DropdownMenuItem<String>(
-                                  value: course,
-                                  child: Row(
-                                    children: [
-                                      Text(course),
-                                    ],
+                            items: uniqueCourses
+                                .map(
+                                  (course) => DropdownMenuItem<String>(
+                                    value: course,
+                                    child: Text(
+                                      course,
+                                      overflow: TextOverflow
+                                          .ellipsis, // Handle overflow
+                                    ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                                .toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedCourse = value;
@@ -232,7 +231,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                             shape: const LinearBorder(),
                           ),
                           child: const Text(
-                            "search",
+                            "Search",
                             style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         )
