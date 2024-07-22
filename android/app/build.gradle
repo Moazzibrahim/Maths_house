@@ -28,7 +28,7 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 }
 
 android {
-    namespace "net.mathshouse.wego"
+    namespace "net.mathshouse.package"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -47,7 +47,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        applicationId "net.mathshouse.wego"
+        applicationId "net.mathshouse.package"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

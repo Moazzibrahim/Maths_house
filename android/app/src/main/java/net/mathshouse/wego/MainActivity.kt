@@ -1,4 +1,4 @@
-package net.mathshouse.wego
+package net.mathshouse.package
 
 import io.flutter.embedding.android.FlutterActivity
 
