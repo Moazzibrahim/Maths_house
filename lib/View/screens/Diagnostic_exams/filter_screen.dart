@@ -135,6 +135,10 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     );
   }
 
+  String truncateText(String text, {int length = 40}) {
+    return text.length > length ? '${text.substring(0, length)}...' : text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -178,7 +182,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                                   (category) => DropdownMenuItem<String>(
                                     value: category,
                                     child: Text(
-                                      category,
+                                      truncateText(category),
                                       overflow: TextOverflow
                                           .ellipsis, // Handle overflow
                                     ),
@@ -203,7 +207,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
                                   (course) => DropdownMenuItem<String>(
                                     value: course,
                                     child: Text(
-                                      course,
+                                      truncateText(course),
                                       overflow: TextOverflow
                                           .ellipsis, // Handle overflow
                                     ),
