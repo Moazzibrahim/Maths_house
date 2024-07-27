@@ -16,8 +16,8 @@ class QuestionHistory {
   factory QuestionHistory.fromJson(Map<String, dynamic> json) =>
       QuestionHistory(
         answer: json['answer'],
-        month: json['question']['month'],
-        year: json['question']['year'],
+        month: json['question']['month']?? 0,
+        year: json['question']['year'] ?? 0,
         section: json['question']['section'] ?? 'no section',
         id: json['question_id'],
       );

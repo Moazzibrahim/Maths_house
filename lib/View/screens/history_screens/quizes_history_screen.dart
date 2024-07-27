@@ -75,7 +75,10 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
       appBar: buildAppBar(context, 'Quizes History'),
       body: Consumer<QuizHistoryProvider>(
         builder: (context, quizHistoryProvider, _) {
-          return LayoutBuilder(
+          if(quizHistoryProvider.allQuizHistory.isEmpty){
+            return const Center(child: Text('no quizes history'));
+          }else{
+            return LayoutBuilder(
             builder: (context, constraints) {
               return Stack(
                 children: [
@@ -252,6 +255,8 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
               );
             },
           );
+          }
+          
         },
       ),
     );

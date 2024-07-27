@@ -107,21 +107,21 @@ class _IdeasContentState extends State<IdeasContent> {
                       ),
                     ),
                   const SizedBox(width: 10),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey.shade300,
-                    ),
-                    child: const Row(
-                      children: [
-                        Text('Report'),
-                        SizedBox(width: 5),
-                        Icon(Icons.flag_outlined),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   padding:
+                  //       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(10),
+                  //     color: Colors.grey.shade300,
+                  //   ),
+                  //   child: const Row(
+                  //     children: [
+                  //       Text('Report'),
+                  //       SizedBox(width: 5),
+                  //       Icon(Icons.flag_outlined),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 20),
