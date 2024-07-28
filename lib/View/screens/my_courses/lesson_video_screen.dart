@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:flutter_application_1/View/widgets/ideas_content.dart';
 import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
@@ -15,6 +16,22 @@ class LessonsVideos extends StatefulWidget {
 }
 
 class _LessonsVideosState extends State<LessonsVideos> {
+  void toggleRotation() {
+    if (isLandscape) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    }
+    setState(() {
+      isLandscape = !isLandscape;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -29,6 +46,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                 color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
             child: IconButton(
               onPressed: () {
+                toggleRotation();
                 Navigator.of(context).pop();
               },
               icon: Icon(

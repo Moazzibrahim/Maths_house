@@ -3,6 +3,7 @@ import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+bool isLandscape = false;
 class IdeasContent extends StatefulWidget {
   const IdeasContent({super.key, required this.lesson});
   final Lesson lesson;
@@ -14,7 +15,7 @@ class IdeasContent extends StatefulWidget {
 class _IdeasContentState extends State<IdeasContent> {
   int rating = 0;
   int viewedVideoIndex = 0;
-  bool isLandscape = false;
+  
   final controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..loadRequest(Uri.parse(

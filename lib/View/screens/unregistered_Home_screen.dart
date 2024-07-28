@@ -74,7 +74,7 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (ctx) => const UnregisteredCourses(
                                   isLoggedIn: false,
-                                  isFromCourses: false,
+                                  isFromCourses: true,
                                 )));
                       },
                       child: CustomSmallCard(
