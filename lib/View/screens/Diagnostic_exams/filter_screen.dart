@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class DiagnosticFilterScreen extends StatefulWidget {
-  const DiagnosticFilterScreen({Key? key}) : super(key: key);
+  const DiagnosticFilterScreen({super.key});
 
   @override
   State<DiagnosticFilterScreen> createState() => _DiagnosticFilterScreenState();
