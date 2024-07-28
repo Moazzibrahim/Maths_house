@@ -130,6 +130,7 @@ class MathHouse extends StatelessWidget {
         designSize: Size(360, 690),
         splitScreenMode: true,
         child: MaterialApp(
+          //theme: ThemeData(primaryColor: Colors.white),
           debugShowCheckedModeBanner: false,
           title: 'Facebook Login Page',
           home: SplashScreen(),
