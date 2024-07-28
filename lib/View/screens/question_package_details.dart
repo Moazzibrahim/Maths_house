@@ -1,5 +1,3 @@
-// ignore_for_file: use_super_parameters, library_private_types_in_public_api, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/checkout/checkout_screen.dart';
 import 'package:flutter_application_1/View/widgets/custom_package.dart';
@@ -7,6 +5,7 @@ import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/package/package_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuestionPackageScreen extends StatefulWidget {
   const QuestionPackageScreen({Key? key}) : super(key: key);
@@ -57,48 +56,49 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
                   },
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (selectedIndex != -1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CheckoutScreen(
-                                id: packageProvider
-                                    .allquestionpackage[selectedIndex].id,
-                                type: packageProvider
-                                    .allquestionpackage[selectedIndex].type,
-                                chapterName: packageProvider
-                                    .allquestionpackage[selectedIndex].name,
-                                price: packageProvider
-                                    .allquestionpackage[selectedIndex].price,
-                                duration: packageProvider
-                                    .allquestionpackage[selectedIndex].duration,
-                              )),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 140,
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.h),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (selectedIndex != -1) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CheckoutScreen(
+                                  id: packageProvider
+                                      .allquestionpackage[selectedIndex].id,
+                                  type: packageProvider
+                                      .allquestionpackage[selectedIndex].type,
+                                  chapterName: packageProvider
+                                      .allquestionpackage[selectedIndex].name,
+                                  price: packageProvider
+                                      .allquestionpackage[selectedIndex].price,
+                                  duration: packageProvider
+                                      .allquestionpackage[selectedIndex]
+                                      .duration,
+                                )),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: faceBookColor,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 140.w,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  child: Text(
+                    'Pay Now',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                child: const Text(
-                  'Pay Now',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
               ),
             ],
           ),

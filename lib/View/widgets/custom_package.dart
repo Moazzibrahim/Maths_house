@@ -26,41 +26,58 @@ class CustomPackage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.w),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
             color: isSelected ? gridHomeColor : Colors.white,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(15.r),
           ),
           width: double.maxFinite,
-          height: 120.h,
           child: Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   text1,
-                  style: const TextStyle(color: faceBookColor, fontSize: 20),
+                  style: TextStyle(
+                    color: faceBookColor,
+                    fontSize: 20.sp,
+                  ),
                 ),
+                SizedBox(height: 4.h),
                 Text(
                   text2,
-                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.black54,
+                  ),
                 ),
+                SizedBox(height: 4.h),
                 Text(
                   'Duration: $text3',
-                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.black54,
+                  ),
                 ),
+                SizedBox(height: 4.h),
                 Text(
-                  'number: $text5',
-                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  'Number: $text5',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.black54,
+                  ),
                 ),
+                SizedBox(height: 4.h),
                 Text(
-                  'price: $text4',
-                  style: const TextStyle(fontSize: 18, color: Colors.black54),
+                  'Price: $text4',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: Colors.black54,
+                  ),
                 ),
               ],
             ),
