@@ -135,7 +135,7 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
     );
   }
 
-  String truncateText(String text, {int length = 40}) {
+  String truncateText(String text, {int length = 30}) {
     return text.length > length ? '${text.substring(0, length)}...' : text;
   }
 

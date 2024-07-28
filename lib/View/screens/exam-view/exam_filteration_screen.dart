@@ -54,6 +54,10 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
     return years;
   }
 
+  String truncateText(String text, {int length = 30}) {
+    return text.length > length ? '${text.substring(0, length)}...' : text;
+  }
+
   Future<void> _sendFiltersToServer() async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -193,7 +197,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                                   value: category,
                                   child: Row(
                                     children: [
-                                      Text(category),
+                                      Text(truncateText(category)),
                                     ],
                                   ),
                                 ),
@@ -293,7 +297,7 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
                                   value: code,
                                   child: Row(
                                     children: [
-                                      Text(code),
+                                      Text(truncateText(code)),
                                     ],
                                   ),
                                 ),

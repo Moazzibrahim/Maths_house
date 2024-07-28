@@ -97,6 +97,10 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
     }
   }
 
+  String truncateText(String text, {int length = 30}) {
+    return text.length > length ? '${text.substring(0, length)}...' : text;
+  }
+
   Future<void> _postSessionData() async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
@@ -128,7 +132,6 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
             ),
           ),
         );
-    
       } else {
         // Handle error response
         ScaffoldMessenger.of(context).showSnackBar(
@@ -187,7 +190,7 @@ class __DropdownsAndButtonState extends State<_DropdownsAndButton> {
                     items: categoryItems.map((category) {
                       return DropdownMenuItem<DiagnosticCategory>(
                         value: category,
-                        child: Text(category.categoryName),
+                        child: Text(truncateText(category.categoryName)),
                       );
                     }).toList(),
                     onChanged: (value) {

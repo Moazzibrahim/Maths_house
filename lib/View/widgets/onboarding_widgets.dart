@@ -34,7 +34,7 @@ class OnBoardingWidgets extends StatelessWidget {
                     MaterialPageRoute(builder: (ctx)=>  const TabsScreen(isLoggedIn: true))
                   );
                 },
-                child: Text('Skip',style: TextStyle(color: Colors.redAccent[700],fontSize: 20),),
+                child: Text('Skip',style: TextStyle(color: Colors.redAccent[700],fontSize: 20.sp),),
               ),
             ],
           ),

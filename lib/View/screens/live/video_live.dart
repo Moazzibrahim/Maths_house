@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class VideoWebView extends StatefulWidget {
-  final String url; // Accept URL as a parameter
+  final String url;
 
   const VideoWebView({super.key, required this.url});
 
@@ -35,6 +35,24 @@ class _VideoWebViewState extends State<VideoWebView> {
     });
   }
 
+  void showFullscreenVideo() {
+    showDialog(
+      context: context,
+      builder: (context) => Scaffold(
+        body: Center(
+          child: AspectRatio(
+            aspectRatio: 21 / 9,
+            child: WebViewWidget(
+              controller: WebViewController()
+                ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                ..loadRequest(Uri.parse(widget.url)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,10 +73,13 @@ class _VideoWebViewState extends State<VideoWebView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 21 / 9,
-                child: WebViewWidget(
-                  controller: controller,
+              GestureDetector(
+                onDoubleTap: showFullscreenVideo,
+                child: AspectRatio(
+                  aspectRatio: 21 / 9,
+                  child: WebViewWidget(
+                    controller: controller,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

@@ -72,7 +72,10 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => const UnregisteredCourses(isLoggedIn: false,isFromCourses: false,)));
+                            builder: (ctx) => const UnregisteredCourses(
+                                  isLoggedIn: false,
+                                  isFromCourses: false,
+                                )));
                       },
                       child: CustomSmallCard(
                         icon: Icons.book_rounded,
@@ -248,24 +251,24 @@ class _UnregisteredHomescreenState extends State<UnregisteredHomescreen> {
                   ],
                 ),
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Trending courses',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'See All',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: faceBookColor,
-                      ),
-                    ),
-                  )
+                  // TextButton(
+                  //   onPressed: () {},
+                  //   child: const Text(
+                  //     'See All',
+                  //     style: TextStyle(
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.bold,
+                  //       color: faceBookColor,
+                  //     ),
+                  //   ),
+                  // )
                 ],
               ),
               SizedBox(
