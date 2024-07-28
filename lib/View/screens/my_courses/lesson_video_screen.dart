@@ -17,7 +17,7 @@ class LessonsVideos extends StatefulWidget {
 
 class _LessonsVideosState extends State<LessonsVideos> {
   void toggleRotation() {
-    if (isLandscape) {
+    if (isLandscapeGlobal) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
@@ -29,7 +29,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
       ]);
     }
     setState(() {
-      isLandscape = !isLandscape;
+      isLandscapeGlobal = !isLandscapeGlobal;
     });
   }
   @override

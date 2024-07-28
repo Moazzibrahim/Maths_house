@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuestionPackageScreen extends StatefulWidget {
-  const QuestionPackageScreen({Key? key}) : super(key: key);
+  const QuestionPackageScreen({super.key});
 
   @override
   _QuestionPackageScreenState createState() => _QuestionPackageScreenState();
@@ -22,6 +22,7 @@ class _QuestionPackageScreenState extends State<QuestionPackageScreen> {
     Provider.of<PackageProvider>(context, listen: false)
         .fetchQuestion(context)
         .catchError((e) {
+      // ignore: avoid_print
       print(e);
     });
     super.initState();

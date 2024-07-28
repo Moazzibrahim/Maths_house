@@ -11,7 +11,7 @@ class ProfileProvider with ChangeNotifier {
   User? _userData;
   User? get userData => _userData;
   DateTime? _lastFetchTime;
-  final Duration _cacheDuration = Duration(minutes: 5); // Cache duration
+  final Duration _cacheDuration = const Duration(minutes: 5); // Cache duration
 
   Future<void> getprofileData(BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);

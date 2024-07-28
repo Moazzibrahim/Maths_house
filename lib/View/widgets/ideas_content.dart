@@ -3,7 +3,7 @@ import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-bool isLandscape = false;
+bool isLandscapeGlobal = false;
 class IdeasContent extends StatefulWidget {
   const IdeasContent({super.key, required this.lesson});
   final Lesson lesson;
@@ -22,7 +22,7 @@ class _IdeasContentState extends State<IdeasContent> {
         "https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4"));
 
   void toggleRotation() {
-    if (isLandscape) {
+    if (isLandscapeGlobal) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
@@ -34,7 +34,7 @@ class _IdeasContentState extends State<IdeasContent> {
       ]);
     }
     setState(() {
-      isLandscape = !isLandscape;
+      isLandscapeGlobal = !isLandscapeGlobal;
     });
   }
 
@@ -51,7 +51,7 @@ class _IdeasContentState extends State<IdeasContent> {
         title: const Text('Ideas Content'),
         actions: [
           IconButton(
-            icon: Icon(isLandscape
+            icon: Icon(isLandscapeGlobal
                 ? Icons.screen_lock_rotation
                 : Icons.screen_rotation),
             onPressed: toggleRotation,

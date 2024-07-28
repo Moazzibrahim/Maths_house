@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class VideoWebView extends StatefulWidget {
@@ -40,6 +41,15 @@ class _VideoWebViewState extends State<VideoWebView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ideas Content'),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              toggleRotation();
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            )),
         actions: [
           IconButton(
             icon: Icon(isLandscape
