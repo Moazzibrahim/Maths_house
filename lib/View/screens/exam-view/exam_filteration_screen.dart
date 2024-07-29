@@ -6,6 +6,7 @@ import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/exam-view/start_exam_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/exam/exam_provider.dart';
+import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -59,100 +60,104 @@ class _ExamFilterScreenState extends State<ExamFilterScreen> {
   }
 
   Future<void> _sendFiltersToServer() async {
-    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-    final token = tokenProvider.token;
-    final examProvider = Provider.of<ExamProvider>(context, listen: false);
+  final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+  final token = tokenProvider.token;
+  final examProvider = Provider.of<ExamProvider>(context, listen: false);
+  final startExamProvider = Provider.of<StartExamProvider>(context, listen: false);
 
-    // Find the selected category ID
-    int? selectedCategoryId;
-    if (_selectedCategory != null) {
-      final index = examProvider.categoryNames.indexOf(_selectedCategory!);
-      if (index != -1) {
-        selectedCategoryId = examProvider.categoryIds[index];
-      }
-    }
+  // Clear previous exam data
+  startExamProvider.clearExamData();
 
-    // Find the selected course ID
-    int? selectedCourseId;
-    if (_selectedCourse != null) {
-      final index = examProvider.courseNames.indexOf(_selectedCourse!);
-      if (index != -1) {
-        selectedCourseId = examProvider.courseIds[index];
-      }
-    }
-
-    // Find the selected exam code ID
-    int? selectedExamCodeId;
-    if (_selectedExamCode != null) {
-      final index = examProvider.examCodes.indexOf(_selectedExamCode!);
-      if (index != -1) {
-        selectedExamCodeId = examProvider.examCodeIds[index];
-      }
-    }
-
-    // Convert the selected month to its numeric representation
-    int? selectedMonthNumber;
-    if (_selectedMonth != null) {
-      selectedMonthNumber = _months.indexOf(_selectedMonth!) + 1;
-    }
-
-    // Construct the request body with selected filter values
-    final Map<String, dynamic> requestBody = {
-      'category_id': selectedCategoryId,
-      'course_id': selectedCourseId,
-      'year': _selectedYear,
-      'month': selectedMonthNumber,
-      'code_id': selectedExamCodeId,
-    };
-
-    final url = Uri.parse(
-        // ignore: unnecessary_brace_in_string_interps
-        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process');
-
-    try {
-      // Send a POST request to the server
-      final response = await http.post(
-        url,
-        body: jsonEncode(requestBody),
-        //  body: jsonEncode(requestBody),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      // Check if the request was successful (status code 200)
-      if (response.statusCode == 200) {
-        // Request was successful, handle the response here
-        print('Filters sent successfully!');
-        print('Response body: ${response.body}');
-        print("Exam code ID: $selectedExamCodeId");
-        print("Selected category: $selectedCategoryId");
-        print("Selected month: $selectedMonthNumber");
-        print("Selected course: $selectedCourseId");
-        print("selected year: $_selectedYear");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ExamScreenstart(
-              categoryid: selectedCategoryId,
-              courseid: selectedCourseId,
-              months: selectedMonthNumber,
-              examcodeid: selectedExamCodeId,
-              years: _selectedYear,
-            ),
-          ),
-        );
-      } else {
-        // Request failed, handle error here
-        print('Failed to send filters. Status code: ${response.statusCode}');
-      }
-    } catch (error) {
-      // Handle any errors that occur during the HTTP request
-      print('Error sending filters: $error');
+  // Find the selected category ID
+  int? selectedCategoryId;
+  if (_selectedCategory != null) {
+    final index = examProvider.categoryNames.indexOf(_selectedCategory!);
+    if (index != -1) {
+      selectedCategoryId = examProvider.categoryIds[index];
     }
   }
+
+  // Find the selected course ID
+  int? selectedCourseId;
+  if (_selectedCourse != null) {
+    final index = examProvider.courseNames.indexOf(_selectedCourse!);
+    if (index != -1) {
+      selectedCourseId = examProvider.courseIds[index];
+    }
+  }
+
+  // Find the selected exam code ID
+  int? selectedExamCodeId;
+  if (_selectedExamCode != null) {
+    final index = examProvider.examCodes.indexOf(_selectedExamCode!);
+    if (index != -1) {
+      selectedExamCodeId = examProvider.examCodeIds[index];
+    }
+  }
+
+  // Convert the selected month to its numeric representation
+  int? selectedMonthNumber;
+  if (_selectedMonth != null) {
+    selectedMonthNumber = _months.indexOf(_selectedMonth!) + 1;
+  }
+
+  // Construct the request body with selected filter values
+  final Map<String, dynamic> requestBody = {
+    'category_id': selectedCategoryId,
+    'course_id': selectedCourseId,
+    'year': _selectedYear,
+    'month': selectedMonthNumber,
+    'code_id': selectedExamCodeId,
+  };
+
+  final url = Uri.parse(
+      'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_filter_exam_process');
+
+  try {
+    // Send a POST request to the server
+    final response = await http.post(
+      url,
+      body: jsonEncode(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    // Check if the request was successful (status code 200)
+    if (response.statusCode == 200) {
+      // Request was successful, handle the response here
+      print('Filters sent successfully!');
+      print('Response body: ${response.body}');
+      print("Exam code ID: $selectedExamCodeId");
+      print("Selected category: $selectedCategoryId");
+      print("Selected month: $selectedMonthNumber");
+      print("Selected course: $selectedCourseId");
+      print("Selected year: $_selectedYear");
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ExamScreenstart(
+            categoryid: selectedCategoryId,
+            courseid: selectedCourseId,
+            months: selectedMonthNumber,
+            examcodeid: selectedExamCodeId,
+            years: _selectedYear,
+          ),
+        ),
+      );
+    } else {
+      // Request failed, handle error here
+      print('Failed to send filters. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle any errors that occur during the HTTP request
+    print('Error sending filters: $error');
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
