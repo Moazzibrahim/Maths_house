@@ -34,14 +34,13 @@ class GridContainer extends StatelessWidget {
                   text,
                   style: TextStyle(
                       fontSize: 20,
-                      
                       color: styleColor),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20,),
-          Image.asset(image)
+          Image.asset(image,height: 50,)
         ],
       ),
     );
