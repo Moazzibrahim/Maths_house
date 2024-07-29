@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/constants/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_application_1/constants/colors.dart'; // Ensure this is correctly imported
 
 class VideoWebView extends StatefulWidget {
   final String url; // Accept URL as a parameter
@@ -17,7 +17,7 @@ class _VideoWebViewState extends State<VideoWebView> {
   final controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..loadRequest(Uri.parse(
-        "https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4"));
+        "https://drive.mathshouse.net/video/embed/8Ag/640x320/WhatsApp_Video_2024-07-28_at_16.17.14_a9fbeb4c.mp4"));
 
   void toggleRotation() {
     if (isLandscape) {
@@ -36,6 +36,16 @@ class _VideoWebViewState extends State<VideoWebView> {
     });
   }
 
+  void resetOrientation() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    setState(() {
+      isLandscape = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +53,10 @@ class _VideoWebViewState extends State<VideoWebView> {
         title: const Text('Ideas Content'),
         leading: IconButton(
             onPressed: () {
+              if (isLandscape) {
+                resetOrientation();
+              }
               Navigator.pop(context);
-              toggleRotation();
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -158,7 +170,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const VideoWebView(
           url:
-              'https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4'),
+              'https://drive.mathshouse.net/video/embed/8Ag/640x320/WhatsApp_Video_2024-07-28_at_16.17.14_a9fbeb4c.mp4'),
     );
   }
 }

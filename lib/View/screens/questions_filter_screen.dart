@@ -15,8 +15,9 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
   TextEditingController sectionController = TextEditingController();
   TextEditingController questionNumController = TextEditingController();
   TextEditingController examCodeController = TextEditingController();
+
   List<int> years =
-      List.generate(10, (index) => DateTime.now().year - 5 + index);
+      List.generate(DateTime.now().year - 2000 + 1, (index) => 2000 + index);
   final List<String> months = [
     'January',
     'February',
@@ -36,6 +37,7 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
   String selectedMonth = 'Select Month';
   bool isFormsFilled = true;
   bool isPackagePurchased = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +135,8 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                 ),
                 TextField(
                   controller: examCodeController,
-                  decoration: const InputDecoration(hintText: 'Enter Exam code'),
+                  decoration:
+                      const InputDecoration(hintText: 'Enter Exam code'),
                 ),
                 const SizedBox(
                   height: 30,
@@ -144,29 +147,33 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                         sectionController.text == '' ||
                         questionNumController.text == '' ||
                         examCodeController.text == '') {
-                          setState(() {
-                            isFormsFilled=false;
-                          });
+                      setState(() {
+                        isFormsFilled = false;
+                      });
                     } else {
                       setState(() {
-                        isFormsFilled=true;
+                        isFormsFilled = true;
                       });
-                      Provider.of<QuestionsProvider>(context,listen: false).getQuestionsData(context);
-                      if(Provider.of<QuestionsProvider>(context,listen: false).allQuestions.isEmpty){
+                      Provider.of<QuestionsProvider>(context, listen: false)
+                          .getQuestionsData(context);
+                      if (Provider.of<QuestionsProvider>(context, listen: false)
+                          .allQuestions
+                          .isEmpty) {
                         setState(() {
                           isPackagePurchased = false;
                         });
-                      }else{
+                      } else {
                         Navigator.of(context).push(
-                        MaterialPageRoute(
+                          MaterialPageRoute(
                             builder: (ctx) => QuestionsScreen(
-                                  month: indexMonth,
-                                  year: selectedYear,
-                                  questionNum: questionNumController.text,
-                                  examCode: examCodeController.text,
-                                  section: sectionController.text,
-                                )),
-                      );
+                              month: indexMonth,
+                              year: selectedYear,
+                              questionNum: questionNumController.text,
+                              examCode: examCodeController.text,
+                              section: sectionController.text,
+                            ),
+                          ),
+                        );
                       }
                     }
                   },
@@ -187,12 +194,17 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                 !isFormsFilled
                     ? Text(
                         'You have to fill all the fields!',
-                        style:
-                            TextStyle(fontSize: 18, color: Colors.redAccent[700]),
+                        style: TextStyle(
+                            fontSize: 18, color: Colors.redAccent[700]),
                       )
                     : const Text(''),
-                isPackagePurchased? const Text('') : Text('You have to buy a package first',style:
-                            TextStyle(fontSize: 18, color: Colors.redAccent[700]),)
+                isPackagePurchased
+                    ? const Text('')
+                    : Text(
+                        'You have to buy a package first',
+                        style: TextStyle(
+                            fontSize: 18, color: Colors.redAccent[700]),
+                      )
               ],
             ),
           ),
