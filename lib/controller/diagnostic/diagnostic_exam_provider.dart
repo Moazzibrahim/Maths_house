@@ -127,4 +127,13 @@ class DiagExamProvider with ChangeNotifier {
     currentIndex = index;
     notifyListeners();
   }
+
+  void resetData() {
+    alldiagnostics = [];
+    exid = 0;
+    passscore = 0;
+    score = 0;
+    currentIndex = 0;
+    notifyListeners();
+  }
 }

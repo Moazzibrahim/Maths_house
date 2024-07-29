@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/Diagnostic_exams/diagnostic_result_screen.dart';
-import 'package:flutter_application_1/View/screens/tabs_screen.dart';
+import 'package:flutter_application_1/View/screens/Diagnostic_exams/filter_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/diagnostic/diagnostic_exam_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,10 +33,8 @@ class DiagnosticExamScreen extends StatelessWidget {
               color: faceBookColor,
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const TabsScreen(
-                        isLoggedIn: false,
-                      )));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => const DiagnosticFilterScreen()));
             },
           ),
         ),
