@@ -55,6 +55,9 @@ class _ExamDurationState extends State<ExamDuration> {
 
   @override
   Widget build(BuildContext context) {
+    // Create a unique list of durations
+    List<int> uniqueDurations = widget.durations.toSet().toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Exam Duration"),
@@ -88,7 +91,7 @@ class _ExamDurationState extends State<ExamDuration> {
                     ),
                     DropdownButton<int>(
                       hint: const Text("Select Duration"),
-                      items: widget.durations
+                      items: uniqueDurations
                           .map(
                             (duration) => DropdownMenuItem<int>(
                               value: duration,
