@@ -6,7 +6,6 @@ import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class LessonsVideos extends StatefulWidget {
   const LessonsVideos({super.key, required this.lesson});
   final Lesson lesson;
@@ -32,6 +31,16 @@ class _LessonsVideosState extends State<LessonsVideos> {
       isLandscapeGlobal = !isLandscapeGlobal;
     });
   }
+
+  void setDefaultOrientation() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -46,7 +55,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                 color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
             child: IconButton(
               onPressed: () {
-                toggleRotation();
+                setDefaultOrientation();
                 Navigator.of(context).pop();
               },
               icon: Icon(
@@ -82,8 +91,12 @@ class _LessonsVideosState extends State<LessonsVideos> {
               ),
               Expanded(
                 child: TabBarView(children: [
-                  IdeasContent(lesson: widget.lesson,),// replace this text with ideas Widgets
-                  QuizzesContent(lessonId:widget.lesson.lessonId ,),
+                  IdeasContent(
+                    lesson: widget.lesson,
+                  ), // replace this text with ideas Widgets
+                  QuizzesContent(
+                    lessonId: widget.lesson.lessonId,
+                  ),
                 ]),
               ),
             ],

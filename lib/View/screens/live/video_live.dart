@@ -153,24 +153,3 @@ class _VideoWebViewState extends State<VideoWebView> {
     );
   }
 }
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video WebView App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const VideoWebView(
-          url:
-              'https://drive.mathshouse.net/video/embed/8Ag/640x320/WhatsApp_Video_2024-07-28_at_16.17.14_a9fbeb4c.mp4'),
-    );
-  }
-}

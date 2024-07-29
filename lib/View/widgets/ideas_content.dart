@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 bool isLandscapeGlobal = false;
+
 class IdeasContent extends StatefulWidget {
   const IdeasContent({super.key, required this.lesson});
   final Lesson lesson;
@@ -15,7 +16,7 @@ class IdeasContent extends StatefulWidget {
 class _IdeasContentState extends State<IdeasContent> {
   int rating = 0;
   int viewedVideoIndex = 0;
-  
+
   final controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..loadRequest(Uri.parse(
@@ -48,7 +49,8 @@ class _IdeasContentState extends State<IdeasContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ideas Content'),
+        automaticallyImplyLeading: false,
+        // title: const Text('Ideas Content'),
         actions: [
           IconButton(
             icon: Icon(isLandscapeGlobal
