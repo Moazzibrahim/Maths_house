@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
@@ -9,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -295,6 +297,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       await signuppost(context);
                       // Show dialog only when password matches confirm password
                       showDialog(
+                        // ignore: use_build_context_synchronously
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
@@ -374,13 +377,13 @@ class CustomTextField extends StatelessWidget {
   final bool isvisText;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.labelText,
     this.icon,
     this.passIcon,
     required this.isvisText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
