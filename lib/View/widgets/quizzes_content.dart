@@ -20,7 +20,7 @@ class _QuizzesContentState extends State<QuizzesContent> {
   void initState() {
     Provider.of<QuizzesProvider>(context, listen: false)
         .getQuizzesData(context, widget.lessonId);
-        log('${widget.lessonId}');
+        log('hamoooo: ${widget.lessonId}');
     super.initState();
   }
 

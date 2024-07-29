@@ -16,10 +16,8 @@ class RegisteredHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize ProfileProvider and fetch user data
     final profileProvider = Provider.of<ProfileProvider>(context);
     profileProvider.getprofileData(context);
-
     return Scaffold(
       appBar: AppBar(
         leading: Column(
