@@ -1,10 +1,6 @@
-// ignore_for_file: use_build_context_synchronously, use_super_parameters, avoid_print
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Model/sign_up/country_model.dart';
 import 'package:flutter_application_1/View/screens/auth_screens/login_screen.dart';
-import 'package:flutter_application_1/View/widgets/textfield_widget.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/profile/country_provider.dart';
@@ -20,7 +16,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  bool isvisText = true;
+  bool isPasswordVisible = true;
+  bool isConfirmPasswordVisible = true;
+
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -32,8 +30,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? selectedGrade;
   String? selectedCountry;
   String? selectedCity;
-  int indexOfCity = 0;
-  int cityid = 0;
 
   Future<void> signuppost(BuildContext context) async {
     var fname = fnameController.text;
@@ -44,16 +40,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var password = passwordController.text;
     var confpassword = confPasswordController.text;
 
-    // Check if password and confirm password match
-    if (password != confpassword) {
-      // Show error message to the user
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Password and Confirm Password do not match"),
-        duration: Duration(seconds: 2),
-      ));
-      return; // Stop further execution
-    }
-
     try {
       Map<String, dynamic> data = {
         "f_name": fname,
@@ -62,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "nick_name": nickname,
         "email": email,
         "phone": phone,
-        "city_id": cityid,
+        "city_id": 8,
         "conf_password": confpassword,
         "grade": selectedGrade,
       };
@@ -114,162 +100,99 @@ class _SignUpScreenState extends State<SignUpScreen> {
           appBar: buildAppBar(context, 'Sign Up'),
           body: Center(
             child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextField(
-                          controller: fnameController,
-                          hintText: 'First Name*',
-                          isvisText: true,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: CustomTextField(
-                          controller: lnameController,
-                          hintText: 'Last Name*',
-                          isvisText: true,
-                        ),
-                      ),
-                    ],
-                  ),
                   CustomTextField(
-                    controller: emailController,
-                    hintText: 'Email*',
+                    controller: fnameController,
+                    labelText: 'First Name*',
+                    icon: Icons.person_outline,
                     isvisText: true,
                   ),
+                  const SizedBox(width: 10),
                   CustomTextField(
-                    controller: passwordController,
-                    hintText: 'Password*',
-                    passIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isvisText = !isvisText;
-                        });
-                      },
-                      icon: Icon(isvisText
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined),
-                    ),
-                    isvisText: !isvisText,
-                  ),
-                  CustomTextField(
-                    controller: confPasswordController,
-                    hintText: 'Confirm Password*',
-                    passIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isvisText = !isvisText;
-                        });
-                      },
-                      icon: Icon(isvisText
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined),
-                    ),
-                    isvisText: !isvisText,
-                  ),
-                  if (passwordController.text != confPasswordController.text)
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        'Password does not match',
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  CustomTextField(
-                    controller: phoneController,
-                    hintText: 'Phone Number*',
+                    controller: lnameController,
+                    labelText: 'Last Name*',
+                    icon: Icons.person_outline,
                     isvisText: true,
                   ),
                   CustomTextField(
                     controller: nicknameController,
-                    hintText: 'Nickname*',
+                    labelText: 'Nickname*',
+                    icon: Icons.person_outline,
                     isvisText: true,
                   ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 5,
+                  CustomTextField(
+                    controller: phoneController,
+                    labelText: 'Phone Number*',
+                    icon: Icons.phone_outlined,
+                    isvisText: true,
+                  ),
+                  CustomTextField(
+                    controller: emailController,
+                    labelText: 'Email*',
+                    icon: Icons.email_outlined,
+                    isvisText: true,
+                  ),
+                  CustomTextField(
+                    controller: passwordController,
+                    labelText: 'Password*',
+                    icon: Icons.lock_outline,
+                    passIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isPasswordVisible = !isPasswordVisible;
+                        });
+                      },
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: faceBookColor,
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          value: selectedCountry,
-                          hint: const Text('Select Country*'),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedCountry = newValue;
-                            });
-                          },
-                          items: signupProvider.allcountries
-                              .map<DropdownMenuItem<String>>((Country country) {
-                            return DropdownMenuItem<String>(
-                              value: country.name,
-                              child: Text(
-                                country.name,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                    ),
+                    isvisText: !isPasswordVisible,
+                  ),
+                  CustomTextField(
+                    controller: confPasswordController,
+                    labelText: 'Confirm Password*',
+                    icon: Icons.lock_outline,
+                    passIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                        });
+                      },
+                      icon: Icon(
+                        isConfirmPasswordVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                        color: faceBookColor,
                       ),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          value: selectedCity,
-                          hint: const Text('Select City*'),
-                          onChanged: (String? newValue) async {
-                            setState(() {
-                              selectedCity = newValue!;
-                            });
-
-                            City selectedCityObject =
-                                signupProvider.allcities.firstWhere(
-                              (city) => city.name == newValue,
-                              orElse: () =>
-                                  City(id: -1, countryId: '', name: ''),
-                            );
-
-                            // Check if a city was found
-                            if (selectedCityObject.id != -1) {
-                              setState(() {
-                                cityid = selectedCityObject.id;
-                              });
-                            }
-                          },
-                          items: signupProvider.allcities
-                              .map<DropdownMenuItem<String>>((city) {
-                            return DropdownMenuItem<String>(
-                              value: city.name,
-                              child: Text(
-                                city.name,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
+                    ),
+                    isvisText: !isConfirmPasswordVisible,
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
-                      hintText: 'Select Grade*',
+                      labelText: 'Select Grade*',
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
+                          horizontal: 16, vertical: 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                            color: faceBookColor,
+                            width: 1.5), // Change border color to red
                       ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                            color: faceBookColor,
+                            width: 1.5), // Change border color when focused
+                      ),
+                      prefixIcon: const Icon(Icons.grade,
+                          color: faceBookColor), // Add an icon
                     ),
                     value: selectedGrade,
                     onChanged: (newValue) {
@@ -326,16 +249,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         value: 'grade 12',
                         child: Text('Grade 12'),
                       ),
-                      // Continue adding DropdownMenuItem for each grade up to 13
                       DropdownMenuItem(
                         value: 'grade 13',
                         child: Text('Grade 13'),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 18,
-                  ),
+                  const SizedBox(height: 18),
                   ElevatedButton(
                     onPressed: () async {
                       // Check if any field is empty
@@ -346,27 +266,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           confPasswordController.text.isEmpty ||
                           phoneController.text.isEmpty ||
                           nicknameController.text.isEmpty ||
-                          selectedCountry == null ||
-                          selectedCity == null ||
                           selectedGrade == null) {
                         // Show error message for each empty field
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text("All fields are required"),
-                          duration: Duration(seconds: 2),
-                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: faceBookColor,
+                            content: Text("All fields are required"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
                         return; // Stop further execution
                       }
                       // Check if password and confirm password match
                       if (passwordController.text !=
                           confPasswordController.text) {
                         // Show error message to the user
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text(
-                              "Password and Confirm Password do not match"),
-                          duration: Duration(seconds: 2),
-                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: faceBookColor,
+                            content: Text(
+                                "Password and Confirm Password do not match"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
                         return; // Stop further execution
                       }
                       // All fields are filled and passwords match, proceed with signup
@@ -378,7 +300,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return AlertDialog(
                             title: const Text('Sign Up Success'),
                             content: const Text(
-                                'your confirmation has sent to your gmail ,please check.'),
+                                'Your confirmation has been sent to your email, please check.'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
@@ -389,7 +311,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                   );
                                 },
-                                child: const Text('ok'),
+                                child: const Text('OK'),
                               ),
                             ],
                           );
@@ -415,61 +337,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  // const SizedBox(
-                  //   height: 10,
-                  // ),
-                  // const Padding(
-                  //   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 25),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: [
-                  //       Expanded(
-                  //         child: Divider(
-                  //           color: Colors.black,
-                  //         ),
-                  //       ),
-                  //       SizedBox(
-                  //         width: 10,
-                  //       ),
-                  //       Text('Or Login With'),
-                  //       SizedBox(
-                  //         width: 10,
-                  //       ),
-                  //       Expanded(
-                  //         child: Divider(
-                  //           color: Colors.black,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Image.asset('assets/images/google.png'),
-                  //     const SizedBox(
-                  //       width: 50,
-                  //     ),
-                  //     Image.asset('assets/images/apple.png'),
-                  //   ],
-                  // ),
+                  const SizedBox(height: 7),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Already have an account?',
-                      ),
+                      const Text('Already have an account?'),
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text(
+                        child: const Text(
                           'Login',
                           style: TextStyle(
-                            color: Colors.redAccent[700],
+                            color: faceBookColor,
                             fontSize: 15,
                           ),
                         ),
@@ -482,6 +362,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class CustomTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final IconData? icon;
+  final IconButton? passIcon;
+  final bool isvisText;
+
+  const CustomTextField({
+    Key? key,
+    required this.controller,
+    required this.labelText,
+    this.icon,
+    this.passIcon,
+    required this.isvisText,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        obscureText: !isvisText,
+        decoration: InputDecoration(
+          labelText: labelText,
+          prefixIcon: icon != null ? Icon(icon, color: faceBookColor) : null,
+          suffixIcon: passIcon,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: faceBookColor, // Default border color
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: faceBookColor, // Border color when focused
+              width: 1.5, // Border width when focused
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
