@@ -151,7 +151,7 @@ class _ExamBodyState extends State<ExamBody> {
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) =>
                           const TabsScreen(isLoggedIn: false)));
                 },
@@ -599,7 +599,7 @@ class _ExamBodyState extends State<ExamBody> {
     print('Wrong Answers: $wrongAnswerCount');
     print('Total Questions: $totalQuestions');
 
-    print(wrongAnswerQuestions);
+    print("wrong answer questions: $wrongAnswerQuestions");
 
     List<int> wrongQuestionIds = [];
     print('Wrong Question IDs:');

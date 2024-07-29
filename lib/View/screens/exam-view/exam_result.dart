@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
@@ -50,6 +52,8 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
+              log("right question is:${widget.correctAnswerCount}");
+              log("mistakes: ${widget.wrongids}");
               return _buildResultScreen(context, snapshot.data!);
             } else {
               return const Center(child: Text('No data available'));
