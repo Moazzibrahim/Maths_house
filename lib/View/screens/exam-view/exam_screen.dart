@@ -108,13 +108,13 @@ class _ExamBodyState extends State<ExamBody> {
         context,
         MaterialPageRoute(
           builder: (context) => ExamResultScreen(
-            examresults: examResults,
+            examResults: examResults,
             correctAnswerCount: correctAnswerCount,
             totalQuestions: totalQuestions,
             wrongAnswerQuestions: wrongAnswerCount,
-            elapsedtime: elapsedTime.inMinutes,
-            wrongids: wrongQuestionIds,
-            exxxid: widget.fetchedexamids,
+            elapsedTime: elapsedTime.inMinutes,
+            wrongIds: wrongQuestionIds,
+            examId: widget.fetchedexamids,
           ),
         ),
       );
@@ -428,6 +428,11 @@ class _ExamBodyState extends State<ExamBody> {
       if (questionsWithAnswers![i].selectedSolutionIndex == -1 ||
           questionsWithAnswers![i].selectedSolutionIndex == null) {
         missedQuestions.add(i);
+        if (questionsWithAnswers![i].question!.id != null) {
+          wrongQuestionIds.add(questionsWithAnswers![i]
+              .question!
+              .id!); // Add the missed question ID
+        }
       }
     }
     if (missedQuestions.isNotEmpty) {
