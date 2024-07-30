@@ -12,7 +12,7 @@ class OnBoardingWidgets extends StatelessWidget {
   });
 
   final String description;
-  final String image;
+  final Widget image; // Changed from String to Widget
   final bool showSkipButton;
 
   @override
@@ -23,17 +23,14 @@ class OnBoardingWidgets extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              image,
-              height: 200.h, // Responsive height
-              width: 200.w,  // Responsive width
-            ),
+            image, // Use image as a widget
             SizedBox(
               height: 10.h, // Responsive spacing
             ),
             Text(
               description,
               style: TextStyle(fontSize: 16.sp), // Responsive font size
+              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 150.h, // Responsive spacing
@@ -41,7 +38,8 @@ class OnBoardingWidgets extends StatelessWidget {
             if (showSkipButton)
               TextButton(
                 onPressed: () async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   await prefs.setBool('isNewUser', false);
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).push(
