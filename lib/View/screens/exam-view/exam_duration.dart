@@ -61,19 +61,24 @@ class _ExamDurationState extends State<ExamDuration> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Exam Duration"),
-        leading: InkWell(
-          child: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
+        leading: Container(
+          margin: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+              color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+          child: InkWell(
+            child: const Icon(
+              Icons.arrow_back,
+              color: faceBookColor,
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) => const TabsScreen(
+                          isLoggedIn: false,
+                        )),
+              );
+            },
           ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => const TabsScreen(
-                        isLoggedIn: false,
-                      )),
-            );
-          },
         ),
       ),
       body: Padding(

@@ -34,17 +34,22 @@ class _ExamScreenState extends State<ExamScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Exam"),
-          leading: InkWell(
-            child: const Icon(
-              Icons.arrow_back,
-              color: faceBookColor,
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: InkWell(
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.redAccent[700],
+              ),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const TabsScreen(
+                          isLoggedIn: false,
+                        )));
+              },
             ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const TabsScreen(
-                        isLoggedIn: false,
-                      )));
-            },
           ),
         ),
         body: ExamBody(
@@ -151,7 +156,7 @@ class _ExamBodyState extends State<ExamBody> {
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: faceBookColor),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) =>
                           const TabsScreen(isLoggedIn: false)));
                 },
@@ -428,6 +433,11 @@ class _ExamBodyState extends State<ExamBody> {
       if (questionsWithAnswers![i].selectedSolutionIndex == -1 ||
           questionsWithAnswers![i].selectedSolutionIndex == null) {
         missedQuestions.add(i);
+        if (questionsWithAnswers![i].question!.id != null) {
+          wrongQuestionIds.add(questionsWithAnswers![i]
+              .question!
+              .id!); // Add the missed question ID
+        }
       }
     }
     if (missedQuestions.isNotEmpty) {
@@ -599,7 +609,7 @@ class _ExamBodyState extends State<ExamBody> {
     print('Wrong Answers: $wrongAnswerCount');
     print('Total Questions: $totalQuestions');
 
-    print(wrongAnswerQuestions);
+    print("wrong answer questions: $wrongAnswerQuestions");
 
     List<int> wrongQuestionIds = [];
     print('Wrong Question IDs:');

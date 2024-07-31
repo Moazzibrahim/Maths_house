@@ -27,15 +27,20 @@ class DiagnosticExamScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Diagnostic Exam"),
-          leading: InkWell(
-            child: const Icon(
-              Icons.arrow_back,
-              color: faceBookColor,
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: InkWell(
+              child: const Icon(
+                Icons.arrow_back,
+                color: faceBookColor,
+              ),
+              onTap: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const DiagnosticFilterScreen()));
+              },
             ),
-            onTap: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const DiagnosticFilterScreen()));
-            },
           ),
         ),
         body: Padding(

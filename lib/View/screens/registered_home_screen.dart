@@ -8,7 +8,6 @@ import 'package:flutter_application_1/View/screens/history_screens/history_scree
 import 'package:flutter_application_1/View/widgets/grid_container.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/controller/profile/profile_provider.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class RegisteredHomeScreen extends StatelessWidget {
@@ -22,9 +21,11 @@ class RegisteredHomeScreen extends StatelessWidget {
       appBar: AppBar(
         leading: Column(
           children: [
-            CircleAvatar(
-              radius: 21.r,
-              backgroundImage: const AssetImage('assets/images/logo.png'),
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Image.asset(
+                'assets/images/logo.png',
+              ),
             ),
           ],
         ),

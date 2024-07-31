@@ -27,102 +27,107 @@ class _DiagnosticFilterScreenState extends State<DiagnosticFilterScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<DiagnosticFilterationProvider>(context, listen: false).fetchdiagdata(context);
-  }
-Future<void> sendFiltersDiagnosticToServers() async {
-  if (_selectedCategory == null || _selectedCourse == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('You must fill both category and course!'),
-      ),
-    );
-    return;
+    Provider.of<DiagnosticFilterationProvider>(context, listen: false)
+        .fetchdiagdata(context);
   }
 
-  final tokenProvider = Provider.of<TokenModel>(context, listen: false);
-  final token = tokenProvider.token;
-
-  final provider = Provider.of<DiagnosticFilterationProvider>(context, listen: false);
-  final selectedCourse = _selectedCourse;
-
-  final selectedCourseId = provider.courseIds.firstWhere(
-    (courseId) => selectedCourse == provider.courseData[courseId - 15],
-    orElse: () => -1,
-  );
-
-  if (selectedCourseId == -1) {
-    log('Selected course not found!');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Selected course not found!'),
-      ),
-    );
-    return;
-  }
-
-  setState(() {
-    _selectedCourseId = selectedCourseId;
-  });
-
-  log("selected course id: $selectedCourseId");
-
-  final url = Uri.parse('https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam/$selectedCourseId');
-
-  final Map<String, dynamic> requestBody = {
-    'category': _selectedCategory,
-    'course': selectedCourseId.toString(),
-  };
-
-  try {
-    final response = await http.post(
-      url,
-      body: jsonEncode(requestBody),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      log('Filters sent successfully!');
-
-      // Reset the state of the DiagnosticExamProvider
-      final diagExamProvider = Provider.of<DiagExamProvider>(context, listen: false);
-      diagExamProvider.resetData();
-
-      // Fetch the new data with updated filters
-      await diagExamProvider.fetchDataFromApi(context, selectedCourseId);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DiagnosticExamScreen(
-            selectedCourseId: selectedCourseId,
-          ),
-        ),
-      );
-      
-    } else {
-      log('Failed to send filters. Status code: ${response.statusCode}');
+  Future<void> sendFiltersDiagnosticToServers() async {
+    if (_selectedCategory == null || _selectedCourse == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to send filters. Please check your connection'),
+          content: Text('You must fill both category and course!'),
+        ),
+      );
+      return;
+    }
+
+    final tokenProvider = Provider.of<TokenModel>(context, listen: false);
+    final token = tokenProvider.token;
+
+    final provider =
+        Provider.of<DiagnosticFilterationProvider>(context, listen: false);
+    final selectedCourse = _selectedCourse;
+
+    final selectedCourseId = provider.courseIds.firstWhere(
+      (courseId) => selectedCourse == provider.courseData[courseId - 15],
+      orElse: () => -1,
+    );
+
+    if (selectedCourseId == -1) {
+      log('Selected course not found!');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Selected course not found!'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _selectedCourseId = selectedCourseId;
+    });
+
+    log("selected course id: $selectedCourseId");
+
+    final url = Uri.parse(
+        'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_dia_exam/$selectedCourseId');
+
+    final Map<String, dynamic> requestBody = {
+      'category': _selectedCategory,
+      'course': selectedCourseId.toString(),
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        log('Filters sent successfully!');
+
+        // Reset the state of the DiagnosticExamProvider
+        final diagExamProvider =
+            Provider.of<DiagExamProvider>(context, listen: false);
+        diagExamProvider.resetData();
+
+        // Fetch the new data with updated filters
+        await diagExamProvider.fetchDataFromApi(context, selectedCourseId);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DiagnosticExamScreen(
+              selectedCourseId: selectedCourseId,
+            ),
+          ),
+        );
+      } else {
+        log('Failed to send filters. Status code: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('Failed to send filters. Please check your connection'),
+          ),
+        );
+      }
+    } catch (error) {
+      log('Error sending filters: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error sending filters: $error'),
         ),
       );
     }
-  } catch (error) {
-    log('Error sending filters: $error');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error sending filters: $error'),
-      ),
-    );
   }
-}
 
-
-  Widget _buildDropdownContainer({required String hint, required Widget child}) {
+  Widget _buildDropdownContainer(
+      {required String hint, required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -153,20 +158,30 @@ Future<void> sendFiltersDiagnosticToServers() async {
       },
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TabsScreen(isLoggedIn: false)));
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: faceBookColor,
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const TabsScreen(isLoggedIn: false)));
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: faceBookColor,
+              ),
             ),
           ),
           title: const Text("Diagnostic Exam filter"),
         ),
         body: Consumer<DiagnosticFilterationProvider>(
           builder: (context, provider, _) {
-            List<String> uniqueCategories = provider.categoryData.toSet().toList();
+            List<String> uniqueCategories =
+                provider.categoryData.toSet().toList();
             List<String> uniqueCourses = provider.courseData.toSet().toList();
             return provider.courseData.isEmpty || provider.categoryData.isEmpty
                 ? const Center(
@@ -188,7 +203,8 @@ Future<void> sendFiltersDiagnosticToServers() async {
                                     value: category,
                                     child: Text(
                                       truncateText(category),
-                                      overflow: TextOverflow.ellipsis, // Handle overflow
+                                      overflow: TextOverflow
+                                          .ellipsis, // Handle overflow
                                     ),
                                   ),
                                 )
@@ -212,7 +228,8 @@ Future<void> sendFiltersDiagnosticToServers() async {
                                     value: course,
                                     child: Text(
                                       truncateText(course),
-                                      overflow: TextOverflow.ellipsis, // Handle overflow
+                                      overflow: TextOverflow
+                                          .ellipsis, // Handle overflow
                                     ),
                                   ),
                                 )

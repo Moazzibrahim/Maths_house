@@ -1,3 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
@@ -50,6 +54,8 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (snapshot.hasData) {
+              log("right question is:${widget.correctAnswerCount}");
+              log("mistakes: ${widget.wrongids}");
               return _buildResultScreen(context, snapshot.data!);
             } else {
               return const Center(child: Text('No data available'));
@@ -71,35 +77,35 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
     List<int> durations = [];
     List<double> discounts = [];
 
-    for (var chapter in data['chapters']) {
-      var apiChapter = chapter['api_lesson']['api_chapter'];
-      chapterNames.add(apiChapter['chapter_name']);
-      ids.add(apiChapter['id']);
-      prices.add(apiChapter['price'][0]['price'].toDouble());
-      durations.add(apiChapter['price'][0]['duration']);
-      discounts.add(apiChapter['price'][0]['discount'].toDouble());
+    if (data['chapters'] != null) {
+      for (var chapter in data['chapters']) {
+        var apiChapter = chapter['api_lesson']['api_chapter'];
+        chapterNames.add(apiChapter['chapter_name']);
+        ids.add(apiChapter['id']);
+
+        // Check if 'price' is a list and iterate through it
+        var priceList = apiChapter['price'] as List<dynamic>;
+        for (var priceItem in priceList) {
+          prices.add(priceItem['price'].toDouble());
+          durations.add(priceItem['duration']);
+          discounts.add(priceItem['discount'].toDouble());
+        }
+      }
     }
 
-    // Removing duplicates
-    Map<String, int> uniqueChapters = {};
+    // Removing duplicates using a Set
+    final uniqueChapters = <String, int>{};
     for (int i = 0; i < chapterNames.length; i++) {
       uniqueChapters[chapterNames[i]] = i;
     }
 
-    List<String> uniqueChapterNames = uniqueChapters.keys.toList();
-    List<int> uniqueIds = uniqueChapters.values.map((i) => ids[i]).toList();
-    List<double> uniquePrices =
-        uniqueChapters.values.map((i) => prices[i]).toList();
-    List<int> uniqueDurations =
-        uniqueChapters.values.map((i) => durations[i]).toList();
-    List<double> uniqueDiscounts =
+    final uniqueChapterNames = uniqueChapters.keys.toList();
+    final uniqueIds = uniqueChapters.values.map((i) => ids[i]).toList();
+    final uniqueDiscounts =
         uniqueChapters.values.map((i) => discounts[i]).toList();
 
-    // ignore: deprecated_member_use
     return WillPopScope(
-      onWillPop: () async {
-        return Future.value(false); // Prevent back navigation
-      },
+      onWillPop: () async => Future.value(false), // Prevent back navigation
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Result"),
@@ -179,8 +185,8 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
                                   chapterNames: uniqueChapterNames,
                                   discounts: uniqueDiscounts,
                                   ids: uniqueIds,
-                                  durations: uniqueDurations,
-                                  prices: uniquePrices,
+                                  durations: durations,
+                                  prices: prices,
                                 ),
                               ),
                             );

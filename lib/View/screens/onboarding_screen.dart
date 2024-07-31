@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/View/widgets/onboarding_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -21,19 +22,19 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       OnBoardingWidgets(
         description:
             'Welcome to our online learning application! Start your educational journey now by registering and exploring our unique content.',
-        image: 'assets/images/onboarding_1.png',
+        image: SvgPicture.asset('assets/images/onboarding_1.svg'),
         showSkipButton: currentPage < 2,
       ),
       OnBoardingWidgets(
         description:
             'Explore new worlds of knowledge and learning with us. Discover exciting lessons and outstanding educational resources to achieve your learning goals.',
-        image: 'assets/images/onboarding_2.png',
+        image: SvgPicture.asset('assets/images/onboarding_2.svg'),
         showSkipButton: currentPage < 2,
       ),
       OnBoardingWidgets(
         description:
             'Learn easily and enjoyably through a unique learning experience. Discover how we can help you succeed academically and professionally.',
-        image: 'assets/images/onboarding_3.png',
+        image: SvgPicture.asset('assets/images/onboarding_3.svg'),
         showSkipButton: currentPage < 2,
       ),
     ];
