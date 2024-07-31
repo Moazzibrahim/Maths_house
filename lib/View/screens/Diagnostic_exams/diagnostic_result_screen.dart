@@ -96,21 +96,26 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: faceBookColor,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const TabsScreen(
-                    isLoggedIn: false,
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: faceBookColor,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TabsScreen(
+                      isLoggedIn: false,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
         body: Padding(

@@ -34,17 +34,22 @@ class _ExamScreenState extends State<ExamScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Exam"),
-          leading: InkWell(
-            child: const Icon(
-              Icons.arrow_back,
-              color: faceBookColor,
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: InkWell(
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.redAccent[700],
+              ),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const TabsScreen(
+                          isLoggedIn: false,
+                        )));
+              },
             ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const TabsScreen(
-                        isLoggedIn: false,
-                      )));
-            },
           ),
         ),
         body: ExamBody(
@@ -108,13 +113,13 @@ class _ExamBodyState extends State<ExamBody> {
         context,
         MaterialPageRoute(
           builder: (context) => ExamResultScreen(
-            examResults: examResults,
+            examresults: examResults,
             correctAnswerCount: correctAnswerCount,
             totalQuestions: totalQuestions,
             wrongAnswerQuestions: wrongAnswerCount,
-            elapsedTime: elapsedTime.inMinutes,
-            wrongIds: wrongQuestionIds,
-            examId: widget.fetchedexamids,
+            elapsedtime: elapsedTime.inMinutes,
+            wrongids: wrongQuestionIds,
+            exxxid: widget.fetchedexamids,
           ),
         ),
       );

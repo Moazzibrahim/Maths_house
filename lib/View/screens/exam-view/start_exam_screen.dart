@@ -33,15 +33,21 @@ class ExamScreenstart extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Exams'),
-          leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: faceBookColor,
-              ),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const TabsScreen(isLoggedIn: false)));
-              }),
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: faceBookColor,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) =>
+                          const TabsScreen(isLoggedIn: false)));
+                }),
+          ),
         ),
         body: ListView.builder(
           itemCount: exams.length,
