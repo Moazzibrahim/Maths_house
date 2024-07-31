@@ -27,12 +27,12 @@ class QuizHistory {
         courseName: json['lesson_api']['chapter_api']['course']['course_name']??'no course',
         chapterName: json['lesson_api']['chapter_api']['chapter_name']??'no chapter',
         lessonName: json['lesson_api']['lesson_name']??'no lesson',
-        quizName: json['quizze']['title'],
-        time: json['time'],
-        score: json['quizze']['score'],
+        quizName: json['quizze']['title']??'',
+        time: json['time']??'',
+        score: json['quizze']['score']??0,
         questions: json['questions']??[],
         rightCount: json['r_questions']??0,
-        id: json['quizze_id'],
+        id: json['quizze_id']??0,
       );
 }
 
@@ -53,7 +53,7 @@ class Mistake {
   Mistake({required this.qurl});
 
   factory Mistake.fromJson(Map<String,dynamic> json)=>
-  Mistake(qurl: json['question']['q_url']);
+  Mistake(qurl: json['question']['q_url']??'');
 }
 
 class Mistakes {
