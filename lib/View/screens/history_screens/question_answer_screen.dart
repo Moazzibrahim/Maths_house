@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_local_variable
 
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
@@ -9,9 +9,9 @@ import 'package:flutter_application_1/controller/history_controllers/question_hi
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-
 
 class QuestionAnswerScreen extends StatefulWidget {
   const QuestionAnswerScreen({super.key, required this.id});
@@ -23,9 +23,17 @@ class QuestionAnswerScreen extends StatefulWidget {
 
 class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
   late YoutubePlayerController controller;
+  int viewedVideoIndex = 0;
+  String? videolink;
+  final controllers = WebViewController();
   @override
   void initState() {
     _initYoutubePlayerController();
+
+    super.initState();
+    controllers
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(videolink!));
     super.initState();
   }
 
@@ -85,47 +93,56 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
       appBar: buildAppBar(context, "Answers"),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionAnswerProvider, _) {
-          return Stack(
-            children: [
+          return Stack(children: [
             Column(
               children: [
                 Expanded(
                   child: ListView.builder(
                     itemCount: questionAnswerProvider.allQuestionAnswers.length,
                     itemBuilder: (context, index) {
-                      String pdf = questionAnswerProvider.allQuestionAnswers[index].answerPdf;
+                      videolink = questionAnswerProvider
+                          .allQuestionAnswers[index].answerVid;
+                      String pdf = questionAnswerProvider
+                          .allQuestionAnswers[index].answerPdf;
                       RegExp regExp = RegExp(r"\/embed\/([^?]+)");
-                      Match? match = regExp.firstMatch(
-                          questionAnswerProvider.allQuestionAnswers[index].answerVid);
+                      Match? match = regExp.firstMatch(questionAnswerProvider
+                          .allQuestionAnswers[index].answerVid);
                       String videoId = match?.group(1) ?? "";
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              YoutubePlayer(
-                                controller: YoutubePlayerController(
-                                  initialVideoId: videoId,
-                                  flags: const YoutubePlayerFlags(
-                                    autoPlay: false,
-                                    mute: false,
-                                    disableDragSeek: false,
-                                    loop: false,
-                                    isLive: false,
-                                    forceHD: false,
-                                    enableCaption: true,
-                                  ),
+                              // YoutubePlayer(
+                              //   controller: YoutubePlayerController(
+                              //     initialVideoId: videoId,
+                              //     flags: const YoutubePlayerFlags(
+                              //       autoPlay: false,
+                              //       mute: false,
+                              //       disableDragSeek: false,
+                              //       loop: false,
+                              //       isLive: false,
+                              //       forceHD: false,
+                              //       enableCaption: true,
+                              //     ),
+                              //   ),
+                              //   showVideoProgressIndicator: true,
+                              //   progressIndicatorColor: Colors.redAccent[700],
+                              // ),
+                              AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: WebViewWidget(
+                                  controller: controllers,
                                 ),
-                                showVideoProgressIndicator: true,
-                                progressIndicatorColor: Colors.redAccent[700],
                               ),
                               const SizedBox(
                                 height: 15,
                               ),
                               ElevatedButton(
-                                  onPressed: () async{
-                                  final bytesPdf = await fetchAndConvertImage(pdf);
-                                  saveImage(bytesPdf);
+                                  onPressed: () async {
+                                    final bytesPdf =
+                                        await fetchAndConvertImage(pdf);
+                                    saveImage(bytesPdf);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.redAccent[700],
@@ -142,7 +159,9 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 70,)
+                const SizedBox(
+                  height: 70,
+                )
               ],
             ),
             Positioned(

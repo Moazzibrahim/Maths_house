@@ -16,11 +16,19 @@ class IdeasContent extends StatefulWidget {
 class _IdeasContentState extends State<IdeasContent> {
   int rating = 0;
   int viewedVideoIndex = 0;
-
-  final controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse(
-        "https://ucloud.mfscripts.com/video/embed/4g/640x320/Iron_Sky_Trailer.mp4"));
+  String? videolink;
+  final controller = WebViewController();
+  @override
+  void initState() {
+    videolink = widget.lesson.videos[viewedVideoIndex].videoLink;
+    super.initState();
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(videolink!));
+  }
+  // final controller = WebViewController()
+  //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  //   ..loadRequest(Uri.parse(videolink!));
 
   void toggleRotation() {
     if (isLandscapeGlobal) {

@@ -14,10 +14,22 @@ class VideoWebView extends StatefulWidget {
 
 class _VideoWebViewState extends State<VideoWebView> {
   bool isLandscape = false;
-  final controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse(
-        "https://drive.mathshouse.net/video/embed/8Ag/640x320/WhatsApp_Video_2024-07-28_at_16.17.14_a9fbeb4c.mp4"));
+  int viewedVideoIndex = 0;
+  String? videolink;
+  final controller = WebViewController();
+  @override
+  void initState() {
+    super.initState();
+    videolink = widget.url;
+    super.initState();
+    controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(videolink!));
+  }
+  // final controller = WebViewController()
+  //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  //   ..loadRequest(Uri.parse(
+  //       "https://drive.mathshouse.net/video/embed/8Ag/640x320/WhatsApp_Video_2024-07-28_at_16.17.14_a9fbeb4c.mp4"));
 
   void toggleRotation() {
     if (isLandscape) {

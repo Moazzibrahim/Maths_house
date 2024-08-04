@@ -7,8 +7,8 @@ class QuestionAnswer {
   QuestionAnswer({required this.answerPdf, required this.answerVid});
 
   factory QuestionAnswer.fromJson(Map<String, dynamic> json) => QuestionAnswer(
-        answerPdf: json['ans_pdf'],
-        answerVid: json['ans_video'],
+        answerPdf: json['ans_pdf']??'',
+        answerVid: json['ans_video']??'',
       );
 }
 
@@ -54,10 +54,10 @@ class Parallel {
       });
     }
     return Parallel(
-      question: json['question'],
-      qUrl: json['q_url'],
+      question: json['question']??'',
+      qUrl: json['q_url']??'',
       mcqParallelList: mcqParallelList, 
-      id: json['id'],
+      id: json['id']??0,
       mcqAnswerList: mcqParallelAnswerList,
     );
   }
@@ -80,7 +80,7 @@ class McqParallel {
   McqParallel({required this.text, required this.answer});
 
   factory McqParallel.fromJson(Map<String, dynamic> json) =>
-      McqParallel(text: json['mcq_ans'], answer: json['mcq_answers']);
+      McqParallel(text: json['mcq_ans']??'', answer: json['mcq_answers']??'');
 }
 
 class McqParallelAnswer{
