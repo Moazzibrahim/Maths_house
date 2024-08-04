@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:flutter_application_1/View/widgets/ideas_content.dart';
 import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
+import 'package:flutter_application_1/View/widgets/score_sheet_content.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,6 +16,8 @@ class LessonsVideos extends StatefulWidget {
 }
 
 class _LessonsVideosState extends State<LessonsVideos> {
+  bool isLandscapeGlobal = false;
+
   void toggleRotation() {
     if (isLandscapeGlobal) {
       SystemChrome.setPreferredOrientations([
@@ -44,7 +47,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3, // Updated to 3 for the new Score Sheet tab
       initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
@@ -52,7 +55,9 @@ class _LessonsVideosState extends State<LessonsVideos> {
           leading: Container(
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+              color: gridHomeColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: IconButton(
               onPressed: () {
                 setDefaultOrientation();
@@ -86,6 +91,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                   tabs: const [
                     _CustomTab(text: 'Ideas'),
                     _CustomTab(text: 'Quizzes'),
+                    _CustomTab(text: 'Score Sheet'), // New tab
                   ],
                 ),
               ),
@@ -93,10 +99,11 @@ class _LessonsVideosState extends State<LessonsVideos> {
                 child: TabBarView(children: [
                   IdeasContent(
                     lesson: widget.lesson,
-                  ), // replace this text with ideas Widgets
+                  ), // Ideas tab content
                   QuizzesContent(
                     lessonId: widget.lesson.lessonId,
-                  ),
+                  ), // Quizzes tab content
+                  ScoreSheetContent(), // New Score Sheet tab content
                 ]),
               ),
             ],
