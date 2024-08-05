@@ -18,17 +18,48 @@ class _IdeasContentState extends State<IdeasContent> {
   int viewedVideoIndex = 0;
   String? videolink;
   final controller = WebViewController();
+
   @override
   void initState() {
-    videolink = widget.lesson.videos[viewedVideoIndex].videoLink;
     super.initState();
-    controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(videolink!));
+
+    if (widget.lesson.videos.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNoVideosDialog();
+      });
+    } else {
+      videolink = widget.lesson.videos[viewedVideoIndex].videoLink;
+      if (videolink != null && videolink!.isNotEmpty) {
+        controller
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..loadRequest(Uri.parse(videolink!));
+      } else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _showNoVideosDialog();
+        });
+      }
+    }
   }
-  // final controller = WebViewController()
-  //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-  //   ..loadRequest(Uri.parse(videolink!));
+
+  void _showNoVideosDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('No Videos'),
+          content: const Text('There are no videos for this lesson.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void toggleRotation() {
     if (isLandscapeGlobal) {
@@ -58,7 +89,6 @@ class _IdeasContentState extends State<IdeasContent> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        // title: const Text('Ideas Content'),
         actions: [
           IconButton(
             icon: Icon(isLandscapeGlobal
@@ -74,12 +104,15 @@ class _IdeasContentState extends State<IdeasContent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: WebViewWidget(
-                  controller: controller,
-                ),
-              ),
+              if (videolink != null && videolink!.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: WebViewWidget(
+                    controller: controller,
+                  ),
+                )
+              else
+                const SizedBox(height: 200, child: Center(child: Text('No video available'))),
               const SizedBox(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,21 +151,6 @@ class _IdeasContentState extends State<IdeasContent> {
                       ),
                     ),
                   const SizedBox(width: 10),
-                  // Container(
-                  //   padding:
-                  //       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(10),
-                  //     color: Colors.grey.shade300,
-                  //   ),
-                  //   child: const Row(
-                  //     children: [
-                  //       Text('Report'),
-                  //       SizedBox(width: 5),
-                  //       Icon(Icons.flag_outlined),
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -147,6 +165,12 @@ class _IdeasContentState extends State<IdeasContent> {
                       onTap: () {
                         setState(() {
                           viewedVideoIndex = index;
+                          videolink = widget.lesson.videos[viewedVideoIndex].videoLink;
+                          if (videolink != null && videolink!.isNotEmpty) {
+                            controller.loadRequest(Uri.parse(videolink!));
+                          } else {
+                            _showNoVideosDialog();
+                          }
                         });
                       },
                       child: Container(
@@ -179,8 +203,7 @@ class _IdeasContentState extends State<IdeasContent> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.lesson.videos[index].videoName ??
-                                        'Video Name',
+                                    widget.lesson.videos[index].videoName ?? 'Video Name',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -202,8 +225,7 @@ class _IdeasContentState extends State<IdeasContent> {
                 )
               else
                 const Text('No more videos',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
         ),

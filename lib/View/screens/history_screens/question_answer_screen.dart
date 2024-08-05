@@ -26,34 +26,33 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
   int viewedVideoIndex = 0;
   String? videolink;
   final controllers = WebViewController();
+
   @override
   void initState() {
+    super.initState();
     _initYoutubePlayerController();
-
-    super.initState();
-    controllers
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(videolink!));
-    super.initState();
   }
 
-  void _initYoutubePlayerController() {
-    Provider.of<QuestionHistoryProvider>(context, listen: false)
-        .getQuestionAnswer(context, widget.id);
-    Provider.of<QuestionHistoryProvider>(context, listen: false)
-        .getParallelQuestion(context, widget.id);
-    controller = YoutubePlayerController(
-      initialVideoId: '',
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-        disableDragSeek: false,
-        loop: false,
-        isLive: false,
-        forceHD: false,
-        enableCaption: true,
-      ),
-    );
+  void _initYoutubePlayerController() async {
+    // Avoid using context synchronously after an async call
+    final questionHistoryProvider = Provider.of<QuestionHistoryProvider>(context, listen: false);
+    await questionHistoryProvider.getQuestionAnswer(context, widget.id);
+    await questionHistoryProvider.getParallelQuestion(context, widget.id);
+
+    setState(() {
+      controller = YoutubePlayerController(
+        initialVideoId: '',
+        flags: const YoutubePlayerFlags(
+          autoPlay: false,
+          mute: false,
+          disableDragSeek: false,
+          loop: false,
+          isLive: false,
+          forceHD: false,
+          enableCaption: true,
+        ),
+      );
+    });
   }
 
   Future<Uint8List> fetchAndConvertImage(String imageUrl) async {
@@ -93,55 +92,43 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
       appBar: buildAppBar(context, "Answers"),
       body: Consumer<QuestionHistoryProvider>(
         builder: (context, questionAnswerProvider, _) {
-          return Stack(children: [
-            Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: questionAnswerProvider.allQuestionAnswers.length,
-                    itemBuilder: (context, index) {
-                      videolink = questionAnswerProvider
-                          .allQuestionAnswers[index].answerVid;
-                      String pdf = questionAnswerProvider
-                          .allQuestionAnswers[index].answerPdf;
-                      RegExp regExp = RegExp(r"\/embed\/([^?]+)");
-                      Match? match = regExp.firstMatch(questionAnswerProvider
-                          .allQuestionAnswers[index].answerVid);
-                      String videoId = match?.group(1) ?? "";
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              // YoutubePlayer(
-                              //   controller: YoutubePlayerController(
-                              //     initialVideoId: videoId,
-                              //     flags: const YoutubePlayerFlags(
-                              //       autoPlay: false,
-                              //       mute: false,
-                              //       disableDragSeek: false,
-                              //       loop: false,
-                              //       isLive: false,
-                              //       forceHD: false,
-                              //       enableCaption: true,
-                              //     ),
-                              //   ),
-                              //   showVideoProgressIndicator: true,
-                              //   progressIndicatorColor: Colors.redAccent[700],
-                              // ),
-                              AspectRatio(
-                                aspectRatio: 16 / 9,
-                                child: WebViewWidget(
-                                  controller: controllers,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              ElevatedButton(
+          return Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: questionAnswerProvider.allQuestionAnswers.length,
+                      itemBuilder: (context, index) {
+                        videolink = questionAnswerProvider.allQuestionAnswers[index].answerVid;
+                        String pdf = questionAnswerProvider.allQuestionAnswers[index].answerPdf;
+                        RegExp regExp = RegExp(r"\/embed\/([^?]+)");
+                        Match? match = regExp.firstMatch(questionAnswerProvider.allQuestionAnswers[index].answerVid);
+                        String videoId = match?.group(1) ?? "";
+
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                if (videolink != null && videolink!.isNotEmpty)
+                                  AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: WebViewWidget(
+                                      controller: controllers
+                                        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                                        ..loadRequest(Uri.parse(videolink!)),
+                                    ),
+                                  )
+                                else
+                                  const SizedBox(
+                                    height: 200,
+                                    child: Center(child: Text('No video available')),
+                                  ),
+                                const SizedBox(height: 15),
+                                ElevatedButton(
                                   onPressed: () async {
-                                    final bytesPdf =
-                                        await fetchAndConvertImage(pdf);
+                                    final bytesPdf = await fetchAndConvertImage(pdf);
                                     saveImage(bytesPdf);
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -151,86 +138,84 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  child: Text('Download PDF ${++index}')),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 70,
-                )
-              ],
-            ),
-            Positioned(
-              bottom: 10,
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Choose Parallel"),
-                          content: SizedBox(
-                            width: 200,
-                            height: 145,
-                            child: ListView.builder(
-                              itemCount: questionAnswerProvider
-                                  .allParallelQuestions.length,
-                              itemBuilder: (context, index) {
-                                int parallelNumber = index + 1;
-                                return ListTile(
-                                  title: Text("Parallel $parallelNumber"),
-                                  onTap: () {
-                                    setState(() {
-                                      selectedParallel = index;
-                                    });
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context)
-                                        .pushReplacement(MaterialPageRoute(
-                                      builder: (ctx) => ParallelQuestionScreen(
-                                        selectedParallel: selectedParallel,
-                                        id: widget.id,
-                                      ),
-                                    ));
-                                  },
-                                );
-                              },
+                                  child: Text('Download PDF ${index + 1}'),
+                                ),
+                              ],
                             ),
                           ),
                         );
                       },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
+                    ),
+                  ),
+                  const SizedBox(height: 70),
+                ],
+              ),
+              Positioned(
+                bottom: 10,
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Choose Parallel"),
+                            content: SizedBox(
+                              width: 200,
+                              height: 145,
+                              child: ListView.builder(
+                                itemCount: questionAnswerProvider.allParallelQuestions.length,
+                                itemBuilder: (context, index) {
+                                  int parallelNumber = index + 1;
+                                  return ListTile(
+                                    title: Text("Parallel $parallelNumber"),
+                                    onTap: () {
+                                      setState(() {
+                                        selectedParallel = index;
+                                      });
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        builder: (ctx) => ParallelQuestionScreen(
+                                          selectedParallel: selectedParallel,
+                                          id: widget.id,
+                                        ),
+                                      ));
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.redAccent[700],
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       padding: EdgeInsets.symmetric(
                         vertical: 9.h,
                         horizontal: 10.w,
-                      )),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Solve parallel',
-                        style: TextStyle(fontSize: 16.sp),
                       ),
-                      SizedBox(
-                        width: 200.w,
-                      ),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Solve parallel',
+                          style: TextStyle(fontSize: 16.sp),
+                        ),
+                        SizedBox(width: 200.w),
+                        const Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          ]);
+              )
+            ],
+          );
         },
       ),
     );

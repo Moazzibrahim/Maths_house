@@ -4,7 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_application_1/constants/colors.dart'; // Ensure this is correctly imported
 
 class VideoWebView extends StatefulWidget {
-  final String url; // Accept URL as a parameter
+  final String? url; // Accept URL as a parameter
 
   const VideoWebView({super.key, required this.url});
 
@@ -14,22 +14,42 @@ class VideoWebView extends StatefulWidget {
 
 class _VideoWebViewState extends State<VideoWebView> {
   bool isLandscape = false;
-  int viewedVideoIndex = 0;
-  String? videolink;
   final controller = WebViewController();
+
   @override
   void initState() {
     super.initState();
-    videolink = widget.url;
-    super.initState();
-    controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(videolink!));
+
+    if (widget.url == null || widget.url!.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNoVideosDialog();
+      });
+    } else {
+      controller
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.parse(widget.url!));
+    }
   }
-  // final controller = WebViewController()
-  //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-  //   ..loadRequest(Uri.parse(
-  //       "https://drive.mathshouse.net/video/embed/8Ag/640x320/WhatsApp_Video_2024-07-28_at_16.17.14_a9fbeb4c.mp4"));
+
+  void _showNoVideosDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('No Videos'),
+          content: const Text('There are no videos available.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void toggleRotation() {
     if (isLandscape) {
@@ -89,12 +109,17 @@ class _VideoWebViewState extends State<VideoWebView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 21 / 9,
-                child: WebViewWidget(
-                  controller: controller,
-                ),
-              ),
+              if (widget.url != null && widget.url!.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 21 / 9,
+                  child: WebViewWidget(
+                    controller: controller,
+                  ),
+                )
+              else
+                const SizedBox(
+                    height: 200,
+                    child: Center(child: Text('No video available'))),
               const SizedBox(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
