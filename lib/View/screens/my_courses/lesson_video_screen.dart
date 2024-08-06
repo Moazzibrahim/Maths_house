@@ -111,6 +111,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                         time: "30",
                         date: "30/8",
                         mistakes: 9),
+                        lessid: widget.lesson.lessonId,
                   ), // New Score Sheet tab content
                 ]),
               ),

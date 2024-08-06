@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/score_sheet/score_sheet_model.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 
 class ScoreSheetContent extends StatelessWidget {
   final ScoreData scoreData;
+  final int? lessid;
 
-  const ScoreSheetContent({super.key, required this.scoreData});
+  const ScoreSheetContent({super.key, required this.scoreData, this.lessid});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class ScoreSheetContent extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.quiz, size: 30, color: Colors.blueAccent),
+                const Icon(Icons.quiz, size: 30, color: faceBookColor),
                 const SizedBox(width: 10),
                 Text(
                   scoreData.quizName,
