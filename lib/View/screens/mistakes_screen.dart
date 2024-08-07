@@ -11,49 +11,92 @@ class MistakesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Mistakes'),
       ),
-      body: ListView.builder(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        itemCount: questions.length,
-        itemBuilder: (context, index) {
-          final question = questions[index];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                question.qUrl ?? 'No URL available',
-                style: const TextStyle(fontSize: 16, color: Colors.blue),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: faceBookColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+        child: ListView.builder(
+          itemCount: questions.length,
+          itemBuilder: (context, index) {
+            final question = questions[index];
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildQuestionImage(question.qUrl),
+                const SizedBox(height: 8),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: faceBookColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              QuestionAnswerScreen(id: question.id),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'View Answer',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            QuestionAnswerScreen(id: question.id)),
-                  );
-                },
-                child: const Text(
-                  'View Answer',
-                  style: TextStyle(color: Colors.white),
+                const Divider(
+                  color: Colors.grey,
+                  height: 30,
+                  thickness: 1,
                 ),
-              ),
-              const Divider(color: Colors.grey, height: 30),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
+  }
+
+  Widget _buildQuestionImage(String? url) {
+    if (url == null || url.isEmpty) {
+      return const Text(
+        'No image available',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: faceBookColor,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    } else {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Image.network(
+          url,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return const Text(
+              'Failed to load image',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: faceBookColor,
+                fontStyle: FontStyle.italic,
+              ),
+            );
+          },
+        ),
+      );
+    }
   }
 }

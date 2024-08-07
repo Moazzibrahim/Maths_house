@@ -76,7 +76,7 @@ class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        allrecs[i].chapteName,
+                        allrecs[i].chapterName, // Changed to chapterName
                         style: TextStyle(fontSize: 14.sp),
                       ),
                       Row(
@@ -89,7 +89,8 @@ class _ExamRecommendationScreenState extends State<ExamRecommendationScreen> {
                                     builder: (ctx) => ExamDuration(
                                           chapterNames: allrecs
                                               .map(
-                                                (e) => e.chapteName,
+                                                (e) => e
+                                                    .chapterName, // Changed to chapterName
                                               )
                                               .toList(),
                                           discounts: discount,

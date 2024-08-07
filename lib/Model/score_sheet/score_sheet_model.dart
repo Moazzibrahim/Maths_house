@@ -176,8 +176,9 @@ class StudentQuizScore {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       quizze: Quizze.fromJson(json['quizze']),
-      questions:
-          (json['questions'] as List).map((i) => Question.fromJson(i)).toList(),
+      questions: (json['questions'] as List)
+          .map((i) => Question.fromJson(i))
+          .toList(),
     );
   }
 
