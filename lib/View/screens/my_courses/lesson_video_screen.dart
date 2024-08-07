@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/Model/lessons_model.dart';
-import 'package:flutter_application_1/Model/score_sheet/score_sheet_model.dart';
 import 'package:flutter_application_1/View/widgets/ideas_content.dart';
 import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
 import 'package:flutter_application_1/View/widgets/score_sheet_content.dart';
@@ -105,13 +104,7 @@ class _LessonsVideosState extends State<LessonsVideos> {
                     lessonId: widget.lesson.lessonId,
                   ), // Quizzes tab content
                   ScoreSheetContent(
-                    scoreData: ScoreData(
-                        quizName: "quizName",
-                        score: 60,
-                        time: "30",
-                        date: "30/8",
-                        mistakes: 9),
-                        lessid: widget.lesson.lessonId,
+                    lessonId: widget.lesson.lessonId,
                   ), // New Score Sheet tab content
                 ]),
               ),
