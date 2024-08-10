@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/history_models/quizes_history_model.dart';
 import 'package:flutter_application_1/View/screens/history_screens/quiz_mistakes_screen.dart';
@@ -165,7 +167,8 @@ class _QuizesHistoryScreenState extends State<QuizesHistoryScreen> {
                                               actions: [
                                                 ElevatedButton(
                                                   onPressed: () {
-                                                  quizHistoryProvider.getDiaRecommedations(context);
+                                                    log('${e.id}');
+                                                  quizHistoryProvider.getQuizMistakes(context,e.id);
                                                   Navigator.of(context).push(
                                                     MaterialPageRoute(builder: (ctx)=> const QuizMistakesScreen() )
                                                   );

@@ -24,15 +24,18 @@ class QuizHistory {
 
   factory QuizHistory.fromJson(Map<String, dynamic> json) => QuizHistory(
         date: json['date'],
-        courseName: json['lesson_api']['chapter_api']['course']['course_name']??'no course',
-        chapterName: json['lesson_api']['chapter_api']['chapter_name']??'no chapter',
-        lessonName: json['lesson_api']['lesson_name']??'no lesson',
-        quizName: json['quizze']['title']??'',
-        time: json['time']??'',
-        score: json['quizze']['score']??0,
-        questions: json['questions']??[],
-        rightCount: json['r_questions']??0,
-        id: json['quizze_id']??0,
+        courseName: json['lesson_api']['chapter_api']['course']
+                ['course_name'] ??
+            'no course',
+        chapterName:
+            json['lesson_api']['chapter_api']['chapter_name'] ?? 'no chapter',
+        lessonName: json['lesson_api']['lesson_name'] ?? 'no lesson',
+        quizName: json['quizze']['title'] ?? '',
+        time: json['time'] ?? '',
+        score: json['quizze']['score'] ?? 0,
+        questions: json['questions'] ?? [],
+        rightCount: json['r_questions'] ?? 0,
+        id: json['quizze_id'] ?? 0,
       );
 }
 
@@ -49,11 +52,12 @@ class QuizHistoryList {
 
 class Mistake {
   final String qurl;
+  final int id;
 
-  Mistake({required this.qurl});
+  Mistake({required this.qurl, required this.id});
 
-  factory Mistake.fromJson(Map<String,dynamic> json)=>
-  Mistake(qurl: json['question']['q_url']??'');
+  factory Mistake.fromJson(Map<String, dynamic> json) =>
+      Mistake(qurl: json['question']['q_url'] ?? '', id: json['question']['id']);
 }
 
 class Mistakes {
@@ -61,6 +65,6 @@ class Mistakes {
 
   Mistakes({required this.mistakesList});
 
-   factory Mistakes.fromJson(Map<String,dynamic> json)=>
-  Mistakes(mistakesList: json['mistakes']);
+  factory Mistakes.fromJson(Map<String, dynamic> json) =>
+      Mistakes(mistakesList: json['mistakes']);
 }

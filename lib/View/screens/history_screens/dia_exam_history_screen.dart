@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, unused_element
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
 import 'package:flutter_application_1/View/screens/tabs_screen.dart';
@@ -21,7 +22,6 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
         .getDiaExamHistory(context);
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -119,12 +119,12 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
                           'Score',
                         ),
                       ),
-                      // DataColumn(
-                      //   label: Text(
-                      //     'Recommendation',
-                      //   ),
-                      //   numeric: true,
-                      // ),
+                      DataColumn(
+                        label: Text(
+                          'Recommendation',
+                        ),
+                        numeric: true,
+                      ),
                     ],
                     rows: <DataRow>[
                       for (var e in diaExamHistory.allDiaExam)
@@ -133,28 +133,34 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
                             DataCell(Text(e.examTitle)),
                             DataCell(Text(e.date)),
                             DataCell(Text(e.score.toString())),
-                            // DataCell(
-                            //   ElevatedButton(
-                            //     onPressed: () async {
-                            //       await diaExamHistory
-                            //           .getDiaExamHistoryrecommendation(
-                            //               context, e.id);
-                            //       print(e.id);
-                            //       print(diaExamHistory.chapterName);
-                            //       print(diaExamHistory.durations);
-                            //     },
-                            //     style: ElevatedButton.styleFrom(
-                            //       padding: const EdgeInsets.symmetric(
-                            //           vertical: 7, horizontal: 5),
-                            //       shape: RoundedRectangleBorder(
-                            //         borderRadius: BorderRadius.circular(10),
-                            //       ),
-                            //       backgroundColor: Colors.redAccent[700],
-                            //       foregroundColor: Colors.white,
-                            //     ),
-                            //     child: const Text('Recommendation'),
-                            //   ),
-                            // ),
+                            DataCell(
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await diaExamHistory
+                                      .getDiaExamHistoryrecommendation(
+                                          context, e.id);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (ctx) => ExamDuration(
+                                          chapterNames:
+                                              diaExamHistory.chapterName,
+                                          ids: diaExamHistory.idddddd,
+                                          prices: diaExamHistory.pricess,
+                                          durations: diaExamHistory.durations,
+                                          discounts:
+                                              diaExamHistory.discounts)));
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 7, horizontal: 5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  backgroundColor: Colors.redAccent[700],
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('Recommendation'),
+                              ),
+                            ),
                           ],
                         ),
                     ],

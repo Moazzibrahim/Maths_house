@@ -39,13 +39,13 @@ Future<void> getQuizHistory(BuildContext context) async {
     }
   }
 
-  Future<void> getDiaRecommedations(BuildContext context)async{
+  Future<void> getQuizMistakes(BuildContext context,int id)async{
         final tokenProvider = Provider.of<TokenModel>(context, listen: false);
         final token = tokenProvider.token;
       try {
       final response = await http.get(
         Uri.parse(
-            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_quiz_mistakes/12'),
+            'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_quiz_mistakes/$id'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

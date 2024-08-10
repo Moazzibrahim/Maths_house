@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/View/screens/history_screens/dia_exam_history_screen.dart';
 // import 'package:flutter_application_1/View/screens/history_screens/dia_exam_history_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/exam_history_screen.dart';
 import 'package:flutter_application_1/View/screens/history_screens/payment_history.dart';
@@ -30,12 +31,12 @@ class HistoryScreen extends StatelessWidget {
                     builder: (ctx) => const ExamHistoryScreen()));
               },
               child: const HistoryContainer(text: 'Exams')),
-          // GestureDetector(
-          //     onTap: () {
-          //       Navigator.of(context).push(MaterialPageRoute(
-          //           builder: (ctx) => const DiaExamHistoryScreen()));
-          //     },
-          //     child: const HistoryContainer(text: 'Diagnostic Exams')),
+          GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => const DiaExamHistoryScreen()));
+              },
+              child: const HistoryContainer(text: 'Diagnostic Exams')),
           GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(

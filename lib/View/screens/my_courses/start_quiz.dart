@@ -23,6 +23,7 @@ class _StartQuizState extends State<StartQuiz> {
   Set<int> indexOfUnsolvedQuestions = {};
   int _secondsElapsed = 0;
   int currentQuestionIndex = 0;
+  List<TextEditingController> textControllers = [];
   List<String?> selectedAnswers = [];
   Set<QuestionsQuiz> correctAnswers = {};
   Set<int> wrongAnswers = {};
@@ -32,6 +33,13 @@ class _StartQuizState extends State<StartQuiz> {
   void initState() {
     selectedAnswers =
         List.generate(widget.quiz.questionQuizList.length, (index) => null);
+        for (var question in widget.quiz.questionQuizList) {
+      if (question.mcqQuizList.isEmpty) {
+        textControllers.add(TextEditingController());
+      } else {
+        textControllers.add(TextEditingController()); 
+      }
+    }
     _startTimer();
     super.initState();
   }
@@ -137,7 +145,7 @@ class _StartQuizState extends State<StartQuiz> {
                     buildRadioListTile(currentQuestion, i)
                 else
                   TextFormField(
-                    controller: ansText,
+                    controller: textControllers[currentQuestionIndex],
                   )
               ],
             ),
@@ -288,6 +296,14 @@ class _StartQuizState extends State<StartQuiz> {
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
+                                          Provider.of<QuizzesProvider>(context, listen: false).postQuizData(context,
+                              quizId: widget.quiz.id,
+                              rightQuestion: correctAnswers.length,
+                              timer: _secondsElapsed / 60.ceil(),
+                              score: correctAnswers.length,
+                              mistakes: wrongAnswers.toList() +
+                                  missedQuestions.toList(),
+                            );
                                           Navigator.pop(context);
                                           Navigator.of(context).pushReplacement(
                                               MaterialPageRoute(
