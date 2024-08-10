@@ -314,9 +314,7 @@ class _StartQuizState extends State<StartQuiz> {
                                                             correctAnswers,
                                                         wrongAnswers:
                                                             wrongAnswers,
-                                                        missedQuestionsNumber:
-                                                            missedQuestions
-                                                                .length,
+                                                        missedQuestionsNumber: selectedAnswers.where((element) => element == null,).toList().length,
                                                       )));
                                         },
                                         style: ElevatedButton.styleFrom(
