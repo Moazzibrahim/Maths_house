@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Model/lessons_model.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/Model/lessons_model.dart';
+import 'package:flutter_application_1/constants/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 bool isLandscapeGlobal = false;
 
@@ -84,6 +86,23 @@ class _IdeasContentState extends State<IdeasContent> {
     });
   }
 
+  Future<void> _launchPDF() async {
+    final pdfUrl = widget.lesson.videos[viewedVideoIndex].pdfLink;
+    if (pdfUrl != null && pdfUrl.isNotEmpty) {
+      if (await canLaunch(pdfUrl)) {
+        await launch(pdfUrl);
+      } else {
+        throw 'Could not launch $pdfUrl';
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            backgroundColor: faceBookColor,
+            content: Text('This lesson does not have a PDF')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,14 +131,29 @@ class _IdeasContentState extends State<IdeasContent> {
                   ),
                 )
               else
-                const SizedBox(height: 200, child: Center(child: Text('No video available'))),
+                const SizedBox(
+                    height: 200,
+                    child: Center(child: Text('No video available'))),
               const SizedBox(height: 20),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Chapter 1: Lesson 1',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: faceBookColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
+                    ),
+                    onPressed: _launchPDF,
+                    child: const Text(
+                      'Download PDF',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Row(
                     children: [
@@ -165,7 +199,8 @@ class _IdeasContentState extends State<IdeasContent> {
                       onTap: () {
                         setState(() {
                           viewedVideoIndex = index;
-                          videolink = widget.lesson.videos[viewedVideoIndex].videoLink;
+                          videolink =
+                              widget.lesson.videos[viewedVideoIndex].videoLink;
                           if (videolink != null && videolink!.isNotEmpty) {
                             controller.loadRequest(Uri.parse(videolink!));
                           } else {
@@ -203,7 +238,8 @@ class _IdeasContentState extends State<IdeasContent> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.lesson.videos[index].videoName ?? 'Video Name',
+                                    widget.lesson.videos[index].videoName ??
+                                        'Video Name',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -225,7 +261,8 @@ class _IdeasContentState extends State<IdeasContent> {
                 )
               else
                 const Text('No more videos',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
         ),

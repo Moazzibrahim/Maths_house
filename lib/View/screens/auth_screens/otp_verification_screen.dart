@@ -174,7 +174,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: defaultPinTheme.copyWith(
                     decoration: defaultPinTheme.decoration!.copyWith(
-                      border: Border.all(color: Colors.red),
+                      border: Border.all(color: faceBookColor),
                     ),
                   ),
                   onCompleted: (pin) => setState(() {
