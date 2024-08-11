@@ -3,6 +3,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, deprecated_member_use
 
 import 'dart:convert';
+import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/private_live_model.dart';
@@ -64,9 +65,7 @@ class AllSessionDataScreen extends StatelessWidget {
     final now = DateTime.now();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Session Data'),
-      ),
+      appBar: buildAppBar(context, "Session data"),
       body: ListView.builder(
         itemCount: sessionData.length,
         itemBuilder: (context, index) {
