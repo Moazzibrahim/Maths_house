@@ -35,7 +35,8 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
 
   void _initYoutubePlayerController() async {
     // Avoid using context synchronously after an async call
-    final questionHistoryProvider = Provider.of<QuestionHistoryProvider>(context, listen: false);
+    final questionHistoryProvider =
+        Provider.of<QuestionHistoryProvider>(context, listen: false);
     await questionHistoryProvider.getQuestionAnswer(context, widget.id);
     await questionHistoryProvider.getParallelQuestion(context, widget.id);
 
@@ -98,12 +99,16 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: questionAnswerProvider.allQuestionAnswers.length,
+                      itemCount:
+                          questionAnswerProvider.allQuestionAnswers.length,
                       itemBuilder: (context, index) {
-                        videolink = questionAnswerProvider.allQuestionAnswers[index].answerVid;
-                        String pdf = questionAnswerProvider.allQuestionAnswers[index].answerPdf;
+                        videolink = questionAnswerProvider
+                            .allQuestionAnswers[index].answerVid;
+                        String pdf = questionAnswerProvider
+                            .allQuestionAnswers[index].answerPdf;
                         RegExp regExp = RegExp(r"\/embed\/([^?]+)");
-                        Match? match = regExp.firstMatch(questionAnswerProvider.allQuestionAnswers[index].answerVid);
+                        Match? match = regExp.firstMatch(questionAnswerProvider
+                            .allQuestionAnswers[index].answerVid);
                         String videoId = match?.group(1) ?? "";
 
                         return Padding(
@@ -116,19 +121,22 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                                     aspectRatio: 16 / 9,
                                     child: WebViewWidget(
                                       controller: controllers
-                                        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                                        ..setJavaScriptMode(
+                                            JavaScriptMode.unrestricted)
                                         ..loadRequest(Uri.parse(videolink!)),
                                     ),
                                   )
                                 else
                                   const SizedBox(
                                     height: 200,
-                                    child: Center(child: Text('No video available')),
+                                    child: Center(
+                                        child: Text('No video available')),
                                   ),
                                 const SizedBox(height: 15),
                                 ElevatedButton(
                                   onPressed: () async {
-                                    final bytesPdf = await fetchAndConvertImage(pdf);
+                                    final bytesPdf =
+                                        await fetchAndConvertImage(pdf);
                                     saveImage(bytesPdf);
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -150,70 +158,74 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                   const SizedBox(height: 70),
                 ],
               ),
-              Positioned(
-                bottom: 10,
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("Choose Parallel"),
-                            content: SizedBox(
-                              width: 200,
-                              height: 145,
-                              child: ListView.builder(
-                                itemCount: questionAnswerProvider.allParallelQuestions.length,
-                                itemBuilder: (context, index) {
-                                  int parallelNumber = index + 1;
-                                  return ListTile(
-                                    title: Text("Parallel $parallelNumber"),
-                                    onTap: () {
-                                      setState(() {
-                                        selectedParallel = index;
-                                      });
-                                      Navigator.of(context).pop();
-                                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                        builder: (ctx) => ParallelQuestionScreen(
-                                          selectedParallel: selectedParallel,
-                                          id: widget.id,
-                                        ),
-                                      ));
-                                    },
-                                  );
-                                },
+              if (questionAnswerProvider.allParallelQuestions.isNotEmpty)
+                Positioned(
+                  bottom: 10,
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Choose Parallel"),
+                              content: SizedBox(
+                                width: 200,
+                                height: 145,
+                                child: ListView.builder(
+                                  itemCount: questionAnswerProvider
+                                      .allParallelQuestions.length,
+                                  itemBuilder: (context, index) {
+                                    int parallelNumber = index + 1;
+                                    return ListTile(
+                                      title: Text("Parallel $parallelNumber"),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedParallel = index;
+                                        });
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context)
+                                            .pushReplacement(MaterialPageRoute(
+                                          builder: (ctx) =>
+                                              ParallelQuestionScreen(
+                                            selectedParallel: selectedParallel,
+                                            id: widget.id,
+                                          ),
+                                        ));
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent[700],
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 9.h,
-                        horizontal: 10.w,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Solve parallel',
-                          style: TextStyle(fontSize: 16.sp),
+                            );
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent[700],
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        SizedBox(width: 200.w),
-                        const Icon(Icons.arrow_forward_ios),
-                      ],
+                        padding: EdgeInsets.symmetric(
+                          vertical: 9.h,
+                          horizontal: 10.w,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Solve parallel',
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                          SizedBox(width: 200.w),
+                          const Icon(Icons.arrow_forward_ios),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              )
             ],
           );
         },
