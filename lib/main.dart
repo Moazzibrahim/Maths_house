@@ -14,6 +14,7 @@ import 'package:flutter_application_1/controller/exam/exam_mcq_provider.dart';
 import 'package:flutter_application_1/controller/exam/exam_provider.dart';
 import 'package:flutter_application_1/controller/exam/get_exam_provider.dart';
 import 'package:flutter_application_1/controller/exam/start_exam_provider.dart';
+import 'package:flutter_application_1/controller/exam_code_provider.dart';
 import 'package:flutter_application_1/controller/history_controllers/dia_exam_history_controller.dart';
 import 'package:flutter_application_1/controller/history_controllers/exam_history_controller.dart';
 import 'package:flutter_application_1/controller/history_controllers/question_history_controller.dart';
@@ -125,6 +126,10 @@ class MathHouse extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => StudentQuizScoreProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ExamCodeProvider(),
+        ),
+
         // ChangeNotifierProvider(
         //   create: (_) => LiveFilterProvider(),
         // ),

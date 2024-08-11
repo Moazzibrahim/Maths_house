@@ -44,12 +44,11 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   Container _buildRadioListTile(Question question, int index) {
     String mcqText = question.mcqList[index].text!;
-    String mcqValue =
-        String.fromCharCode(index + 65); 
+    String mcqValue = String.fromCharCode(index + 65);
     Color? currentContainerColor;
     if (answerSubmitted) {
       currentContainerColor = index == correctAnswerIndex
-          ? const Color.fromARGB(255, 133, 240, 137) 
+          ? const Color.fromARGB(255, 133, 240, 137)
           : selectedAnswer == mcqValue
               ? const Color.fromARGB(255, 238, 104, 95)
               : null;
@@ -67,7 +66,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         groupValue: selectedAnswer,
         activeColor: Colors.redAccent[700],
         onChanged: answerSubmitted
-            ? null 
+            ? null
             : (value) {
                 setState(() {
                   selectedAnswer = value;
@@ -169,19 +168,35 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                   question[0].mcqList[0].answer!;
                               correctAnswerIndex =
                                   correctAnswer.codeUnitAt(0) - 65;
+
                               setState(() {
                                 answerSubmitted = true;
-                                showAnswerButton = true;
+
+                                if (selectedAnswer != correctAnswer) {
+                                  showAnswerButton = true;
+                                } else {
+                                  showAnswerButton = false;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Correct Answer!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                }
                               });
                             } else if (question[0].mcqAnswerList[0].mcqAnswer ==
                                 answerController.text) {
                               setState(() {
                                 textAnswer = true;
-                                showAnswerButton = true;
+                                showAnswerButton = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Correct Answer!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
                               });
-                            } else if (question[0]
-                                    .mcqAnswerList[0]
-                                    .mcqAnswer !=
+                            } else if (question[0].mcqAnswerList[0].mcqAnswer !=
                                 answerController.text) {
                               setState(() {
                                 textAnswer = false;
@@ -210,45 +225,54 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
                         ),
-                        const SizedBox(height: 20,),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         if (showAnswerButton)
                           ElevatedButton(
                             onPressed: () {
                               showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text("Confirmation"),
-                                        content: const Text(
-                                            "Are you sure you want to view the answer for this question?",style: TextStyle(fontSize: 18),),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (ctx) =>
-                                                          QuestionAnswerScreen(
-                                                            id: question[0].qId! ,
-                                                          )));
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.redAccent[700],
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
-                                            ),
-                                            child: const Text('Yes'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Close',style: TextStyle(color: Colors.black),),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Confirmation"),
+                                    content: const Text(
+                                      "Are you sure you want to view the answer for this question?",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    actions: <Widget>[
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (ctx) =>
+                                                      QuestionAnswerScreen(
+                                                        id: question[0].qId!,
+                                                      )));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.redAccent[700],
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12))),
+                                        child: const Text('Yes'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          'Close',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ),
+                                    ],
                                   );
+                                },
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.greenAccent[700],
@@ -262,7 +286,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             ),
                             child: const Text(
                               'Show Answer',
-                              style: TextStyle(color: Colors.white, fontSize: 20),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
                             ),
                           ),
                       ],

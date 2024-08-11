@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/questions_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/controller/exam_code_provider.dart';
 import 'package:flutter_application_1/controller/question_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +15,6 @@ class QuestionFilterScreen extends StatefulWidget {
 class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
   TextEditingController sectionController = TextEditingController();
   TextEditingController questionNumController = TextEditingController();
-  TextEditingController examCodeController = TextEditingController();
 
   List<int> years =
       List.generate(DateTime.now().year - 2000 + 1, (index) => 2000 + index);
@@ -39,7 +39,16 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
   bool isPackagePurchased = true;
 
   @override
+  void initState() {
+    super.initState();
+    Provider.of<ExamCodeProvider>(context, listen: false)
+        .fetchExamCodes(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final examCodeProvider = Provider.of<ExamCodeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: Container(
@@ -133,10 +142,29 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                TextField(
-                  controller: examCodeController,
-                  decoration:
-                      const InputDecoration(hintText: 'Enter Exam code'),
+                DropdownButton<String>(
+                  isExpanded: true,
+                  icon: Icon(
+                    Icons.keyboard_arrow_down_outlined,
+                    size: 30,
+                    color: Colors.redAccent[700],
+                  ),
+                  value: examCodeProvider.selectedExamCode,
+                  hint: const Text('Select Exam Code'),
+                  onChanged: (newValue) {
+                    final selectedCode = examCodeProvider.examCodes
+                        .firstWhere((code) => code.examCode == newValue!);
+                    examCodeProvider.selectExamCode(
+                        selectedCode.examCode, selectedCode.id);
+                  },
+                  items: examCodeProvider.examCodes
+                      .map<DropdownMenuItem<String>>(
+                        (code) => DropdownMenuItem<String>(
+                          value: code.examCode,
+                          child: Text(code.examCode),
+                        ),
+                      )
+                      .toList(),
                 ),
                 const SizedBox(
                   height: 30,
@@ -146,7 +174,7 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                     if (selectedMonth == 'Select Month' ||
                         sectionController.text == '' ||
                         questionNumController.text == '' ||
-                        examCodeController.text == '') {
+                        examCodeProvider.selectedExamCode == null) {
                       setState(() {
                         isFormsFilled = false;
                       });
@@ -169,7 +197,8 @@ class _QuestionFilterScreenState extends State<QuestionFilterScreen> {
                               month: indexMonth,
                               year: selectedYear,
                               questionNum: questionNumController.text,
-                              examCode: examCodeController.text,
+                              examCode: examCodeProvider.selectedExamCodeId
+                                  .toString(),
                               section: sectionController.text,
                             ),
                           ),
