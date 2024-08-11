@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -37,6 +39,7 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
     String mcqValue =
         String.fromCharCode(index + 65); // Convert index to A, B, C, D
     Color? currentContainerColor;
+
     // Determine color based on answer selection and whether answer was submitted
     if (answerSubmitted) {
       currentContainerColor = index == correctAnswerIndex
@@ -53,7 +56,7 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
         color: currentContainerColor,
       ),
       child: RadioListTile<String>(
-        title: Text(mcqText),
+        title: Text('$mcqValue.'), // Add the letter before the choice text
         value: mcqValue,
         groupValue: selectedAnswer,
         activeColor: Colors.redAccent[700],
@@ -78,15 +81,16 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
             child: Center(
               child: Column(
                 children: [
-                  Text(
-                    parallelProvider
-                        .allParallelQuestions[widget.selectedParallel].question,
-                    style: const TextStyle(fontSize: 25),
-                  ),
+                  // Text(
+                  //   parallelProvider
+                  //       .allParallelQuestions[widget.selectedParallel].question,
+                  //   style: const TextStyle(fontSize: 25),
+                  // ),
                   const SizedBox(
                     height: 30,
                   ),
-                  Image.asset('assets/images/planet.png'),
+                  Image.network(
+                      '${parallelProvider.allParallelQuestions[widget.selectedParallel].qUrl}'),
                   const SizedBox(
                     height: 20,
                   ),
