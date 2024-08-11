@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/exam-view/exam_duration.dart';
-import 'package:flutter_application_1/View/screens/tabs_screen.dart';
 import 'package:flutter_application_1/constants/colors.dart';
+import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_application_1/controller/history_controllers/dia_exam_history_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -26,19 +26,7 @@ class _DiaExamHistoryScreenState extends State<DiaExamHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Diagnostic history"),
-        leading: InkWell(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const TabsScreen(isLoggedIn: false)));
-          },
-          child: const Icon(
-            Icons.arrow_back,
-            color: faceBookColor,
-          ),
-        ),
-      ),
+      appBar: buildAppBar(context, "Diagnostic History"),
       body: Consumer<DiaExamHistoryProvider>(
         builder: (context, diaExamHistory, _) {
           void showChapterDialog(
