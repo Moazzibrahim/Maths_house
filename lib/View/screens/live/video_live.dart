@@ -83,17 +83,20 @@ class _VideoWebViewState extends State<VideoWebView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ideas Content'),
-        leading: IconButton(
+        leading: Container(
+          margin: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+              color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+          child: IconButton(
             onPressed: () {
-              if (isLandscape) {
-                resetOrientation();
-              }
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back,
-              color: faceBookColor,
-            )),
+              color: Colors.redAccent[700],
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(isLandscape
