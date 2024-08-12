@@ -114,7 +114,7 @@ class _VideoWebViewState extends State<VideoWebView> {
             children: [
               if (widget.url != null && widget.url!.isNotEmpty)
                 AspectRatio(
-                  aspectRatio: 21 / 9,
+                  aspectRatio: 16 / 9,
                   child: WebViewWidget(
                     controller: controller,
                   ),
