@@ -109,17 +109,19 @@ class _ExamResultScreenState extends State<ExamResultScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Result"),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const TabsScreen(
-                  isLoggedIn: false,
-                ),
-              ));
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: faceBookColor,
+          leading: Container(
+            margin: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: gridHomeColor, borderRadius: BorderRadius.circular(12)),
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const TabsScreen(isLoggedIn: false)));
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.redAccent[700],
+              ),
             ),
           ),
         ),
