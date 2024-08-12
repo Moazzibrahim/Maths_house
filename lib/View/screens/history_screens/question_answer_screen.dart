@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronously, unused_local_variable
-
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class QuestionAnswerScreen extends StatefulWidget {
@@ -22,39 +20,13 @@ class QuestionAnswerScreen extends StatefulWidget {
 }
 
 class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
-  late YoutubePlayerController controller;
   int viewedVideoIndex = 0;
   String? videolink;
   final controllers = WebViewController();
 
-  @override
-  void initState() {
-    super.initState();
-    _initYoutubePlayerController();
-  }
+  
 
-  void _initYoutubePlayerController() async {
-    // Avoid using context synchronously after an async call
-    final questionHistoryProvider =
-        Provider.of<QuestionHistoryProvider>(context, listen: false);
-    await questionHistoryProvider.getQuestionAnswer(context, widget.id);
-    await questionHistoryProvider.getParallelQuestion(context, widget.id);
 
-    setState(() {
-      controller = YoutubePlayerController(
-        initialVideoId: '',
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          disableDragSeek: false,
-          loop: false,
-          isLive: false,
-          forceHD: false,
-          enableCaption: true,
-        ),
-      );
-    });
-  }
 
   Future<Uint8List> fetchAndConvertImage(String imageUrl) async {
     final response = await http.get(Uri.parse(imageUrl));
@@ -88,6 +60,15 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
   int selectedParallel = 0;
 
   @override
+  void initState() {
+    final questionHistoryProvider =
+        Provider.of<QuestionHistoryProvider>(context, listen: false);
+    questionHistoryProvider.getQuestionAnswer(context, widget.id);
+    questionHistoryProvider.getParallelQuestion(context, widget.id);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context, "Answers"),
@@ -110,7 +91,6 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
                         Match? match = regExp.firstMatch(questionAnswerProvider
                             .allQuestionAnswers[index].answerVid);
                         String videoId = match?.group(1) ?? "";
-
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SingleChildScrollView(
@@ -233,9 +213,4 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 }

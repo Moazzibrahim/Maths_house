@@ -20,6 +20,7 @@ class ParallelQuestionScreen extends StatefulWidget {
 }
 
 class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController answerController = TextEditingController();
   bool? textAnswer;
 
@@ -108,14 +109,25 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                               .allParallelQuestions[widget.selectedParallel],
                           i)
                   else
-                    TextFormField(
-                      controller: answerController,
-                      decoration: const InputDecoration(
-                        hintText: 'Enter your answer',
+                    Form(
+                      child: TextFormField(
+                        key: formKey,
+                        controller: answerController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your answer',
+                        ),
+                        onSaved: (newValue) {
+                          setState(() {
+                            selectedAnswer = newValue;
+                          });
+                        },
                       ),
                     ),
                   ElevatedButton(
                     onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                                  formKey.currentState!.save();
+                                }
                       if (selectedAnswer != null && !answerSubmitted) {
                         if (parallelProvider.allParallelQuestions.isNotEmpty) {
                           String correctAnswer = parallelProvider
@@ -153,6 +165,9 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                           ),
                         );
                       }
+                      if (formKey.currentState!.validate()) {
+                                  formKey.currentState!.save();
+                                }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.redAccent[700],
