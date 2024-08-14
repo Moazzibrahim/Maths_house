@@ -155,7 +155,7 @@ class _IdeasContentState extends State<IdeasContent> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  Row(
+                  const Row(
                     children: [
                       CircleAvatar(
                         backgroundImage: AssetImage('assets/images/logo.png'),
@@ -192,9 +192,8 @@ class _IdeasContentState extends State<IdeasContent> {
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: widget.lesson.videos.length - 1,
-                  itemBuilder: (context, i) {
-                    int index = i + 1;
+                  itemCount: widget.lesson.videos.length,
+                  itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
