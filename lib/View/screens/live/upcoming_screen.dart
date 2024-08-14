@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, deprecated_member_use, avoid_print
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/constants/colors.dart';
@@ -32,9 +34,11 @@ class _UpComingScreenState extends State<UpComingScreen> {
   Future<void> checkAndLaunchUrl(String url, BuildContext context) async {
     final tokenProvider = Provider.of<TokenModel>(context, listen: false);
     final token = tokenProvider.token;
+    final sesssionIID =
+        Provider.of<LiveProvider>(context, listen: false).sessionId;
     final response = await http.get(
       Uri.parse(
-          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_link_live'),
+          'https://login.mathshouse.net/api/MobileStudent/ApiMyCourses/stu_link_live/$sesssionIID'),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -47,6 +51,7 @@ class _UpComingScreenState extends State<UpComingScreen> {
       if (responseData['success'] == 'You Attend Success') {
         if (await canLaunch(url)) {
           await launch(url);
+          log("session id: $sesssionIID");
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Could not launch URL')),
