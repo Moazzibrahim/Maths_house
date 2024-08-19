@@ -1,16 +1,16 @@
-// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/my_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
 import 'package:flutter_application_1/View/screens/live/video_live.dart';
+import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:intl/intl.dart';
 
 Future<List<MyLiveSession>> fetchMyLiveSessions(BuildContext context) async {
   final tokenProvider = Provider.of<TokenModel>(context, listen: false);
@@ -111,7 +111,7 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                                 color: faceBookColor),
                             SizedBox(width: 5.w),
                             Text(
-                              'Date:${_formatDate(session.session?.date)}', // Use the helper function here
+                              'Date:${_formatDate(session.session?.date)}',
                               style: TextStyle(fontSize: 16.sp),
                             ),
                           ],
@@ -204,6 +204,27 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                                 backgroundColor: faceBookColor,
                               ),
                             ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                if (lesson != null) {
+                                  print('Lesson ID: ${lesson.id}');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => QuizzesContent(
+                                        lessonId: lesson.id!,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.quiz, color: Colors.white),
+                              label: const Text('Start Quiz'),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: faceBookColor,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -220,9 +241,7 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
 
   void _launchURL(String? url) async {
     if (url != null) {
-      // ignore: deprecated_member_use
       if (await canLaunch(url)) {
-        // ignore: deprecated_member_use
         await launch(url);
       } else {
         throw 'Could not launch $url';
@@ -230,7 +249,6 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
     }
   }
 
-  // Helper function to format the date
   String _formatDate(DateTime? date) {
     if (date == null) return 'No date';
     final formattedDate = DateFormat('yyyy-MM-dd').format(date);
