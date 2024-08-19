@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/score_sheet/score_sheet_model.dart';
 import 'package:flutter_application_1/View/screens/mistakes_screen.dart';
@@ -128,6 +130,7 @@ class ScoreSheetContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         ),
         onPressed: () {
+          print(questions);
           Navigator.push(
             context,
             MaterialPageRoute(
