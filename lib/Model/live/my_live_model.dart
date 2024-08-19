@@ -81,7 +81,7 @@ class Session {
     dynamic repeat;
     DateTime? createdAt;
     DateTime? updatedAt;
-    Lesson? lesson;
+    Lessonvideo? lesson;
 
     factory Session.fromJson(Map<String, dynamic> json) => Session(
         id: json["id"],
@@ -101,7 +101,7 @@ class Session {
         repeat: json["repeat"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        lesson: Lesson.fromJson(json["lesson"]),
+        lesson: Lessonvideo.fromJson(json["lesson"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -126,8 +126,8 @@ class Session {
     };
 }
 
-class Lesson {
-    Lesson({
+class Lessonvideo {
+    Lessonvideo({
         this.id,
         this.lessonName,
         this.chapterId,
@@ -155,7 +155,7 @@ class Lesson {
     ChapterMyLive? chapterMyLive;
     List<Idea>? ideas;
 
-    factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
+    factory Lessonvideo.fromJson(Map<String, dynamic> json) => Lessonvideo(
         id: json["id"],
         lessonName: json["lesson_name"],
         chapterId: json["chapter_id"],
