@@ -1,9 +1,9 @@
-
+// ignore_for_file: avoid_print, deprecated_member_use, file_names
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/my_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
+import 'package:flutter_application_1/View/screens/live/my_live_start_quiz.dart';
 import 'package:flutter_application_1/View/screens/live/video_live.dart';
-import 'package:flutter_application_1/View/widgets/quizzes_content.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 import 'package:flutter_application_1/constants/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -171,15 +171,8 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                             ),
                             ElevatedButton.icon(
                               onPressed: () {
-                                if (lesson!.ideas!.isNotEmpty &&
-                                    lesson.ideas?.first.vLink != null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => VideoWebView(
-                                          url: lesson.ideas?.first.vLink),
-                                    ),
-                                  );
+                                if (session.session?.materialLink != null) {
+                                  _launchURL(session.session?.materialLink);
                                 }
                               },
                               icon: const Icon(Icons.video_library,
@@ -192,8 +185,9 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                             ),
                             ElevatedButton.icon(
                               onPressed: () {
-                                if (lesson!.ideas!.isNotEmpty) {
-                                  _launchURL(lesson.ideas!.first.pdf);
+                                if (session.session?.materialLink != null) {
+                                  //_launchURL(lesson.ideas!.first.pdf);
+                                  _launchURL(session.session?.materialLink);
                                 }
                               },
                               icon: const Icon(Icons.picture_as_pdf,
@@ -211,7 +205,7 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => QuizzesContent(
+                                      builder: (context) => MyLiveStartQuiz(
                                         lessonId: lesson.id!,
                                       ),
                                     ),
