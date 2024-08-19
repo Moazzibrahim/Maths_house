@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class LiveProvider extends ChangeNotifier {
   List<Session> allsessions = [];
+  int sessionId = 0;
   bool mustBuyNewPackage = false;
 
   Future<void> getCoursesData(BuildContext context) async {
@@ -27,11 +28,31 @@ class LiveProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         print(jsonResponse);
+
         if (jsonResponse['message'] == 'Sorry: You Must Buy New Package') {
           mustBuyNewPackage = true;
           allsessions = [];
         } else {
           mustBuyNewPackage = false;
+
+          // Parsing session data
+          final sessionsList = jsonResponse['sessions'] as List<dynamic>;
+
+          // Extract session_id values
+          final sessionIds = sessionsList.map((session) {
+            return session['session_id'] as int;
+          }).toList();
+
+          print(
+              'Session IDs: $sessionIds'); // Print or use session IDs as needed
+
+          // Optionally, you can store these IDs or use them in your logic
+          // For example, storing first session_id in sessionId
+          if (sessionsList.isNotEmpty) {
+            sessionId = sessionsList.first['session_id'] as int;
+            print("id: $sessionId");
+          }
+
           final sessionResponse = SessionResponse.fromJson(jsonResponse);
           allsessions = sessionResponse.sessions;
         }
