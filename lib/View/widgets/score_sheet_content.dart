@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/score_sheet/score_sheet_model.dart';
@@ -130,6 +130,7 @@ class ScoreSheetContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         ),
         onPressed: () {
+          // ignore: avoid_print
           print(questions);
           Navigator.push(
             context,
