@@ -1,89 +1,87 @@
 import 'dart:convert';
 
-
-
 List<MyLiveSession> myLiveSessionFromJson(String str) => List<MyLiveSession>.from(json.decode(str)["myLiveSession"].map((x) => MyLiveSession.fromJson(x)));
 
 String myLiveSessionToJson(List<MyLiveSession> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class MyLiveSession {
-    MyLiveSession({
-        this.id,
-        this.userId,
-        this.sessionId,
-        this.createdAt,
-        this.updatedAt,
-        this.session,
-    });
+  MyLiveSession({
+    this.id,
+    this.userId,
+    this.sessionId,
+    this.createdAt,
+    this.updatedAt,
+    this.session,
+  });
 
-    int? id;
-    int? userId;
-    int? sessionId;
-    dynamic createdAt;
-    dynamic updatedAt;
-    Session? session;
+  int? id;
+  int? userId;
+  int? sessionId;
+  dynamic createdAt;
+  dynamic updatedAt;
+  Session? session;
 
-    factory MyLiveSession.fromJson(Map<String, dynamic> json) => MyLiveSession(
+  factory MyLiveSession.fromJson(Map<String, dynamic> json) => MyLiveSession(
         id: json["id"],
         userId: json["user_id"],
         sessionId: json["session_id"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
         session: Session.fromJson(json["session"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "user_id": userId,
         "session_id": sessionId,
         "created_at": createdAt,
         "updated_at": updatedAt,
         "session": session!.toJson(),
-    };
+      };
 }
 
 class Session {
-    Session({
-        this.id,
-        this.name,
-        this.date,
-        this.link,
-        this.materialLink,
-        this.from,
-        this.to,
-        this.duration,
-        this.lessonId,
-        this.teacherId,
-        this.groupId,
-        this.type,
-        this.price,
-        this.accessDayes,
-        this.repeat,
-        this.createdAt,
-        this.updatedAt,
-        this.lesson,
-    });
+  Session({
+    this.id,
+    this.name,
+    this.date,
+    this.link,
+    this.materialLink,
+    this.from,
+    this.to,
+    this.duration,
+    this.lessonId,
+    this.teacherId,
+    this.groupId,
+    this.type,
+    this.price,
+    this.accessDayes,
+    this.repeat,
+    this.createdAt,
+    this.updatedAt,
+    this.lesson,
+  });
 
-    int? id;
-    String? name;
-    DateTime? date;
-    String? link;
-    String? materialLink;
-    String? from;
-    String? to;
-    dynamic duration;
-    int? lessonId;
-    int? teacherId;
-    int? groupId;
-    String? type;
-    dynamic price;
-    dynamic accessDayes;
-    dynamic repeat;
-    DateTime? createdAt;
-    DateTime? updatedAt;
-    Lessonvideo? lesson;
+  int? id;
+  String? name;
+  DateTime? date;
+  String? link;
+  String? materialLink;
+  String? from;
+  String? to;
+  dynamic duration;
+  int? lessonId;
+  int? teacherId;
+  int? groupId;
+  String? type;
+  dynamic price;
+  dynamic accessDayes;
+  dynamic repeat;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  Lessonvideo? lesson;
 
-    factory Session.fromJson(Map<String, dynamic> json) => Session(
+  factory Session.fromJson(Map<String, dynamic> json) => Session(
         id: json["id"],
         name: json["name"],
         date: DateTime.parse(json["date"]),
@@ -102,9 +100,9 @@ class Session {
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         lesson: Lessonvideo.fromJson(json["lesson"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "date": date!.toIso8601String(),
@@ -123,39 +121,44 @@ class Session {
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
         "lesson": lesson!.toJson(),
-    };
+      };
+
+  // Getter for courseName
+  String? get courseName {
+    return lesson?.chapterMyLive?.course?.courseName;
+  }
 }
 
 class Lessonvideo {
-    Lessonvideo({
-        this.id,
-        this.lessonName,
-        this.chapterId,
-        this.teacherId,
-        this.lessonDes,
-        this.lessonUrl,
-        this.preRequisition,
-        this.gain,
-        this.createdAt,
-        this.updatedAt,
-        this.chapterMyLive,
-        this.ideas,
-    });
+  Lessonvideo({
+    this.id,
+    this.lessonName,
+    this.chapterId,
+    this.teacherId,
+    this.lessonDes,
+    this.lessonUrl,
+    this.preRequisition,
+    this.gain,
+    this.createdAt,
+    this.updatedAt,
+    this.chapterMyLive,
+    this.ideas,
+  });
 
-    int? id;
-    String? lessonName;
-    int? chapterId;
-    int? teacherId;
-    String? lessonDes;
-    String? lessonUrl;
-    String? preRequisition;
-    String? gain;
-    DateTime? createdAt;
-    DateTime? updatedAt;
-    ChapterMyLive? chapterMyLive;
-    List<Idea>? ideas;
+  int? id;
+  String? lessonName;
+  int? chapterId;
+  int? teacherId;
+  String? lessonDes;
+  String? lessonUrl;
+  String? preRequisition;
+  String? gain;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  ChapterMyLive? chapterMyLive;
+  List<Idea>? ideas;
 
-    factory Lessonvideo.fromJson(Map<String, dynamic> json) => Lessonvideo(
+  factory Lessonvideo.fromJson(Map<String, dynamic> json) => Lessonvideo(
         id: json["id"],
         lessonName: json["lesson_name"],
         chapterId: json["chapter_id"],
@@ -168,9 +171,9 @@ class Lessonvideo {
         updatedAt: DateTime.parse(json["updated_at"]),
         chapterMyLive: ChapterMyLive.fromJson(json["chapter_my_live"]),
         ideas: List<Idea>.from(json["ideas"].map((x) => Idea.fromJson(x))),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "lesson_name": lessonName,
         "chapter_id": chapterId,
@@ -183,39 +186,39 @@ class Lessonvideo {
         "updated_at": updatedAt!.toIso8601String(),
         "chapter_my_live": chapterMyLive!.toJson(),
         "ideas": List<dynamic>.from(ideas!.map((x) => x.toJson())),
-    };
+      };
 }
 
 class ChapterMyLive {
-    ChapterMyLive({
-        this.id,
-        this.chapterName,
-        this.courseId,
-        this.chDes,
-        this.chUrl,
-        this.preRequisition,
-        this.gain,
-        this.teacherId,
-        this.createdAt,
-        this.updatedAt,
-        this.type,
-        this.course,
-    });
+  ChapterMyLive({
+    this.id,
+    this.chapterName,
+    this.courseId,
+    this.chDes,
+    this.chUrl,
+    this.preRequisition,
+    this.gain,
+    this.teacherId,
+    this.createdAt,
+    this.updatedAt,
+    this.type,
+    this.course,
+  });
 
-    int? id;
-    String? chapterName;
-    int? courseId;
-    String? chDes;
-    String? chUrl;
-    String? preRequisition;
-    String? gain;
-    int? teacherId;
-    DateTime? createdAt;
-    DateTime? updatedAt;
-    String? type;
-    Course? course;
+  int? id;
+  String? chapterName;
+  int? courseId;
+  String? chDes;
+  String? chUrl;
+  String? preRequisition;
+  String? gain;
+  int? teacherId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? type;
+  Course? course;
 
-    factory ChapterMyLive.fromJson(Map<String, dynamic> json) => ChapterMyLive(
+  factory ChapterMyLive.fromJson(Map<String, dynamic> json) => ChapterMyLive(
         id: json["id"],
         chapterName: json["chapter_name"],
         courseId: json["course_id"],
@@ -228,9 +231,9 @@ class ChapterMyLive {
         updatedAt: DateTime.parse(json["updated_at"]),
         type: json["type"],
         course: Course.fromJson(json["course"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "chapter_name": chapterName,
         "course_id": courseId,
@@ -243,39 +246,39 @@ class ChapterMyLive {
         "updated_at": updatedAt!.toIso8601String(),
         "type": type,
         "course": course!.toJson(),
-    };
+      };
 }
 
 class Course {
-    Course({
-        this.id,
-        this.courseName,
-        this.categoryId,
-        this.courseDes,
-        this.courseUrl,
-        this.preRequisition,
-        this.gain,
-        this.createdAt,
-        this.updatedAt,
-        this.teacherId,
-        this.userId,
-        this.type,
-    });
+  Course({
+    this.id,
+    this.courseName,
+    this.categoryId,
+    this.courseDes,
+    this.courseUrl,
+    this.preRequisition,
+    this.gain,
+    this.createdAt,
+    this.updatedAt,
+    this.teacherId,
+    this.userId,
+    this.type,
+  });
 
-    int? id;
-    String? courseName;
-    int? categoryId;
-    String? courseDes;
-    String? courseUrl;
-    dynamic preRequisition;
-    dynamic gain;
-    DateTime? createdAt;
-    DateTime? updatedAt;
-    int? teacherId;
-    dynamic userId;
-    String? type;
+  int? id;
+  String? courseName;
+  int? categoryId;
+  String? courseDes;
+  String? courseUrl;
+  dynamic preRequisition;
+  dynamic gain;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  int? teacherId;
+  dynamic userId;
+  String? type;
 
-    factory Course.fromJson(Map<String, dynamic> json) => Course(
+  factory Course.fromJson(Map<String, dynamic> json) => Course(
         id: json["id"],
         courseName: json["course_name"],
         categoryId: json["category_id"],
@@ -288,9 +291,9 @@ class Course {
         teacherId: json["teacher_id"],
         userId: json["user_id"],
         type: json["type"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "course_name": courseName,
         "category_id": categoryId,
@@ -303,53 +306,41 @@ class Course {
         "teacher_id": teacherId,
         "user_id": userId,
         "type": type,
-    };
+      };
 }
 
 class Idea {
-    Idea({
-        this.id,
-        this.idea,
-        this.syllabus,
-        this.ideaOrder,
-        this.pdf,
-        this.vLink,
-        this.lessonId,
-        this.createdAt,
-        this.updatedAt,
-    });
+  Idea({
+    this.id,
+    this.ideaName,
+    this.ideaDes,
+    this.lessonId,
+    this.createdAt,
+    this.updatedAt,
+  });
 
-    int? id;
-    dynamic idea;
-    dynamic syllabus;
-    dynamic ideaOrder;
-    String? pdf;
-    dynamic vLink;
-    int? lessonId;
-    DateTime? createdAt;
-    DateTime? updatedAt;
+  int? id;
+  String? ideaName;
+  String? ideaDes;
+  int? lessonId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
-    factory Idea.fromJson(Map<String, dynamic> json) => Idea(
+  factory Idea.fromJson(Map<String, dynamic> json) => Idea(
         id: json["id"],
-        idea: json["idea"],
-        syllabus: json["syllabus"],
-        ideaOrder: json["idea_order"],
-        pdf: json["pdf"],
-        vLink: json["v_link"],
+        ideaName: json["idea_name"],
+        ideaDes: json["idea_des"],
         lessonId: json["lesson_id"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
-        "idea": idea,
-        "syllabus": syllabus,
-        "idea_order": ideaOrder,
-        "pdf": pdf,
-        "v_link": vLink,
+        "idea_name": ideaName,
+        "idea_des": ideaDes,
         "lesson_id": lessonId,
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
-    };
+      };
 }

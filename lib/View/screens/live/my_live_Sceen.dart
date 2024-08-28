@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print, deprecated_member_use, file_names
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/live/my_live_model.dart';
 import 'package:flutter_application_1/Model/login_model.dart';
@@ -41,6 +40,7 @@ class MyLiveScreen extends StatefulWidget {
 
 class _MyLiveScreenState extends State<MyLiveScreen> {
   late Future<List<MyLiveSession>> futureMyLiveSessions;
+  String? selectedCourseName;
 
   @override
   void initState() {
@@ -62,169 +62,314 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No live sessions found'));
           } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final session = snapshot.data![index];
-                final lesson = session.session?.lesson;
-                final chapter = lesson?.chapterMyLive;
+            final sessions = snapshot.data!;
 
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Text(
-                          chapter?.chapterName ?? 'No chapter',
-                          style: TextStyle(
-                              fontSize: 16.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5.h),
-                        Text(
-                          lesson?.lessonName ?? 'No lesson',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: Colors.grey,
+            return FutureBuilder<List<String>>(
+              future: _getUniqueCourseNames(sessions),
+              builder: (context, courseNamesSnapshot) {
+                if (courseNamesSnapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (courseNamesSnapshot.hasError) {
+                  return Center(
+                      child: Text('Error: ${courseNamesSnapshot.error}'));
+                } else if (!courseNamesSnapshot.hasData ||
+                    courseNamesSnapshot.data!.isEmpty) {
+                  return const Center(child: Text('No courses available'));
+                } else {
+                  final courseNames = courseNamesSnapshot.data!;
+                  final filteredSessions = selectedCourseName == null
+                      ? []
+                      : sessions.where((session) {
+                          return session.session?.lesson?.chapterMyLive?.course
+                                  ?.courseName ==
+                              selectedCourseName;
+                        }).toList();
+
+                  return Column(
+                    children: [
+                      // Dropdown for selecting the course name
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 12.0),
+                          decoration: BoxDecoration(
+                            color: gridHomeColor,
+                            borderRadius:
+                                BorderRadius.circular(12.0), // Rounded corners
+                            border: Border.all(
+                                color: faceBookColor), // Border color
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            // Hides the default underline
+                            child: DropdownButton<String>(
+                              value: selectedCourseName,
+                              hint: Text(
+                                'Select Course',
+                                style: TextStyle(
+                                  color: faceBookColor,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedCourseName = newValue;
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_drop_down,
+                                  color: faceBookColor),
+                              isExpanded:
+                                  true, // Makes the dropdown fill the width
+                              items: courseNames.map((courseName) {
+                                return DropdownMenuItem<String>(
+                                  value: courseName,
+                                  child: Text(
+                                    courseName,
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
-                        SizedBox(height: 5.h),
-                        Text(
-                          'name: ${session.session?.name ?? 'No session name'}',
-                          style: TextStyle(
-                            fontSize: 18.0.sp,
-                          ),
-                        ),
-                        SizedBox(height: 5.h),
-                        Row(
-                          children: [
-                            const Icon(Icons.calendar_today,
-                                color: faceBookColor),
-                            SizedBox(width: 5.w),
-                            Text(
-                              'Date:${_formatDate(session.session?.date)}',
-                              style: TextStyle(fontSize: 16.sp),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5.h),
-                        Row(
-                          children: [
-                            const Icon(Icons.access_time, color: faceBookColor),
-                            const SizedBox(width: 5),
-                            Text(
-                              'From: ${session.session?.from ?? 'no from'}',
-                              style: TextStyle(fontSize: 16.sp),
-                            ),
-                            SizedBox(width: 10.w),
-                            Text(
-                              'To: ${session.session?.to ?? 'No to'}',
-                              style: TextStyle(fontSize: 16.sp),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5.h),
-                        Row(
-                          children: [
-                            const Icon(Icons.info, color: faceBookColor),
-                            SizedBox(width: 5.w),
-                            Text(
-                              'Type: ${session.session?.type ?? 'No type'}',
-                              style: TextStyle(fontSize: 16.sp),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5.h),
-                        Wrap(
-                          spacing: 8.0, // Gap between adjacent buttons
-                          runSpacing: 4.0, // Gap between lines if wrapped
-                          children: [
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                if (lesson != null &&
-                                    lesson.lessonUrl != null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          VideoWebView(url: lesson.lessonUrl!),
-                                    ),
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.play_circle_filled,
-                                  color: Colors.white),
-                              label: const Text('Video lesson'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: faceBookColor,
-                              ),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                if (session.session?.materialLink != null) {
-                                  _launchURL(session.session?.materialLink);
-                                }
-                              },
-                              icon: const Icon(Icons.video_library,
-                                  color: Colors.white),
-                              label: const Text('Video record'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: faceBookColor,
-                              ),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                if (session.session?.materialLink != null) {
-                                  //_launchURL(lesson.ideas!.first.pdf);
-                                  _launchURL(session.session?.materialLink);
-                                }
-                              },
-                              icon: const Icon(Icons.picture_as_pdf,
-                                  color: Colors.white),
-                              label: const Text('Download PDF'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: faceBookColor,
-                              ),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                if (lesson != null) {
-                                  print('Lesson ID: ${lesson.id}');
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MyLiveStartQuiz(
-                                        lessonId: lesson.id!,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.quiz, color: Colors.white),
-                              label: const Text('Start Quiz'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: faceBookColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                      ),
+
+                      Expanded(
+                        child: selectedCourseName == null
+                            ? Center(
+                                child: Text(
+                                    'Please select a course to see live sessions'))
+                            : filteredSessions.isEmpty
+                                ? Center(
+                                    child: Text(
+                                        'No live sessions available for the selected course'))
+                                : ListView.builder(
+                                    itemCount: filteredSessions.length,
+                                    itemBuilder: (context, index) {
+                                      final session = filteredSessions[index];
+                                      final lesson = session.session?.lesson;
+                                      final chapter = lesson?.chapterMyLive;
+
+                                      return Card(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 16.0, vertical: 8.0),
+                                        elevation: 4.0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                chapter?.chapterName ??
+                                                    'No chapter',
+                                                style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(height: 5.h),
+                                              Text(
+                                                lesson?.lessonName ??
+                                                    'No lesson',
+                                                style: TextStyle(
+                                                    fontSize: 16.sp,
+                                                    color: Colors.grey),
+                                              ),
+                                              SizedBox(height: 5.h),
+                                              if (selectedCourseName != null)
+                                                Text(
+                                                  'name: ${session.session?.name ?? 'No session name'}',
+                                                  style: TextStyle(
+                                                      fontSize: 18.0.sp),
+                                                ),
+                                              SizedBox(height: 5.h),
+                                              if (selectedCourseName != null)
+                                                Row(
+                                                  children: [
+                                                    const Icon(
+                                                        Icons.calendar_today,
+                                                        color: faceBookColor),
+                                                    SizedBox(width: 5.w),
+                                                    Text(
+                                                      'Date: ${_formatDate(session.session?.date)}',
+                                                      style: TextStyle(
+                                                          fontSize: 16.sp),
+                                                    ),
+                                                  ],
+                                                ),
+                                              SizedBox(height: 5.h),
+                                              if (selectedCourseName != null)
+                                                Row(
+                                                  children: [
+                                                    const Icon(
+                                                        Icons.access_time,
+                                                        color: faceBookColor),
+                                                    SizedBox(width: 5.w),
+                                                    Text(
+                                                      'From: ${session.session?.from ?? 'no from'}',
+                                                      style: TextStyle(
+                                                          fontSize: 16.sp),
+                                                    ),
+                                                    SizedBox(width: 10.w),
+                                                    Text(
+                                                      'To: ${session.session?.to ?? 'No to'}',
+                                                      style: TextStyle(
+                                                          fontSize: 16.sp),
+                                                    ),
+                                                  ],
+                                                ),
+                                              SizedBox(height: 5.h),
+                                              if (selectedCourseName != null)
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.info,
+                                                        color: faceBookColor),
+                                                    SizedBox(width: 5.w),
+                                                    Text(
+                                                      'Type: ${session.session?.type ?? 'No type'}',
+                                                      style: TextStyle(
+                                                          fontSize: 16.sp),
+                                                    ),
+                                                  ],
+                                                ),
+                                              SizedBox(height: 5.h),
+                                              if (selectedCourseName != null)
+                                                Wrap(
+                                                  spacing:
+                                                      8.0, // Gap between adjacent buttons
+                                                  runSpacing:
+                                                      4.0, // Gap between lines if wrapped
+                                                  children: [
+                                                    ElevatedButton.icon(
+                                                      onPressed: () {
+                                                        if (lesson != null &&
+                                                            lesson.lessonUrl !=
+                                                                null) {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  VideoWebView(
+                                                                      url: lesson
+                                                                          .lessonUrl!),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons
+                                                              .play_circle_filled,
+                                                          color: Colors.white),
+                                                      label: const Text(
+                                                          'Video lesson'),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        backgroundColor:
+                                                            faceBookColor,
+                                                      ),
+                                                    ),
+                                                    ElevatedButton.icon(
+                                                      onPressed: () {
+                                                        if (session.session
+                                                                ?.materialLink !=
+                                                            null) {
+                                                          _launchURL(session
+                                                              .session
+                                                              ?.materialLink);
+                                                        }
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.video_library,
+                                                          color: Colors.white),
+                                                      label: const Text(
+                                                          'Video record'),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        backgroundColor:
+                                                            faceBookColor,
+                                                      ),
+                                                    ),
+                                                    ElevatedButton.icon(
+                                                      onPressed: () {
+                                                        if (session.session
+                                                                ?.materialLink !=
+                                                            null) {
+                                                          _launchURL(session
+                                                              .session
+                                                              ?.materialLink);
+                                                        }
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.picture_as_pdf,
+                                                          color: Colors.white),
+                                                      label: const Text(
+                                                          'Download PDF'),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        backgroundColor:
+                                                            faceBookColor,
+                                                      ),
+                                                    ),
+                                                    ElevatedButton.icon(
+                                                      onPressed: () {
+                                                        if (lesson != null) {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  MyLiveStartQuiz(
+                                                                lessonId:
+                                                                    lesson.id!,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.quiz,
+                                                          color: Colors.white),
+                                                      label: const Text(
+                                                          'Start Quiz'),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        backgroundColor:
+                                                            faceBookColor,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                      ),
+                    ],
+                  );
+                }
               },
             );
           }
@@ -233,19 +378,32 @@ class _MyLiveScreenState extends State<MyLiveScreen> {
     );
   }
 
-  void _launchURL(String? url) async {
-    if (url != null) {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        throw 'Could not launch $url';
+  Future<List<String>> _getUniqueCourseNames(
+      List<MyLiveSession> sessions) async {
+    final Set<String> courseNames = {};
+    for (var session in sessions) {
+      final courseName =
+          session.session?.lesson?.chapterMyLive?.course?.courseName;
+      if (courseName != null) {
+        courseNames.add(courseName);
       }
     }
+    return courseNames.toList();
   }
 
   String _formatDate(DateTime? date) {
-    if (date == null) return 'No date';
-    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
-    return formattedDate;
+    if (date == null) {
+      return 'No date';
+    } else {
+      return DateFormat('yyyy-MM-dd').format(date);
+    }
+  }
+
+  Future<void> _launchURL(String? url) async {
+    if (url != null && await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

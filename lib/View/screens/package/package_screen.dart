@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/View/screens/exam_package_details.dart';
-import 'package:flutter_application_1/View/screens/live_package_details.dart';
-import 'package:flutter_application_1/View/screens/question_package_details.dart';
+import 'package:flutter_application_1/View/screens/package/exam_package_details.dart';
+import 'package:flutter_application_1/View/screens/package/live_package_details.dart';
+import 'package:flutter_application_1/View/screens/package/question_package_details.dart';
 import 'package:flutter_application_1/View/widgets/unregistered_profile.dart';
 import 'package:flutter_application_1/constants/colors.dart';
 
@@ -110,8 +110,7 @@ class PackageScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ExamPackageDetails()),
+                                  builder: (context) => const ExamDetails()),
                             );
                             // Button onPressed action
                           },

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/View/screens/all_courses/unregistered_categories.dart';
-import 'package:flutter_application_1/View/screens/package_screen.dart';
+import 'package:flutter_application_1/View/screens/package/package_screen.dart';
 import 'package:flutter_application_1/View/screens/profile_screen.dart';
 import 'package:flutter_application_1/View/screens/registered_home_screen.dart';
 import 'package:flutter_application_1/View/screens/unregistered_Home_screen.dart';
