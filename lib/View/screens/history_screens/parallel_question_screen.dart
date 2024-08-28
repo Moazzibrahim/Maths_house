@@ -125,9 +125,12 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                     ),
                   ElevatedButton(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
+                      if (formKey.currentState != null){
+                        if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
                                 }
+                      }
+                      
                       if (selectedAnswer != null && !answerSubmitted) {
                         if (parallelProvider.allParallelQuestions.isNotEmpty) {
                           String correctAnswer = parallelProvider
@@ -165,9 +168,11 @@ class _ParallelQuestionScreenState extends State<ParallelQuestionScreen> {
                           ),
                         );
                       }
-                      if (formKey.currentState!.validate()) {
+                      if(formKey.currentState != null){
+                        if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
                                 }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.redAccent[700],

@@ -46,10 +46,18 @@ class _QuizzesContentState extends State<QuizzesContent> {
               margin: const EdgeInsets.all(8),
               child: ListTile(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  quizzesProvider.startQuizCheck(context, widget.lessonId, quizzesProvider.allQuizzesModel[index].id);
+                  if(!quizzesProvider.isQuizEntered){
+                    log('message: ${quizzesProvider.message}');
+                    Navigator.of(context).push(MaterialPageRoute(
                       builder: (ctx) => StartQuiz(
                             quiz: quizzesProvider.allQuizzesModel[index],
                           )));
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(quizzesProvider.message))
+                    );
+                  }
                 },
                 title: Text(quizzesProvider.allQuizzesModel[index].title),
               ),

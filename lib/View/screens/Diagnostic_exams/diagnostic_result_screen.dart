@@ -66,7 +66,6 @@ class _DiagnosticResultScreenState extends State<DiagnosticResultScreen> {
                   'duration': (recommendation['price'][0]['duration'] ?? 0),
                 };
               }).toList();
-
               return _buildResultScreen(
                 context,
                 grade,

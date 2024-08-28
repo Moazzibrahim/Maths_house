@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Model/quizzes_model.dart';
@@ -144,8 +145,13 @@ class _StartQuizState extends State<StartQuiz> {
                   for (int i = 0; i < currentQuestion.mcqQuizList.length; i++)
                     buildRadioListTile(currentQuestion, i)
                 else
-                  TextFormField(
-                    controller: textControllers[currentQuestionIndex],
+                  Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      TextFormField(
+                        controller: textControllers[currentQuestionIndex],
+                      ),
+                    ],
                   )
               ],
             ),
@@ -296,13 +302,25 @@ class _StartQuizState extends State<StartQuiz> {
                                   actions: [
                                     ElevatedButton(
                                         onPressed: () {
+                                          List<int> missed =[];
+                                          List<int> iousq = indexOfUnsolvedQuestions.toList();
+                                          int j =0;
+                                          for(int i =0; i<widget.quiz.questionQuizList.length;i++){
+                                            if(i < iousq.length){
+                                              if(i == iousq[j]){
+                                              missed.add(widget.quiz.questionQuizList[i].questionId);
+                                              j++;
+                                            }
+                                            }
+                                          }
+                                          List<int> postList = wrongAnswers.toList() + missed;
+                                          String jsonString = jsonEncode(postList);
                                           Provider.of<QuizzesProvider>(context, listen: false).postQuizData(context,
                               quizId: widget.quiz.id,
                               rightQuestion: correctAnswers.length,
                               timer: _secondsElapsed / 60.ceil(),
                               score: correctAnswers.length,
-                              mistakes: wrongAnswers.toList() +
-                                  missedQuestions.toList(),
+                              mistakes: jsonString,
                             );
                                           Navigator.pop(context);
                                           Navigator.of(context).pushReplacement(
@@ -336,6 +354,17 @@ class _StartQuizState extends State<StartQuiz> {
                               },
                             );
                           } else {
+                            List<int> missed =[];
+                                          List<int> iousq = indexOfUnsolvedQuestions.toList();
+                                          int j =0;
+                                          for(int i =0; i<widget.quiz.questionQuizList.length;i++){
+                                            if(i < iousq.length){
+                                              if(i == iousq[j]){
+                                              missed.add(widget.quiz.questionQuizList[i].questionId);
+                                              j++;
+                                            }
+                                            }
+                                          }
                             Provider.of<QuizzesProvider>(context, listen: false)
                                 .postQuizData(
                               context,
@@ -344,7 +373,7 @@ class _StartQuizState extends State<StartQuiz> {
                               timer: _secondsElapsed / 60.ceil(),
                               score: correctAnswers.length,
                               mistakes: wrongAnswers.toList() +
-                                  missedQuestions.toList(),
+                                  missed,
                             );
                             Navigator.of(context)
                                 .pushReplacement(MaterialPageRoute(
